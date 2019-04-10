@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">HelloBus Bologna</string>
+    <string name="home_text1">Inserire il numero della fermata</string>
 </resources>
