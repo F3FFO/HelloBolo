@@ -13,6 +13,8 @@ public class JavaApplication13 {
         p.stopCodeToPrint("");
         p.stopNameToPrint("");
 
-        n.httpExtractOnlyStop("6035");
+        n.httpExtractOnlyStop("8");
+        n.httpExtractStopAndHour("8", "12");
+        n.httpExtractStopAndBusLine("8", "36");
     }
 }

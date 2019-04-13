@@ -75,7 +75,7 @@ public class UrlBusElaboration {
 
     public void httpExtractStopAndBusLine(String stop, String busline) throws IOException {
         this.stop = stop;
-        this.hour = busline;
+        this.busline = busline;
         httpExtract();
         reset();
     }
