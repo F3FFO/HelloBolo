@@ -42,8 +42,7 @@
             android:inputType="number"
             android:textAlignment="center"
             android:textSize="18sp"
-            android:typeface="monospace"
-            android:importantForAutofill="no" />
+            android:typeface="monospace" />
 
     </LinearLayout>
 
