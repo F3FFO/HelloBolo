@@ -1,7 +1,5 @@
 package com.f3ffo.hellobusbologna;
 
-import com.f3ffo.hellobusbologna.BusClass;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +8,7 @@ import java.util.StringTokenizer;
 
 public class BusReader {
 
-    private ArrayList<BusClass> bus = new ArrayList();
+    private ArrayList<BusClass> bus = new ArrayList<>();
 
     public void fileToArrayList(String file) throws IOException {
         try (Scanner reader = new Scanner(new File(file))) {
