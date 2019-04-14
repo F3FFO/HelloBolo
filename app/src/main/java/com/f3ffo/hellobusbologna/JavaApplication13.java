@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.AlgRaphael;
+package com.f3ffo.hellobusbologna;
 
 import java.io.IOException;
 
