@@ -10,9 +10,9 @@ import java.util.StringTokenizer;
 
 public class UrlBusElaboration {
 
-    String hour = "";
-    String stop = "";
-    String busline = "";
+    private String hour = "";
+    private String stop = "";
+    private String busline = "";
 
     private void httpExtract() throws MalformedURLException, IOException {
         String s = "https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + stop + "&oraHHMM=" + hour + "&linea=" + busline;

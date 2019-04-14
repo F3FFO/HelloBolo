@@ -8,7 +8,7 @@ import java.util.StringTokenizer;
 
 public class BusReader {
 
-    ArrayList<BusClass> bus = new ArrayList();
+    private ArrayList<BusClass> bus = new ArrayList();
 
     public void fileToArrayList(String file) throws IOException {
         try (Scanner reader = new Scanner(new File(file))) {
