@@ -8,7 +8,7 @@ public class JavaApplication13 {
         BusReader p = new BusReader();
         UrlBusElaboration n = new UrlBusElaboration();
 
-        p.fileToArrayList("C:/Users/Emanuele/Desktop/lineefermate_20190401 (2).csv");
+        p.fileToArrayList("C:/Users/Emanuele/Desktop/lineefermate_20190401 (2).csv"); //TODO change with internal directory
         p.busCodeToPrint("");
         p.stopCodeToPrint("");
         p.stopNameToPrint("");
