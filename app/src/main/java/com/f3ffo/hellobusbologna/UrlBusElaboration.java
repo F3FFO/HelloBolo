@@ -8,7 +8,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
@@ -18,9 +17,37 @@ public class UrlBusElaboration extends AsyncTask<Void, Void, String[]> {
     private String stop = "";
     private String busline = "";
 
+    public String getHour() {
+        return hour;
+    }
+
+    public void setHour(String hour) {
+        this.hour = hour;
+    }
+
+    public String getStop() {
+        return stop;
+    }
+
+    public void setStop(String stop) {
+        this.stop = stop;
+    }
+
+    public String getBusline() {
+        return busline;
+    }
+
+    public void setBusline(String busline) {
+        this.busline = busline;
+    }
+
+
     @Override
     protected String[] doInBackground(Void... args) {
-        String ris[] = null;
+        String ris[] = new String[10];
+        for (int i = 0; i < 1; i++) {
+            ris[i] = "";
+        }
         try {
             URL url = new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + stop + "&oraHHMM=" + hour + "&linea=" + busline);
             HttpURLConnection huc = (HttpURLConnection) url.openConnection();
@@ -76,11 +103,10 @@ public class UrlBusElaboration extends AsyncTask<Void, Void, String[]> {
             br.close();
             reset();
         } catch (IOException e) {
-            Log.e("ERROR : ", e.getMessage());
+            Log.e("ERROR into URLBUS...: ", e.getMessage());
         }
         return ris;
     }
-
     /*private String[] httpExtract() throws IOException {
         String ris[] = null;
         URL url = new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + stop + "&oraHHMM=" + hour + "&linea=" + busline);
@@ -139,7 +165,7 @@ public class UrlBusElaboration extends AsyncTask<Void, Void, String[]> {
         return ris;
     }*/
 
-    public String[] httpExtractOnlyStop(String stop) throws IOException {
+    /*public String[] httpExtractOnlyStop(String stop) throws IOException {
         this.stop = stop;
         return doInBackground();
     }
@@ -154,7 +180,7 @@ public class UrlBusElaboration extends AsyncTask<Void, Void, String[]> {
         this.stop = stop;
         this.busline = busline;
         return doInBackground();
-    }
+    }*/
 
     private void reset() {
         this.hour = "";
@@ -162,6 +188,5 @@ public class UrlBusElaboration extends AsyncTask<Void, Void, String[]> {
         this.busline = "";
 
     }
-
 
 }
