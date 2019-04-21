@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class UrlElaboration extends AsyncTask<Void, Void, ArrayList<String>> {
+public class UrlElaboration2 extends AsyncTask<Void, Void, ArrayList<String>> {
 
     private String hour = "";
     private String stop = "";
@@ -43,7 +43,7 @@ public class UrlElaboration extends AsyncTask<Void, Void, ArrayList<String>> {
     }
 
     @Override
-    protected ArrayList<String> doInBackground(Void... voids) {
+    protected ArrayList<String> doInBackground(Void... params) {
         ArrayList<String> array = new ArrayList<>();
         try {
             URL url = new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + stop + "&oraHHMM=" + hour + "&linea=" + busline);
@@ -94,9 +94,16 @@ public class UrlElaboration extends AsyncTask<Void, Void, ArrayList<String>> {
                 }
             }
             br.close();
+            ISR.close();
+            huc.disconnect();
         } catch (IOException e) {
             Log.e("ERROR: ", e.getMessage());
         }
         return array;
+    }
+
+    @Override
+    protected void onPostExecute(ArrayList<String> ris) {
+
     }
 }
