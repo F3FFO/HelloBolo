@@ -14,14 +14,10 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.result_main);
         try {
-            UrlBusElaboration n = new UrlBusElaboration();
+            UrlElaboration n = new UrlElaboration();
             n.setStop("6036");
-            new UrlBusElaboration().execute();
-            String[] array = n.getRis();
+            new UrlElaboration().execute();
             TextView TV = (TextView) findViewById(R.id.textBus1);
-            for (int i = 0; i < array.length; i++) {
-                TV.append(array[i]);
-            }
         } catch (Exception e) {
             Log.e("ERROR into Main: ", e.getMessage());
         }
@@ -30,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void checkBus() throws IOException {
         BusReader p = new BusReader();
-        UrlBusElaboration n = new UrlBusElaboration();
+        UrlBusElaboration_old n = new UrlBusElaboration_old();
 
         p.fileToArrayList("../../../../res/raw/lineefermate_20190401.csv"); //TODO change with R.raw.lineefermate_20190401
         p.busCodeToPrint("");
