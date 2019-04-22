@@ -12,41 +12,49 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class UrlElaboration2 extends AsyncTask<Void, Void, ArrayList<String>> {
+public class UrlElaboration extends AsyncTask<Void, Void, ArrayList<String>> {
+    private String busStop = "";
+    private String busLine = "";
+    private String busHour = "";
+    private AsyncResponse delegate = null;
 
-    private String hour = "";
-    private String stop = "";
-    private String busline = "";
-
-    public String getHour() {
-        return hour;
+    public String getBusStop() {
+        return busStop;
     }
 
-    public void setHour(String hour) {
-        this.hour = hour;
+    public void setBusStop(String busStop) {
+        this.busStop = busStop;
     }
 
-    public String getStop() {
-        return stop;
+    public String getBusLine() {
+        return busLine;
     }
 
-    public void setStop(String stop) {
-        this.stop = stop;
+    public void setBusLine(String busLine) {
+        this.busLine = busLine;
     }
 
-    public String getBusline() {
-        return busline;
+    public String getBusHour() {
+        return busHour;
     }
 
-    public void setBusline(String busline) {
-        this.busline = busline;
+    public void setBusHour(String busHour) {
+        this.busHour = busHour;
+    }
+
+    public AsyncResponse getDelegate() {
+        return delegate;
+    }
+
+    public void setDelegate(AsyncResponse delegate) {
+        this.delegate = delegate;
     }
 
     @Override
     protected ArrayList<String> doInBackground(Void... params) {
         ArrayList<String> array = new ArrayList<>();
         try {
-            URL url = new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + stop + "&oraHHMM=" + hour + "&linea=" + busline);
+            URL url = new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine);
             HttpURLConnection huc = (HttpURLConnection) url.openConnection();
             InputStreamReader ISR = (InputStreamReader) new InputStreamReader(huc.getInputStream(), StandardCharsets.UTF_8);
             Scanner br = new Scanner(ISR);
@@ -58,35 +66,27 @@ public class UrlElaboration2 extends AsyncTask<Void, Void, ArrayList<String>> {
                     //------------------------------ErrorGestion-----------------------------------
                     if (line.startsWith("HellobusHelp")) {
                         array.add("Fermata Non Gestita");
-
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
                         array.add("Linea Assente Ora");
-
                     } else if (line.equals("NULL")) {
                         array.add("Mancano Dei Dati");
                         //------------------------------OutPutGestion-----------------------------------
                     } else {
                         line = line.substring((line.indexOf(":") + 2));
                         StringTokenizer token = new StringTokenizer(line, ",");
-                        //int i = 0;
                         while (token.hasMoreTokens()) {
                             String util = token.nextToken();
                             if (util.startsWith(" ")) {
                                 if (util.contains("CON PEDANA)")) {
                                     array.add(util.substring(1, util.lastIndexOf("(")) + "CON PEDANA");
-                                    //i++;
                                 } else {
                                     array.add(util.substring(1) + " SENZA PEDANA");
-                                    //i++;
                                 }
-
                             } else {
                                 if (util.contains("CON PEDANA)")) {
                                     array.add(util.substring(0, util.lastIndexOf("(")) + "CON PEDANA");
-                                    //i++;
                                 } else {
                                     array.add(util + " SENZA PEDANA");
-                                    //i++;
                                 }
                             }
                         }
@@ -103,7 +103,8 @@ public class UrlElaboration2 extends AsyncTask<Void, Void, ArrayList<String>> {
     }
 
     @Override
-    protected void onPostExecute(ArrayList<String> ris) {
-
+    protected void onPostExecute(ArrayList<String> result) {
+        super.onPostExecute(result);
+        delegate.processFinish(result);
     }
 }
