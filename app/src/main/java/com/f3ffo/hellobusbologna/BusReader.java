@@ -1,5 +1,7 @@
 package com.f3ffo.hellobusbologna;
 
+import android.util.Log;
+
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +12,7 @@ public class BusReader {
 
     private ArrayList<BusClass> bus = new ArrayList<>();
 
-    public void fileToArrayList(String file) throws IOException {
+    public void fileToArrayList(String file) {
         try (Scanner reader = new Scanner(new File(file))) {
             String s = "";
             while (reader.hasNext()) {
@@ -38,7 +40,8 @@ public class BusReader {
                     }
                 }
             }
-        } catch (Exception e) {
+        } catch (IOException e) {
+            Log.e("ERROR: ", e.getMessage());
         }
     }
 

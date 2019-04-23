@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.io.IOException;
@@ -24,6 +26,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
         FloatingActionButton fabOk = (FloatingActionButton) findViewById(R.id.fabOk);
         FloatingActionButton fabHome = (FloatingActionButton) findViewById(R.id.fabHome);
+        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
 
         fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -32,14 +35,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 EditText editTextBusLine = (EditText) findViewById(R.id.editTextBusLine);
                 EditText editTextBusHour = (EditText) findViewById(R.id.editTextBusHour);
                 checkBus(editTextBusStop.getText().toString(), editTextBusLine.getText().toString(), editTextBusHour.getText().toString());
-                //TODO DELETE sleep
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-                //TODO show progress bar before change child
-                viewFlipper.setDisplayedChild(1);
             }
         });
 
@@ -64,12 +59,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
      */
     @Override
     public void processFinish(ArrayList<String> output) {
-        TextView textView = (TextView) findViewById(R.id.textBus1);
-        StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < output.size(); i++) {
-            builder.append(output.get(i) + "\n");
+        if (output.get(0).contains("non gestiti") || output.get(0).contains("assente") || output.get(0).contains("Mancano")) {
+            Toast.makeText(this, output.get(0), Toast.LENGTH_LONG).show();
+        } else {
+            TextView textView = (TextView) findViewById(R.id.textBus1);
+            StringBuilder builder = new StringBuilder();
+            for (int i = 0; i < output.size(); i++) {
+                builder.append(output.get(i) + "\n");
+            }
+            textView.setText(builder.toString());
+            viewFlipper.setDisplayedChild(1);
         }
-        textView.setText(builder.toString());
     }
 
     /**

@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
 
-public class UrlElaboration extends AsyncTask<Void, Void, ArrayList<String>> {
+public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> {
     private String busStop = "";
     private String busLine = "";
     private String busHour = "";
@@ -65,11 +65,11 @@ public class UrlElaboration extends AsyncTask<Void, Void, ArrayList<String>> {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     //------------------------------ErrorGestion-----------------------------------
                     if (line.startsWith("HellobusHelp")) {
-                        array.add("Fermata Non Gestita");
+                        array.add("Fermata o autobus non gestiti");
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
-                        array.add("Linea Assente Ora");
+                        array.add("Linea assente ora");
                     } else if (line.equals("NULL")) {
-                        array.add("Mancano Dei Dati");
+                        array.add("Mancano dei dati");
                         //------------------------------OutPutGestion-----------------------------------
                     } else {
                         line = line.substring((line.indexOf(":") + 2));
@@ -100,6 +100,11 @@ public class UrlElaboration extends AsyncTask<Void, Void, ArrayList<String>> {
             Log.e("ERROR: ", e.getMessage());
         }
         return array;
+    }
+
+    @Override
+    protected void onProgressUpdate(Integer... progress) {
+
     }
 
     @Override
