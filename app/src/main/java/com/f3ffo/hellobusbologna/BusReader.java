@@ -2,8 +2,8 @@ package com.f3ffo.hellobusbologna;
 
 import android.util.Log;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.StringTokenizer;
@@ -12,8 +12,8 @@ public class BusReader {
 
     private ArrayList<BusClass> bus = new ArrayList<>();
 
-    public void fileToArrayList(String file) {
-        try (Scanner reader = new Scanner(new File(file))) {
+    public void fileToArrayList(InputStream file) {
+        try (Scanner reader = new Scanner(file)) {
             String s = "";
             while (reader.hasNext()) {
                 s = reader.nextLine();
@@ -40,8 +40,15 @@ public class BusReader {
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             Log.e("ERROR: ", e.getMessage());
+            bus.clear();
+        } finally {
+            try {
+                file.close();
+            } catch (IOException e) {
+                Log.e("ERROR: ", e.getMessage());
+            }
         }
     }
 
@@ -51,12 +58,14 @@ public class BusReader {
         }
     }
 
-    public void stopCodeToPrint(String stop) {
+    public ArrayList<String> stopCodeToPrint(String stop) {
+        ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < bus.size(); i++) {
             if (bus.get(i).getStopcode().equals(stop)) {
-                System.out.println(bus.get(i).getLinecode() + "," + bus.get(i).getStopcode() + "," + bus.get(i).getStopname() + "," + bus.get(i).getZonecode());
+                result.add(bus.get(i).getLinecode());
             }
         }
+        return result;
     }
 
     public void busCodeToPrint(String buscode) {

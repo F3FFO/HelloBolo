@@ -3,19 +3,24 @@ package com.f3ffo.hellobusbologna;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
-import android.widget.ProgressBar;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private ViewFlipper viewFlipper;
+    private EditText editTextBusStop;
+    private EditText editTextBusHour;
+    private Spinner spinnerBus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,15 +31,34 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
         FloatingActionButton fabOk = (FloatingActionButton) findViewById(R.id.fabOk);
         FloatingActionButton fabHome = (FloatingActionButton) findViewById(R.id.fabHome);
-        final ProgressBar progressBar = (ProgressBar) findViewById(R.id.progressBar);
+
+        spinnerBus = (Spinner) findViewById(R.id.spinnerBus);
+
+        editTextBusStop = (EditText) findViewById(R.id.editTextBusStop);
+        editTextBusHour = (EditText) findViewById(R.id.editTextBusHour);
+
+
+        editTextBusStop.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() != 0) {
+                    busForStop(editTextBusStop.getText().toString());
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
 
         fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                EditText editTextBusStop = (EditText) findViewById(R.id.editTextBusStop);
-                EditText editTextBusLine = (EditText) findViewById(R.id.editTextBusLine);
-                EditText editTextBusHour = (EditText) findViewById(R.id.editTextBusHour);
-                checkBus(editTextBusStop.getText().toString(), editTextBusLine.getText().toString(), editTextBusHour.getText().toString());
+                checkBus(editTextBusStop.getText().toString(), spinnerBus.getSelectedItem().toString(), editTextBusHour.getText().toString());
             }
         });
 
@@ -93,12 +117,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         }
     }
 
-    public void checkBus2() throws IOException {
+    public void busForStop(String stop) {
         BusReader p = new BusReader();
 
-        p.fileToArrayList("../../../../res/raw/lineefermate_20190401.csv"); //TODO change with R.raw.lineefermate_20190401
-        p.busCodeToPrint("");
-        p.stopCodeToPrint("");
-        p.stopNameToPrint("");
+        p.fileToArrayList(getResources().openRawResource(R.raw.lineefermate_20190401));
+        //p.busCodeToPrint("");
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, p.stopCodeToPrint(stop));
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerBus.setAdapter(spinnerArrayAdapter);
+        //p.stopNameToPrint("");
     }
 }
