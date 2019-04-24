@@ -60,7 +60,8 @@ public class NewBusReader {
      */
     public ArrayList<String> stopCodeToView(String stopCode) {
         ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < bus.size(); i++) {
+        result.add(0, "Tutti gli autobus");
+        for (int i = 1; i < bus.size(); i++) {
             if (bus.get(i).getStopCode().equals(stopCode)) {
                 result.add(bus.get(i).getLineCode());
             }

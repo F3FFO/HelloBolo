@@ -21,6 +21,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private EditText editTextBusStop;
     private EditText editTextBusHour;
     private Spinner spinnerBus;
+    private String busStop;
+    private String busLine;
+    private String busHour;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
         FloatingActionButton fabOk = (FloatingActionButton) findViewById(R.id.fabOk);
         FloatingActionButton fabHome = (FloatingActionButton) findViewById(R.id.fabHome);
+        FloatingActionButton fabReload = (FloatingActionButton) findViewById(R.id.fabReload);
 
         spinnerBus = (Spinner) findViewById(R.id.spinnerBus);
 
@@ -60,7 +64,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkBus(editTextBusStop.getText().toString(), spinnerBus.getSelectedItem().toString(), editTextBusHour.getText().toString());
+                if (spinnerBus.getSelectedItem().toString().equals("Tutti gli autobus")) {
+                    busStop = editTextBusStop.getText().toString();
+                    busLine = "";
+                    busHour = editTextBusHour.getText().toString();
+                    checkBus(busStop, busLine, busHour);
+                } else {
+                    busStop = editTextBusStop.getText().toString();
+                    busLine = spinnerBus.getSelectedItem().toString();
+                    busHour = editTextBusHour.getText().toString();
+                    checkBus(busStop, busLine, busHour);
+                }
             }
         });
 
@@ -68,6 +82,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void onClick(View v) {
                 viewFlipper.setDisplayedChild(0);
+            }
+        });
+
+        fabReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                checkBus(busStop, busLine, busHour);
             }
         });
     }
@@ -128,8 +149,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     public void busForStop(String stopCode) {
         NewBusReader p = new NewBusReader();
         p.fileToArrayList(getResources().openRawResource(R.raw.lineefermate_20190401));
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, p.stopCodeToView(stopCode));
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p.stopCodeToView(stopCode));
+        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinnerBus.setAdapter(spinnerArrayAdapter);
     }
 }
