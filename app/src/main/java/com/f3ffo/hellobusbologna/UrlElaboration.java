@@ -3,13 +3,13 @@ package com.f3ffo.hellobusbologna;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Scanner;
 import java.util.StringTokenizer;
 
 public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> {
@@ -54,23 +54,20 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
     protected ArrayList<String> doInBackground(Void... params) {
         ArrayList<String> array = new ArrayList<>();
         try {
-            URL url = new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine);
-            HttpURLConnection huc = (HttpURLConnection) url.openConnection();
-            InputStreamReader ISR = (InputStreamReader) new InputStreamReader(huc.getInputStream(), StandardCharsets.UTF_8);
-            Scanner br = new Scanner(ISR);
+            HttpURLConnection huc = (HttpURLConnection) new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine).openConnection();
+            BufferedReader br = new BufferedReader(new InputStreamReader(huc.getInputStream(), StandardCharsets.UTF_8), 8192);
             String line;
-            while (br.hasNext()) {
-                line = br.nextLine();
+            while ((line = br.readLine()) != null) {
                 if (!line.startsWith("<?xml")) {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
-                    //------------------------------ErrorGestion-----------------------------------
+                    //------------------------------Manage error-----------------------------------
                     if (line.startsWith("HellobusHelp")) {
                         array.add("Fermata o autobus non gestiti");
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
                         array.add("Linea assente ora");
                     } else if (line.equals("NULL")) {
                         array.add("Mancano dei dati");
-                        //------------------------------OutPutGestion-----------------------------------
+                        //------------------------------Manage output-----------------------------------
                     } else {
                         line = line.substring((line.indexOf(":") + 2));
                         StringTokenizer token = new StringTokenizer(line, ",");
@@ -94,7 +91,6 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
                 }
             }
             br.close();
-            ISR.close();
             huc.disconnect();
         } catch (IOException e) {
             Log.e("ERROR: ", e.getMessage());

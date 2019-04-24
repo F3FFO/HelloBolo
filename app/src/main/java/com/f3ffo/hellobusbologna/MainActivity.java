@@ -47,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0) {
                     busForStop(editTextBusStop.getText().toString());
+                } else {
+                    spinnerBus.setAdapter(null);
                 }
             }
 
@@ -117,14 +119,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         }
     }
 
-    public void busForStop(String stop) {
-        BusReader p = new BusReader();
-
+    /**
+     * Display into spinner the array created in NewBusReader class
+     *
+     * @param stopCode Code of bus stop
+     * @see NewBusReader
+     */
+    public void busForStop(String stopCode) {
+        NewBusReader p = new NewBusReader();
         p.fileToArrayList(getResources().openRawResource(R.raw.lineefermate_20190401));
-        //p.busCodeToPrint("");
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, p.stopCodeToPrint(stop));
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, p.stopCodeToView(stopCode));
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinnerBus.setAdapter(spinnerArrayAdapter);
-        //p.stopNameToPrint("");
     }
 }

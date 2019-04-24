@@ -54,15 +54,15 @@ public class BusReader {
 
     public void printArray() {
         for (int i = 0; i < bus.size(); i++) {
-            System.out.println(bus.get(i).getLinecode() + "," + bus.get(i).getStopcode() + "," + bus.get(i).getStopname() + "," + bus.get(i).getZonecode());
+            System.out.println(bus.get(i).getLineCode() + "," + bus.get(i).getStopCode() + "," + bus.get(i).getStopName() + "," + bus.get(i).getZoneCode());
         }
     }
 
     public ArrayList<String> stopCodeToPrint(String stop) {
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < bus.size(); i++) {
-            if (bus.get(i).getStopcode().equals(stop)) {
-                result.add(bus.get(i).getLinecode());
+            if (bus.get(i).getStopCode().equals(stop)) {
+                result.add(bus.get(i).getLineCode());
             }
         }
         return result;
@@ -70,16 +70,16 @@ public class BusReader {
 
     public void busCodeToPrint(String buscode) {
         for (int i = 0; i < bus.size(); i++) {
-            if (bus.get(i).getLinecode().equals(buscode)) {
-                System.out.println(bus.get(i).getLinecode() + "," + bus.get(i).getStopcode() + "," + bus.get(i).getStopname() + "," + bus.get(i).getZonecode());
+            if (bus.get(i).getLineCode().equals(buscode)) {
+                System.out.println(bus.get(i).getLineCode() + "," + bus.get(i).getStopCode() + "," + bus.get(i).getStopName() + "," + bus.get(i).getZoneCode());
             }
         }
     }
 
     public void stopNameToPrint(String stopname) {
         for (int i = 0; i < bus.size(); i++) {
-            if (bus.get(i).getStopname().equals(stopname)) {
-                System.out.println(bus.get(i).getLinecode() + "," + bus.get(i).getStopcode() + "," + bus.get(i).getStopname() + "," + bus.get(i).getZonecode());
+            if (bus.get(i).getStopName().equals(stopname)) {
+                System.out.println(bus.get(i).getLineCode() + "," + bus.get(i).getStopCode() + "," + bus.get(i).getStopName() + "," + bus.get(i).getZoneCode());
             }
         }
     }

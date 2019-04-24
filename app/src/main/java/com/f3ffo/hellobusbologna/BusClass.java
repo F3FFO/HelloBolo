@@ -2,48 +2,53 @@ package com.f3ffo.hellobusbologna;
 
 public class BusClass {
 
-    private String linecode;
-    private String stopcode;
-    private String stopname;
-    private String zonecode;
+    private String lineCode;
+    private String stopCode;
+    private String stopName;
+    private String zoneCode;
 
-    public BusClass(String linecode, String stopcode, String stopname, String zonecode) {
-        this.linecode = linecode;
-        this.stopcode = stopcode;
-        this.stopname = stopname;
-        this.zonecode = zonecode;
+    public BusClass(String lineCode, String stopCode, String stopName, String zoneCode) {
+        this.lineCode = lineCode;
+        this.stopCode = stopCode;
+        this.stopName = stopName;
+        this.zoneCode = zoneCode;
     }
 
-    public String getLinecode() {
-        return linecode;
+    public BusClass(String lineCode, String stopCode, String stopName) {
+        this.lineCode = lineCode;
+        this.stopCode = stopCode;
+        this.stopName = stopName;
     }
 
-    public void setLinecode(String linecode) {
-        this.linecode = linecode;
+    public String getLineCode() {
+        return lineCode;
     }
 
-    public String getStopcode() {
-        return stopcode;
+    public void setLineCode(String lineCode) {
+        this.lineCode = lineCode;
     }
 
-    public void setStopcode(String stopcode) {
-        this.stopcode = stopcode;
+    public String getStopCode() {
+        return stopCode;
     }
 
-    public String getStopname() {
-        return stopname;
+    public void setStopCode(String stopCode) {
+        this.stopCode = stopCode;
     }
 
-    public void setStopname(String stopname) {
-        this.stopname = stopname;
+    public String getStopName() {
+        return stopName;
     }
 
-    public String getZonecode() {
-        return zonecode;
+    public void setStopName(String stopName) {
+        this.stopName = stopName;
     }
 
-    public void setZonecode(String zonecode) {
-        this.zonecode = zonecode;
+    public String getZoneCode() {
+        return zoneCode;
     }
 
+    public void setZoneCode(String zoneCode) {
+        this.zoneCode = zoneCode;
+    }
 }
