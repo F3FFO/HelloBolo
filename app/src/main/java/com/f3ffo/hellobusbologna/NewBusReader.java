@@ -12,36 +12,43 @@ import java.util.StringTokenizer;
 
 public class NewBusReader {
     private ArrayList<BusClass> bus = new ArrayList<>();
+    private String stopName;
+    private String stopCode;
 
     /**
      * Inserts part of the input file into ArrayList bus
      *
-     * @param file File to read
+     * @param file       File to read
+     * @param stopCodeIn Code of the bus stop taken from the input
      */
-    public void fileToArrayList(InputStream file) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8), 8192)) {
-            String line = "";
+    public void extractFromFile(InputStream file, String stopCodeIn) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8), 16384)) {
+            String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("codice_linea")) {
                     StringTokenizer token = new StringTokenizer(line, ";");
                     if (token.countTokens() == 10) {
                         String busCode = token.nextToken();
-                        String stopCode = token.nextToken();
-                        String stopName = token.nextToken();
-                        /*for (int i = 0; i < 6; i++) {
+                        stopCode = token.nextToken();
+                        stopName = token.nextToken();
+                        for (int i = 0; i < 7; i++) {
                             token.nextToken();
                         }
-                        String zoneCode = token.nextToken();*/
-                        bus.add(new BusClass(busCode, stopCode, stopName));
+                        //String zoneCode = token.nextToken();
+                        if (this.stopCode.equals(stopCodeIn) || this.stopName.equals(stopCodeIn)) {
+                            bus.add(new BusClass(busCode));
+                        }
                     } else if (token.countTokens() == 9) {
                         String busCode = token.nextToken();
-                        String stopCode = token.nextToken();
-                        String stopName = token.nextToken();
-                        /*for (int i = 0; i < 5; i++) {
+                        stopCode = token.nextToken();
+                        stopName = token.nextToken();
+                        for (int i = 0; i < 6; i++) {
                             token.nextToken();
                         }
-                        String zoneCode = token.nextToken();*/
-                        bus.add(new BusClass(busCode, stopCode, stopName));
+                        //String zoneCode = token.nextToken();
+                        if (this.stopCode.equals(stopCodeIn) || this.stopName.equals(stopCodeIn)) {
+                            bus.add(new BusClass(busCode));
+                        }
                     }
                 }
             }
@@ -52,20 +59,26 @@ public class NewBusReader {
         }
     }
 
+
     /**
-     * Compare the String take from parameter with a String inside ArrayList bus
+     * Insert into ArrayList result the busCode take from ArrayList bus
      *
-     * @param stopCode Code of the bus stop
      * @return ArrayList of all buses passing on the bus stop
      */
-    public ArrayList<String> stopCodeToView(String stopCode) {
+    public ArrayList<String> busCodeViewer() {
         ArrayList<String> result = new ArrayList<>();
         result.add(0, "Tutti gli autobus");
-        for (int i = 1; i < bus.size(); i++) {
-            if (bus.get(i).getStopCode().equals(stopCode)) {
-                result.add(bus.get(i).getLineCode());
-            }
+        for (int i = 0; i < this.bus.size(); i++) {
+            result.add(this.bus.get(i).getbusCode());
         }
         return result;
+    }
+
+    public String stopNameViewer() {
+        return this.stopName;
+    }
+
+    public String stopCodeViewer() {
+        return this.stopCode;
     }
 }

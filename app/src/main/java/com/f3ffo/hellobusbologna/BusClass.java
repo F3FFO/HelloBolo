@@ -2,30 +2,42 @@ package com.f3ffo.hellobusbologna;
 
 public class BusClass {
 
-    private String lineCode;
+    private String busCode;
     private String stopCode;
     private String stopName;
     private String zoneCode;
 
-    public BusClass(String lineCode, String stopCode, String stopName, String zoneCode) {
-        this.lineCode = lineCode;
+    public BusClass(String busCode, String stopCode, String stopName, String zoneCode) {
+        this.busCode = busCode;
         this.stopCode = stopCode;
         this.stopName = stopName;
         this.zoneCode = zoneCode;
     }
 
-    public BusClass(String lineCode, String stopCode, String stopName) {
-        this.lineCode = lineCode;
+    public BusClass(String busCode, String stopCode, String stopName) {
+        this.busCode = busCode;
         this.stopCode = stopCode;
         this.stopName = stopName;
     }
 
-    public String getLineCode() {
-        return lineCode;
+    public BusClass(String busCode, String stopCode) {
+        this.busCode = busCode;
+        this.stopCode = stopCode;
     }
 
-    public void setLineCode(String lineCode) {
-        this.lineCode = lineCode;
+    public BusClass(String busCode) {
+        this.busCode = busCode;
+    }
+
+    public BusClass() {
+    }
+
+    public String getbusCode() {
+        return busCode;
+    }
+
+    public void setbusCode(String busCode) {
+        this.busCode = busCode;
     }
 
     public String getStopCode() {

@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">HelloBus Bologna</string>
-    <string name="busStopText">Inserire numero della fermata</string>
-    <string name="busLineText">Inserire numero dell\'autobus</string>
-    <string name="busHourText">Inserire orario da controllare</string>
+    <string name="busStopNameText">Inserire il nome della fermata</string>
+    <string name="busStopCodeText">Oppure il numero della fermata</string>
+    <string name="busCodeText">Scegliere l\'autobus</string>
+    <string name="busHourText">Inserire l\'orario da controllare</string>
 </resources>

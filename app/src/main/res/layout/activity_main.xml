@@ -30,47 +30,72 @@
             app:layout_constraintTop_toTopOf="parent">
 
             <TextView
-                android:id="@+id/busStopText"
+                android:id="@+id/busStopNameText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:contextClickable="false"
                 android:selectAllOnFocus="false"
-                android:text="@string/busStopText"
+                android:text="@string/busStopNameText"
                 android:textAlignment="center"
                 android:textIsSelectable="false"
                 android:textSize="20sp"
                 android:typeface="monospace" />
 
             <EditText
-                android:id="@+id/editTextBusStop"
+                android:id="@+id/editTextBusStopName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="number"
+                android:inputType="text"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:typeface="monospace" />
 
             <TextView
-                android:id="@+id/busLineText"
+                android:id="@+id/busStopCodeText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:clickable="false"
                 android:contextClickable="false"
                 android:selectAllOnFocus="false"
-                android:text="@string/busLineText"
+                android:text="@string/busStopCodeText"
+                android:textAlignment="center"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                android:typeface="monospace" />
+
+            <EditText
+                android:id="@+id/editTextBusStopCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:ems="10"
+                android:inputType="number"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:typeface="monospace" />
+
+            <TextView
+                android:id="@+id/busCodeText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:clickable="false"
+                android:contextClickable="false"
+                android:selectAllOnFocus="false"
+                android:text="@string/busCodeText"
                 android:textAlignment="center"
                 android:textIsSelectable="false"
                 android:textSize="20sp"
                 android:typeface="monospace" />
 
             <Spinner
-                android:id="@+id/spinnerBus"
+                android:id="@+id/spinnerBusCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_horizontal|center_vertical"
+                android:minWidth="100dp"
                 android:spinnerMode="dropdown" />
 
             <TextView
@@ -92,9 +117,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:ems="10"
-                android:inputType="number"
+                android:inputType="time"
                 android:textAlignment="center"
-                android:textSize="18sp"
+                android:textSize="20sp"
                 android:typeface="monospace" />
 
         </LinearLayout>

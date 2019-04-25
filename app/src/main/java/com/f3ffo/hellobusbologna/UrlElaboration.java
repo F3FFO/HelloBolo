@@ -55,14 +55,14 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
         ArrayList<String> array = new ArrayList<>();
         try {
             HttpURLConnection huc = (HttpURLConnection) new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine).openConnection();
-            BufferedReader br = new BufferedReader(new InputStreamReader(huc.getInputStream(), StandardCharsets.UTF_8), 8192);
+            BufferedReader br = new BufferedReader(new InputStreamReader(huc.getInputStream(), StandardCharsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("<?xml")) {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     //------------------------------Manage error-----------------------------------
                     if (line.startsWith("HellobusHelp")) {
-                        array.add("Fermata o autobus non gestiti");
+                        array.add("Fermata non gestita");
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
                         array.add("Linea assente ora");
                     } else if (line.equals("NULL")) {
@@ -91,7 +91,6 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
                 }
             }
             br.close();
-            huc.disconnect();
         } catch (IOException e) {
             Log.e("ERROR: ", e.getMessage());
         }
