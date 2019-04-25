@@ -4,4 +4,5 @@
     <string name="busStopCodeText">Numero fermata</string>
     <string name="busCodeText">Autobus</string>
     <string name="busHourText">Orario da controllare</string>
+    <string name="advancedOption">Opzioni avanzate</string>
 </resources>

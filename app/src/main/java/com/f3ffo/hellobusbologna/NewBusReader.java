@@ -79,7 +79,6 @@ public class NewBusReader {
         }
         return result;
     }*/
-
     public String stopNameViewer() {
         return this.stopName;
     }

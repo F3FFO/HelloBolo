@@ -8,8 +8,11 @@ import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -30,7 +33,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
 
         FloatingActionButton fabOk = (FloatingActionButton) findViewById(R.id.fabOk);
@@ -43,25 +45,18 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         editTextBusStopName = (EditText) findViewById(R.id.editTextBusStopName);
         editTextBusHour = (EditText) findViewById(R.id.editTextBusHour);
 
-        /*editTextBusStopName.addTextChangedListener(new TextWatcher() {
+        Switch switchAdvancedOption = (Switch) findViewById(R.id.switchAdvancedOption);
+        switchAdvancedOption.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() != 0) {
-                    busViewer(editTextBusStopName.getText().toString(), false);
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                LinearLayout advancedOption = (LinearLayout) findViewById(R.id.advancedOption);
+                if (isChecked) {
+                    advancedOption.setVisibility(View.VISIBLE);
                 } else {
-                    spinnerBusCode.setAdapter(null);
+                    advancedOption.setVisibility(View.INVISIBLE);
                 }
             }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });*/
-
+        });
 
         editTextBusStopCode.addTextChangedListener(new TextWatcher() {
             @Override
@@ -82,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             public void afterTextChanged(Editable s) {
             }
         });
-
 
         fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,14 +106,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         fabReload.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                checkBus(busStop, busLine, busHour);
+                checkBus(busStop, busLine, busHour); //TODO Toast for user
             }
         });
-    }
-
-    @Override
-    public void onBackPressed() {
-        super.onBackPressed();
     }
 
     /***
@@ -168,14 +157,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
      * Display into spinner the array created in BusReader class
      *
      * @param stopCode Code of bus stop
+     * @param isCode   true -> the input is the code of the bus; false -> the input is the name of bus station
      * @see BusReader
      */
     public void busViewer(String stopCode, boolean isCode) {
-        /*BusReader p = new BusReader();
-        p.fileToArrayList(getResources().openRawResource(R.raw.lineefermate_20190501));
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p.stopCodeToView(stopCode));
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
-        spinnerBusCode.setAdapter(spinnerArrayAdapter);*/
         NewBusReader p = new NewBusReader();
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p.extractFromFile(getResources().openRawResource(R.raw.lineefermate_20190501), stopCode));
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
