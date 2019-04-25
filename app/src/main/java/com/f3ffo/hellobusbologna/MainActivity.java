@@ -1,6 +1,5 @@
 package com.f3ffo.hellobusbologna;
 
-import android.content.Context;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -52,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0) {
-                    busViewer(editTextBusStopName.getText().toString());
+                    busViewer(editTextBusStopName.getText().toString(), false);
                 } else {
                     spinnerBusCode.setAdapter(null);
                 }
@@ -62,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             public void afterTextChanged(Editable s) {
             }
         });*/
+
 
         editTextBusStopCode.addTextChangedListener(new TextWatcher() {
             @Override
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 if (s.length() != 0) {
                     busViewer(editTextBusStopCode.getText().toString(), true);
                 } else {
+                    editTextBusStopName.setText("");
                     spinnerBusCode.setAdapter(null);
                 }
             }
@@ -81,6 +82,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             public void afterTextChanged(Editable s) {
             }
         });
+
 
         fabOk.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,8 +177,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinnerBusCode.setAdapter(spinnerArrayAdapter);*/
         NewBusReader p = new NewBusReader();
-        p.extractFromFile(getResources().openRawResource(R.raw.lineefermate_20190501), stopCode);
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p.busCodeViewer());
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p.extractFromFile(getResources().openRawResource(R.raw.lineefermate_20190501), stopCode));
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinnerBusCode.setAdapter(spinnerArrayAdapter);
         if (isCode) {

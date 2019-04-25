@@ -31,7 +31,7 @@
 
             <TextView
                 android:id="@+id/busStopNameText"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:contextClickable="false"
@@ -54,7 +54,7 @@
 
             <TextView
                 android:id="@+id/busStopCodeText"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:clickable="false"
@@ -78,7 +78,7 @@
 
             <TextView
                 android:id="@+id/busCodeText"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:clickable="false"
@@ -100,7 +100,7 @@
 
             <TextView
                 android:id="@+id/busHourText"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="25dp"
                 android:clickable="false"
