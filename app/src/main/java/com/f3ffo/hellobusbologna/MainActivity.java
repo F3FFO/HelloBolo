@@ -1,13 +1,16 @@
 package com.f3ffo.hellobusbologna;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -22,7 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private ViewFlipper viewFlipper;
     private EditText editTextBusStopCode;
-    private EditText editTextBusStopName;
+    private EditText textViewBusStopName;
     private EditText editTextBusHour;
     private Spinner spinnerBusCode;
     private String busStop;
@@ -42,8 +45,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         spinnerBusCode = (Spinner) findViewById(R.id.spinnerBusCode);
 
         editTextBusStopCode = (EditText) findViewById(R.id.editTextBusStopCode);
-        editTextBusStopName = (EditText) findViewById(R.id.editTextBusStopName);
-        editTextBusHour = (EditText) findViewById(R.id.editTextBusHour);
+        textViewBusStopName = (EditText) findViewById(R.id.editTextBusStopName);
+
+        Button buttonStopViewer = (Button) findViewById(R.id.buttonStopViewer);
+
+        buttonStopViewer.setOnClickListener(new Button.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                viewFlipper.setDisplayedChild(2);
+            }
+        });
 
         Switch switchAdvancedOption = (Switch) findViewById(R.id.switchAdvancedOption);
         switchAdvancedOption.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -51,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 LinearLayout advancedOption = (LinearLayout) findViewById(R.id.advancedOption);
                 if (isChecked) {
+                    editTextBusHour = (EditText) findViewById(R.id.editTextBusHour);
                     advancedOption.setVisibility(View.VISIBLE);
                 } else {
                     advancedOption.setVisibility(View.INVISIBLE);
@@ -58,7 +71,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             }
         });
 
-        editTextBusStopName.addTextChangedListener(new TextWatcher() {
+        editTextBusStopCode.addTextChangedListener(new TextWatcher() {
 
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -67,9 +80,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0) {
-                    busViewer(editTextBusStopName.getText().toString(), false);
+                    busViewer(editTextBusStopCode.getText().toString());
                 } else {
-                    editTextBusStopCode.setText("");
+                    textViewBusStopName.setText("");
                     spinnerBusCode.setAdapter(null);
                 }
             }
@@ -79,27 +92,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             }
         });
 
-        /*editTextBusStopCode.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (s.length() != 0) {
-                    busViewer(editTextBusStopCode.getText().toString(), true);
-                } else {
-                    editTextBusStopName.setText("");
-                    spinnerBusCode.setAdapter(null);
-                }
-            }
-
-            @Override
-            public void afterTextChanged(Editable s) {
-            }
-        });*/
-
         fabBus.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 if (editTextBusHour.getText().toString().contains(":")) {
@@ -118,6 +112,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         });
 
         fabHome.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 viewFlipper.setDisplayedChild(0);
@@ -125,6 +120,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         });
 
         fabReload.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
                 checkBus(busStop, busLine, busHour); //TODO Toast for user
@@ -146,7 +142,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             TextView textView = (TextView) findViewById(R.id.textBus1);
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < output.size(); i++) {
-                builder.append(output.get(i) + "\n");
+                builder.append(output.get(i)).append("\n");
             }
             textView.setText(builder.toString());
             viewFlipper.setDisplayedChild(1);
@@ -178,18 +174,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
      * Display into spinner the array created in BusReader class
      *
      * @param stopCode Code of bus stop
-     * @param isCode   true -> the input is the code of the bus; false -> the input is the name of bus station
      * @see BusReader
      */
-    public void busViewer(String stopCode, boolean isCode) {
+    public void busViewer(String stopCode) {
         NewBusReader p = new NewBusReader();
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p.extractFromFile(getResources().openRawResource(R.raw.lineefermate_20190501), stopCode));
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, p.extractFromFileFromCode(getResources().openRawResource(R.raw.lineefermate_20190501), stopCode));
         spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
         spinnerBusCode.setAdapter(spinnerArrayAdapter);
-        if (isCode) {
-            editTextBusStopName.setText(p.stopNameViewer());
-        } else {
-            editTextBusStopCode.setText(p.stopCodeViewer());
-        }
+        textViewBusStopName.setText(p.stopNameViewer());
     }
 }
