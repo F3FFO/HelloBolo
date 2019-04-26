@@ -9,7 +9,7 @@
     android:orientation="vertical"
     tools:context=".MainActivity">
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -37,7 +37,7 @@
                     android:id="@+id/busStopNameText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center|start|end"
+                    android:layout_gravity="center"
                     android:clickable="false"
                     android:contextClickable="false"
                     android:selectAllOnFocus="false"
@@ -51,13 +51,17 @@
                     android:id="@+id/editTextBusStopName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="bottom|start|top|end"
                     android:ems="10"
-                    android:gravity="center"
                     android:inputType="text"
                     android:textAlignment="center"
                     android:textSize="20sp"
                     android:typeface="monospace" />
+
+                <Button
+                    android:id="@+id/buttonStopViewer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Button" />
             </TableRow>
 
             <TableRow
@@ -162,10 +166,11 @@
 
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
-            android:id="@+id/fabOk"
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabBus"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="3dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
             android:clickable="true"
@@ -174,9 +179,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_directions_bus" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
@@ -205,7 +210,7 @@
 
         </LinearLayout>
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabReload"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -217,7 +222,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_update" />
 
-        <android.support.design.widget.FloatingActionButton
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabHome"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -229,6 +234,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:srcCompat="@drawable/ic_home" />
 
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </ViewFlipper>

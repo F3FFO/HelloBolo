@@ -1,7 +1,7 @@
 package com.f3ffo.hellobusbologna;
 
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,7 +35,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         setContentView(R.layout.activity_main);
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
 
-        FloatingActionButton fabOk = (FloatingActionButton) findViewById(R.id.fabOk);
+        FloatingActionButton fabBus = (FloatingActionButton) findViewById(R.id.fabBus);
         FloatingActionButton fabHome = (FloatingActionButton) findViewById(R.id.fabHome);
         FloatingActionButton fabReload = (FloatingActionButton) findViewById(R.id.fabReload);
 
@@ -58,7 +58,28 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             }
         });
 
-        editTextBusStopCode.addTextChangedListener(new TextWatcher() {
+        editTextBusStopName.addTextChangedListener(new TextWatcher() {
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (s.length() != 0) {
+                    busViewer(editTextBusStopName.getText().toString(), false);
+                } else {
+                    editTextBusStopCode.setText("");
+                    spinnerBusCode.setAdapter(null);
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        /*editTextBusStopCode.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
             }
@@ -76,9 +97,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void afterTextChanged(Editable s) {
             }
-        });
+        });*/
 
-        fabOk.setOnClickListener(new View.OnClickListener() {
+        fabBus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (editTextBusHour.getText().toString().contains(":")) {

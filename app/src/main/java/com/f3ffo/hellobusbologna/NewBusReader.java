@@ -36,9 +36,11 @@ public class NewBusReader {
                             token.nextToken();
                         }
                         String zoneCode = token.nextToken();*/
-                        if (stopCode.equals(stopCodeIn) || stopName.equals(stopCodeIn)) {
+                        if (stopCode.equals(stopCodeIn)) {
                             bus.add(busCode);
                             this.stopName = stopName;
+                        } else if (stopName.equals(stopCodeIn)) {
+                            bus.add(busCode);
                             this.stopCode = stopCode;
                         }
                     } else if (token.countTokens() == 9) {
@@ -49,9 +51,11 @@ public class NewBusReader {
                             token.nextToken();
                         }
                         String zoneCode = token.nextToken();*/
-                        if (stopCode.equals(stopCodeIn) || stopName.equals(stopCodeIn)) {
+                        if (stopCode.equals(stopCodeIn)) {
                             bus.add(busCode);
                             this.stopName = stopName;
+                        } else if (stopName.equals(stopCodeIn)) {
+                            bus.add(busCode);
                             this.stopCode = stopCode;
                         }
                     }
