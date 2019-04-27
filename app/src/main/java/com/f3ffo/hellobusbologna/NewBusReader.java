@@ -28,14 +28,21 @@ public class NewBusReader {
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("codice_linea")) {
                     StringTokenizer token = new StringTokenizer(line, ";");
-                    if (token.countTokens() == 10) {
+                    String busCode = token.nextToken();
+                    String stopCode = token.nextToken();
+                    String stopName = token.nextToken();
+                    if (stopCode.equals(stopCodeIn)) {
+                        bus.add(busCode);
+                        this.stopName = stopName;
+                    }
+                    /*if (token.countTokens() == 10) {
                         String busCode = token.nextToken();
                         String stopCode = token.nextToken();
                         String stopName = token.nextToken();
-                        /*for (int i = 0; i < 7; i++) {
+                        for (int i = 0; i < 7; i++) {
                             token.nextToken();
                         }
-                        String zoneCode = token.nextToken();*/
+                        String zoneCode = token.nextToken();
                         if (stopCode.equals(stopCodeIn)) {
                             bus.add(busCode);
                             this.stopName = stopName;
@@ -44,60 +51,15 @@ public class NewBusReader {
                         String busCode = token.nextToken();
                         String stopCode = token.nextToken();
                         String stopName = token.nextToken();
-                        /*for (int i = 0; i < 6; i++) {
+                        for (int i = 0; i < 6; i++) {
                             token.nextToken();
                         }
-                        String zoneCode = token.nextToken();*/
+                        String zoneCode = token.nextToken();
                         if (stopCode.equals(stopCodeIn)) {
                             bus.add(busCode);
                             this.stopName = stopName;
-                        } else if (stopName.equals(stopCodeIn)) {
-                            bus.add(busCode);
-                            this.stopCode = stopCode;
                         }
-                    }
-                }
-            }
-            file.close();
-        } catch (IOException e) {
-            Log.e("ERROR: ", e.getMessage());
-            bus.clear();
-        }
-        return bus;
-    }
-
-    public ArrayList<String> extractFromFileFromName(InputStream file, String stopNameIn) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8), 16384)) {
-            String line;
-            bus.add(0, "Tutti gli autobus");
-            while ((line = br.readLine()) != null) {
-                if (!line.startsWith("codice_linea")) {
-                    StringTokenizer token = new StringTokenizer(line, ";");
-                    if (token.countTokens() == 10) {
-                        String busCode = token.nextToken();
-                        String stopCode = token.nextToken();
-                        String stopName = token.nextToken();
-                        /*for (int i = 0; i < 7; i++) {
-                            token.nextToken();
-                        }
-                        String zoneCode = token.nextToken();*/
-                        if (stopName.equals(stopNameIn)) {
-                            bus.add(busCode);
-                            this.stopCode = stopCode;
-                        }
-                    } else if (token.countTokens() == 9) {
-                        String busCode = token.nextToken();
-                        String stopCode = token.nextToken();
-                        String stopName = token.nextToken();
-                        /*for (int i = 0; i < 6; i++) {
-                            token.nextToken();
-                        }
-                        String zoneCode = token.nextToken();*/
-                        if (stopName.equals(stopNameIn)) {
-                            bus.add(busCode);
-                            this.stopCode = stopCode;
-                        }
-                    }
+                    }*/
                 }
             }
             file.close();

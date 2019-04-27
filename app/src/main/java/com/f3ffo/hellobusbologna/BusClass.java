@@ -5,13 +5,13 @@ public class BusClass {
     private String busCode;
     private String stopCode;
     private String stopName;
-    private String zoneCode;
+    private String stopAddress;
 
-    public BusClass(String busCode, String stopCode, String stopName, String zoneCode) {
+    public BusClass(String busCode, String stopCode, String stopName, String stopAddress) {
         this.busCode = busCode;
         this.stopCode = stopCode;
         this.stopName = stopName;
-        this.zoneCode = zoneCode;
+        this.stopAddress = stopAddress;
     }
 
     public BusClass(String busCode, String stopCode, String stopName) {
@@ -20,16 +20,13 @@ public class BusClass {
         this.stopName = stopName;
     }
 
-    public BusClass(String busCode, String stopCode) {
-        this.busCode = busCode;
+    public BusClass(String stopCode, String stopName) {
         this.stopCode = stopCode;
+        this.stopName = stopName;
     }
 
     public BusClass(String busCode) {
         this.busCode = busCode;
-    }
-
-    public BusClass() {
     }
 
     public String getbusCode() {
@@ -56,11 +53,11 @@ public class BusClass {
         this.stopName = stopName;
     }
 
-    public String getZoneCode() {
-        return zoneCode;
+    public String getStopAddress() {
+        return stopAddress;
     }
 
-    public void setZoneCode(String zoneCode) {
-        this.zoneCode = zoneCode;
+    public void setStopAddress(String stopAddress) {
+        this.stopAddress = stopAddress;
     }
 }
