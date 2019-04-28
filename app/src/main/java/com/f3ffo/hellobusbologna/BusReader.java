@@ -11,7 +11,17 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class BusReader {
-    public ArrayList<BusClass> stop = new ArrayList<>();
+    public ArrayList<BusClass> busClass = new ArrayList<>();
+    public ArrayList<String> stops = new ArrayList<>();
+    private String stopName;
+
+    public String getStopName() {
+        return stopName;
+    }
+
+    public void setStopName(String stopName) {
+        this.stopName = stopName;
+    }
 
     public void extractFromFile(InputStream file) {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8), 16384)) {
@@ -23,35 +33,34 @@ public class BusReader {
                     String stopCode = token.nextToken();
                     String stopName = token.nextToken();
                     String stopAddress = token.nextToken();
-                    stop.add(new BusClass(busCode, stopCode, stopName, stopAddress));
+                    busClass.add(new BusClass(busCode, stopCode, stopName, stopAddress));
                 }
             }
             file.close();
         } catch (IOException e) {
             Log.e("ERROR: ", e.getMessage());
-            stop.clear();
+            busClass.clear();
         }
     }
 
     public ArrayList<String> busViewer(String stopCodeIn) {
-        ArrayList<String> result = new ArrayList<>();
-        result.add(0, "Tutti gli autobus");
-        for (int i = 1; i < stop.size(); i++) {
-            if (stop.get(i).getbusCode().equals(stopCodeIn)) {
-                result.add(stop.get(i).getbusCode());
+        ArrayList<String> bus = new ArrayList<>();
+        bus.add(0, "Tutti gli autobus");
+        for (int i = 0; i < busClass.size(); i++) {
+            if (busClass.get(i).getStopCode().equals(stopCodeIn)) {
+                bus.add(busClass.get(i).getbusCode());
+                this.stopName = busClass.get(i).getStopName();
             }
         }
-        return result;
+        return bus;
     }
 
-    public ArrayList<String> stopsViewer() {
-        ArrayList<String> result = new ArrayList<>();
-        for (int i = 0; i < stop.size(); i++) {
-            String element = stop.get(i).getStopCode() + " - " + stop.get(i).getStopName() + "\n" + stop.get(i).getStopAddress();
-            if (!result.contains(element)) {
-                result.add(element);
+    public void stopsViewer() {
+        for (int i = 0; i < busClass.size(); i++) {
+            String element = busClass.get(i).getStopCode() + " - " + busClass.get(i).getStopName() + "\n" + busClass.get(i).getStopAddress();
+            if (!stops.contains(element)) {
+                stops.add(element);
             }
         }
-        return result;
     }
 }
