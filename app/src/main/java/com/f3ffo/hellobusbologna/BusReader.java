@@ -19,12 +19,9 @@ public class BusReader {
         return stopName;
     }
 
-    public void setStopName(String stopName) {
-        this.stopName = stopName;
-    }
-
     public void extractFromFile(InputStream file) {
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8), 16384)) {
+        try {
+            BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8), 16384);
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("codice_linea")) {
@@ -36,6 +33,7 @@ public class BusReader {
                     busClass.add(new BusClass(busCode, stopCode, stopName, stopAddress));
                 }
             }
+            br.close();
             file.close();
         } catch (IOException e) {
             Log.e("ERROR: ", e.getMessage());

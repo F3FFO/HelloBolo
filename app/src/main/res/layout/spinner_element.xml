@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textViewSpinnerElement"
+    android:layout_width="match_parent"
+    android:layout_height="?android:attr/listPreferredItemHeight"
+    android:layout_gravity="center|start"
+    android:ellipsize="marquee"
+    android:fontFamily="@font/varela"
+    android:singleLine="true"
+    android:textAlignment="center"
+    android:textIsSelectable="false"
+    android:textSize="20sp" />

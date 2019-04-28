@@ -18,32 +18,16 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
     private String busHour = "";
     private AsyncResponse delegate = null;
 
-    public String getBusStop() {
-        return busStop;
-    }
-
     public void setBusStop(String busStop) {
         this.busStop = busStop;
-    }
-
-    public String getBusLine() {
-        return busLine;
     }
 
     public void setBusLine(String busLine) {
         this.busLine = busLine;
     }
 
-    public String getBusHour() {
-        return busHour;
-    }
-
     public void setBusHour(String busHour) {
         this.busHour = busHour;
-    }
-
-    public AsyncResponse getDelegate() {
-        return delegate;
     }
 
     public void setDelegate(AsyncResponse delegate) {
@@ -64,7 +48,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
                     if (line.startsWith("HellobusHelp")) {
                         array.add("Fermata non gestita");
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
-                        array.add("Linea assente ora");
+                        array.add("Linea assente");
                     } else if (line.equals("NULL")) {
                         array.add("Mancano dei dati");
                         //------------------------------Manage output-----------------------------------

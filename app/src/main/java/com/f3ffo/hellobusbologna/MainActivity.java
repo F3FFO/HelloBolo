@@ -15,10 +15,10 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
+import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 viewFlipper.setDisplayedChild(2);
                 final ListView listViewBusStation = (ListView) findViewById(R.id.listViewBusStation);
 
-                adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, br.stops);
+                adapter = new ArrayAdapter<>(context, R.layout.list_item, br.stops);
                 listViewBusStation.setAdapter(adapter);
                 listViewBusStation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
@@ -93,12 +93,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                LinearLayout advancedOption = (LinearLayout) findViewById(R.id.advancedOption);
+                TableRow tableRowAdvancedOption = (TableRow) findViewById(R.id.tableRowAdvancedOption);
                 if (isChecked) {
-                    advancedOption.setVisibility(View.VISIBLE);
+                    tableRowAdvancedOption.setVisibility(View.VISIBLE);
                 } else {
                     editTextBusHour.setText("");
-                    advancedOption.setVisibility(View.INVISIBLE);
+                    tableRowAdvancedOption.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -170,6 +170,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         }
     }
 
+    @Override
+    public void onDestroy() {
+        br.busClass.clear();
+        br.stops.clear();
+        super.onDestroy();
+    }
+
     /**
      * Display the result of UrlElaboration(AsyncTask)
      *
@@ -219,8 +226,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
      * @see BusReader
      */
     public void busViewer(String stopCode) {
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, br.busViewer(stopCode));
-        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_dropdown_item_1line);
+        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(context, R.layout.spinner_layout, br.busViewer(stopCode));
+        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
         spinnerBusCode.setAdapter(spinnerArrayAdapter);
         textViewBusStopName.setText(br.getStopName());
     }
