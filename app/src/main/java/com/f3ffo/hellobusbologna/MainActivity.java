@@ -24,6 +24,7 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
+import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private ViewFlipper viewFlipper;
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void onClick(View v) {
                 viewFlipper.setDisplayedChild(2);
-                ListView listViewBusStation = (ListView) findViewById(R.id.listViewBusStation);
+                final ListView listViewBusStation = (ListView) findViewById(R.id.listViewBusStation);
 
                 adapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, br.stops);
                 listViewBusStation.setAdapter(adapter);
@@ -62,8 +63,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        editTextBusStopCode.setText(br.busClass.get(position).getbusCode());
-                        textViewBusStopName.setText(br.busClass.get(position).getStopName());
+                        String value = listViewBusStation.getItemAtPosition(position).toString();
+                        StringTokenizer token = new StringTokenizer(value, " -");
+                        editTextBusStopCode.setText(token.nextToken());
+                        textViewBusStopName.setText(br.getStopName());
                         viewFlipper.setDisplayedChild(0);
                     }
                 });
