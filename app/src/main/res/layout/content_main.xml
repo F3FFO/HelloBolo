@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ViewFlipper xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/viewflipper"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+    tools:context=".MainActivity"
+    tools:showIn="@layout/activity_main">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:gravity="center|start|end">
+
+                <TextView
+                    android:id="@+id/busStopNameText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start|end"
+                    android:clickable="false"
+                    android:contextClickable="false"
+                    android:fontFamily="@font/varela"
+                    android:gravity="center"
+                    android:selectAllOnFocus="false"
+                    android:text="@string/busStopNameText"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/editTextBusStopName"
+                    style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start|end"
+                    android:ems="10"
+                    android:enabled="false"
+                    android:fontFamily="@font/varela"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
+
+                <Button
+                    android:id="@+id/buttonStopViewer"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start|end"
+                    android:maxWidth="40dp"
+                    android:maxHeight="40dp"
+                    app:icon="@drawable/ic_search"
+                    app:iconGravity="textStart"
+                    app:iconPadding="0dp" />
+
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:gravity="center|start|end">
+
+                <TextView
+                    android:id="@+id/busStopCodeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start|end"
+                    android:clickable="false"
+                    android:contextClickable="false"
+                    android:fontFamily="@font/varela"
+                    android:gravity="center"
+                    android:selectAllOnFocus="false"
+                    android:text="@string/busStopCodeText"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/editTextBusStopCode"
+                    style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start|end"
+                    android:ems="10"
+                    android:fontFamily="@font/varela"
+                    android:gravity="center"
+                    android:inputType="number"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:layout_marginTop="20dp"
+                android:gravity="center|start|end">
+
+                <TextView
+                    android:id="@+id/busCodeText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start|end"
+                    android:clickable="false"
+                    android:contextClickable="false"
+                    android:fontFamily="@font/varela"
+                    android:gravity="center"
+                    android:selectAllOnFocus="false"
+                    android:text="@string/busCodeText"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp" />
+
+                <Spinner
+                    android:id="@+id/spinnerBusCode"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center|start|end"
+                    android:gravity="center"
+                    android:minWidth="100dp"
+                    android:spinnerMode="dropdown" />
+            </TableRow>
+
+            <Switch
+                android:id="@+id/switchAdvancedOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="25dp"
+                android:fontFamily="@font/varela"
+                android:text="@string/advancedOption" />
+
+            <TableRow
+                android:id="@+id/tableRowAdvancedOption"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:gravity="center|start|end"
+                android:visibility="invisible">
+
+                <TextView
+                    android:id="@+id/busHourText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start|end"
+                    android:clickable="false"
+                    android:contextClickable="false"
+                    android:fontFamily="@font/varela"
+                    android:gravity="center"
+                    android:selectAllOnFocus="false"
+                    android:text="@string/busHourText"
+                    android:textAlignment="center"
+                    android:textIsSelectable="false"
+                    android:textSize="20sp" />
+
+                <EditText
+                    android:id="@+id/editTextBusHour"
+                    style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center|start|end"
+                    android:ems="10"
+                    android:fontFamily="@font/varela"
+                    android:gravity="center"
+                    android:inputType="time"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
+            </TableRow>
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabBus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:layout_marginStart="3dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_directions_bus" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center|top"
+            android:orientation="vertical"
+            android:visibility="visible"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:id="@+id/textBus1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/varela"
+                android:textAlignment="center"
+                android:textSize="20sp"
+                android:visibility="visible" />
+
+        </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabReload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/fab_margin"
+            android:layout_marginBottom="70dp"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="@id/fabHome"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_update" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabHome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/fab_margin"
+            android:clickable="true"
+            android:focusable="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:srcCompat="@drawable/ic_home" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TableRow
+            android:id="@+id/tableRow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toTopOf="@id/linearLayoutBusStation"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <EditText
+                android:id="@+id/editTextSearch"
+                style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:ems="10"
+                android:fontFamily="@font/varela"
+                android:gravity="center"
+                android:hapticFeedbackEnabled="false"
+                android:inputType="text"
+                android:nestedScrollingEnabled="false"
+                android:saveEnabled="false"
+                android:soundEffectsEnabled="false"
+                android:textAlignment="center"
+                android:textSize="20sp" />
+
+        </TableRow>
+
+        <LinearLayout
+            android:id="@+id/linearLayoutBusStation"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tableRow">
+
+            <ListView
+                android:id="@+id/listViewBusStation"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ViewFlipper>
