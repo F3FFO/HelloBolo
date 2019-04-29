@@ -1,6 +1,7 @@
 package com.f3ffo.hellobusbologna;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.textfield.TextInputEditText;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -31,9 +32,9 @@ import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private ViewFlipper viewFlipper;
-    private EditText editTextBusStopCode;
-    private EditText textViewBusStopName;
-    private EditText editTextBusHour;
+    private TextInputEditText editTextBusStopCode;
+    private TextInputEditText editTextBusStopName;
+    private TextInputEditText editTextBusHour;
     private Spinner spinnerBusCode;
     private String busStop;
     private String busLine;
@@ -54,7 +55,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         spinnerBusCode = (Spinner) findViewById(R.id.spinnerBusCode);
 
         Button buttonStopViewer = (Button) findViewById(R.id.buttonStopViewer);
-        textViewBusStopName = (EditText) findViewById(R.id.editTextBusStopName);
+        editTextBusStopName = (TextInputEditText) findViewById(R.id.editTextBusStopName);
+        editTextBusStopName.setEnabled(false);
         buttonStopViewer.setOnClickListener(new Button.OnClickListener() {
 
             @Override
@@ -71,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                         String value = listViewBusStation.getItemAtPosition(position).toString();
                         StringTokenizer token = new StringTokenizer(value, " -");
                         editTextBusStopCode.setText(token.nextToken());
-                        textViewBusStopName.setText(br.getStopName());
+                        editTextBusStopName.setText(br.getStopName());
                         viewFlipper.setDisplayedChild(0);
                     }
                 });
@@ -108,7 +110,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 }
             }
         });
-        editTextBusStopCode = (EditText) findViewById(R.id.editTextBusStopCode);
+        editTextBusStopCode = (TextInputEditText) findViewById(R.id.editTextBusStopCode);
         editTextBusStopCode.addTextChangedListener(new TextWatcher() {
 
             @Override
@@ -121,9 +123,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(context, R.layout.spinner_layout, br.busViewer(editTextBusStopCode.getText().toString()));
                     spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
                     spinnerBusCode.setAdapter(spinnerArrayAdapter);
-                    textViewBusStopName.setText(br.getStopName());
+                    editTextBusStopName.setText(br.getStopName());
                 } else {
-                    textViewBusStopName.setText("");
+                    editTextBusStopName.setText("");
                     spinnerBusCode.setAdapter(null);
                 }
             }
@@ -133,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             }
         });
         FloatingActionButton fabBus = (FloatingActionButton) findViewById(R.id.fabBus);
-        editTextBusHour = (EditText) findViewById(R.id.editTextBusHour);
+        editTextBusHour = (TextInputEditText) findViewById(R.id.editTextBusHour);
         fabBus.setOnClickListener(new View.OnClickListener() {
 
             @Override
