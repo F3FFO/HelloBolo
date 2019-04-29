@@ -94,6 +94,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 TableRow tableRowAdvancedOption = (TableRow) findViewById(R.id.tableRowAdvancedOption);
+                busHour = "";
                 if (isChecked) {
                     tableRowAdvancedOption.setVisibility(View.VISIBLE);
                 } else {
