@@ -76,7 +76,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
             }
             br.close();
         } catch (IOException e) {
-            Log.e("ERROR: ", e.getMessage());
+            Log.e("ERROR urlElaboration: ", e.getMessage());
         }
         return array;
     }

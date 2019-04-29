@@ -3,12 +3,15 @@ package com.f3ffo.hellobusbologna;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import android.content.Context;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -44,6 +47,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.context = this;
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
 
         spinnerBusCode = (Spinner) findViewById(R.id.spinnerBusCode);
@@ -113,7 +118,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (s.length() != 0) {
-                    busViewer(editTextBusStopCode.getText().toString());
+                    ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(context, R.layout.spinner_layout, br.busViewer(editTextBusStopCode.getText().toString()));
+                    spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
+                    spinnerBusCode.setAdapter(spinnerArrayAdapter);
+                    textViewBusStopName.setText(br.getStopName());
                 } else {
                     textViewBusStopName.setText("");
                     spinnerBusCode.setAdapter(null);
@@ -178,12 +186,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         super.onDestroy();
     }
 
-    /**
-     * Display the result of UrlElaboration(AsyncTask)
-     *
-     * @param output ArrayList containing the output of UrlElaboration
-     * @see UrlElaboration
-     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_info) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @Override
     public void processFinish(ArrayList<String> output) {
         if (output.get(0).contains("non gestita") || output.get(0).contains("assente") || output.get(0).contains("Mancano")) {
@@ -216,20 +234,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             ue.setBusHour(busHour);
             ue.execute();
         } catch (Exception e) {
-            Log.e("ERROR: ", e.getMessage());
+            Log.e("ERROR checkBus: ", e.getMessage());
         }
-    }
-
-    /**
-     * Display into spinner the array created in BusReader class
-     *
-     * @param stopCode Code of bus stop
-     * @see BusReader
-     */
-    public void busViewer(String stopCode) {
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(context, R.layout.spinner_layout, br.busViewer(stopCode));
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
-        spinnerBusCode.setAdapter(spinnerArrayAdapter);
-        textViewBusStopName.setText(br.getStopName());
     }
 }

@@ -14,17 +14,6 @@ public class BusClass {
         this.stopAddress = stopAddress;
     }
 
-    public BusClass(String busCode, String stopCode, String stopName) {
-        this.busCode = busCode;
-        this.stopCode = stopCode;
-        this.stopName = stopName;
-    }
-
-    public BusClass(String stopCode, String stopName) {
-        this.stopCode = stopCode;
-        this.stopName = stopName;
-    }
-
     public BusClass(String busCode) {
         this.busCode = busCode;
     }

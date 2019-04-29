@@ -36,7 +36,7 @@ public class BusReader {
             br.close();
             file.close();
         } catch (IOException e) {
-            Log.e("ERROR: ", e.getMessage());
+            Log.e("ERROR extractFromFile: ", e.getMessage());
             busClass.clear();
         }
     }

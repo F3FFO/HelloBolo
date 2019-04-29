@@ -5,4 +5,5 @@
     <string name="busCodeText">Autobus</string>
     <string name="busHourText">Ora da controllare</string>
     <string name="advancedOption">Opzioni avanzate (opzionale)</string>
+    <string name="action_info">Info</string>
 </resources>
