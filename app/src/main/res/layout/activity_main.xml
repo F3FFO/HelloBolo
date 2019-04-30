@@ -21,4 +21,10 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_main" />
+
+    <View
+        android:id="@+id/context_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

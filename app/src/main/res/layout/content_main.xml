@@ -14,123 +14,111 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TableRow
-            android:id="@+id/tableRowBusStopName"
-            android:layout_width="match_parent"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutBusStopName"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|start|end"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:gravity="center|start|end"
-            app:layout_constraintBottom_toTopOf="@+id/tableRowBusStopCode"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="8dp"
+            android:hint="@string/busStopNameText"
+            app:boxBackgroundMode="none"
+            app:layout_constraintBottom_toTopOf="@+id/textInputLayoutBusStopCode"
+            app:layout_constraintEnd_toStartOf="@+id/buttonStopViewer"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-                android:layout_width="300dp"
-                android:layout_height="wrap_content"
-                android:hint="@string/busStopNameText"
-                app:boxBackgroundMode="none">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextBusStopName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/varela"
-                    android:textSize="20sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <Button
-                android:id="@+id/buttonStopViewer"
-                android:layout_width="50dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|start|end"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
-                app:cornerRadius="8dp"
-                app:icon="@drawable/ic_search"
-                app:iconGravity="textStart"
-                app:iconPadding="0dp" />
-
-        </TableRow>
-
-        <TableRow
-            android:id="@+id/tableRowBusStopCode"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|start|end"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center|start|end"
-            app:layout_constraintBottom_toTopOf="@+id/tableRowBusCode"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/tableRowBusStopName">
-
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextBusStopName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/busStopCodeText"
-                app:boxBackgroundMode="none">
+                android:fontFamily="@font/varela"
+                android:textSize="20sp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextBusStopCode"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/varela"
-                    android:inputType="number"
-                    android:textSize="20sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/buttonStopViewer"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start|end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            app:cornerRadius="8dp"
+            app:icon="@drawable/ic_search"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            app:layout_constraintBottom_toTopOf="@id/textInputLayoutBusStopCode"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/textInputLayoutBusStopName"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        </TableRow>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutBusStopCode"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:hint="@string/busStopCodeText"
+            app:boxBackgroundMode="none"
+            app:layout_constraintBottom_toTopOf="@+id/busCodeText"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopName">
 
-        <TableRow
-            android:id="@+id/tableRowBusCode"
-            android:layout_width="match_parent"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextBusStopCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/varela"
+                android:inputType="number"
+                android:textSize="20sp" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <Spinner
+            android:id="@+id/spinnerBusCode"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center|start|end"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:gravity="center"
+            android:minWidth="100dp"
+            android:spinnerMode="dropdown"
+            app:layout_constraintBottom_toTopOf="@id/switchAdvancedOption"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/busCodeText"
+            app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopCode" />
+
+        <TextView
+            android:id="@+id/busCodeText"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center|start|end"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:gravity="center|start|end"
-            app:layout_constraintBottom_toTopOf="@+id/switchAdvancedOption"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:clickable="false"
+            android:contextClickable="false"
+            android:fontFamily="@font/varela"
+            android:gravity="center"
+            android:selectAllOnFocus="false"
+            android:text="@string/busCodeText"
+            android:textAlignment="center"
+            android:textIsSelectable="false"
+            android:textSize="20sp"
+            app:layout_constraintBottom_toTopOf="@id/switchAdvancedOption"
+            app:layout_constraintEnd_toStartOf="@id/spinnerBusCode"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tableRowBusStopCode">
-
-            <TextView
-                android:id="@+id/busCodeText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center|start|end"
-                android:clickable="false"
-                android:contextClickable="false"
-                android:fontFamily="@font/varela"
-                android:gravity="center"
-                android:selectAllOnFocus="false"
-                android:text="@string/busCodeText"
-                android:textAlignment="center"
-                android:textIsSelectable="false"
-                android:textSize="20sp" />
-
-            <Spinner
-                android:id="@+id/spinnerBusCode"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="center|start|end"
-                android:gravity="center"
-                android:minWidth="100dp"
-                android:spinnerMode="dropdown" />
-        </TableRow>
+            app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopCode" />
 
         <Switch
             android:id="@+id/switchAdvancedOption"
@@ -139,44 +127,38 @@
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:fontFamily="@font/varela"
             android:text="@string/advancedOption"
+            app:layout_constraintBottom_toTopOf="@id/switchAdvancedOption"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tableRowBusCode" />
+            app:layout_constraintTop_toBottomOf="@id/busCodeText" />
 
-        <TableRow
-            android:id="@+id/tableRowAdvancedOption"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/textInputLayoutBusHour"
+            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_gravity="center|start|end"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
-            android:gravity="center|start|end"
+            android:hint="@string/busHourText"
             android:visibility="invisible"
+            app:boxBackgroundMode="none"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/switchAdvancedOption">
+            app:layout_constraintTop_toBottomOf="@id/switchAdvancedOption">
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/editTextBusHour"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="@string/busHourText"
-                app:boxBackgroundMode="none">
+                android:fontFamily="@font/varela"
+                android:inputType="time"
+                android:textSize="20sp" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextBusHour"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/varela"
-                    android:inputType="time"
-                    android:textSize="20sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-        </TableRow>
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabBus"

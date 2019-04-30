@@ -2,6 +2,7 @@ package com.f3ffo.hellobusbologna;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -22,7 +23,6 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.Switch;
-import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
@@ -96,17 +96,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             }
         });
         Switch switchAdvancedOption = (Switch) findViewById(R.id.switchAdvancedOption);
+        editTextBusHour = (TextInputEditText) findViewById(R.id.editTextBusHour);
         switchAdvancedOption.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                TableRow tableRowAdvancedOption = (TableRow) findViewById(R.id.tableRowAdvancedOption);
+                TextInputLayout textInputLayoutBusHour = (TextInputLayout) findViewById(R.id.textInputLayoutBusHour);
                 busHour = "";
                 if (isChecked) {
-                    tableRowAdvancedOption.setVisibility(View.VISIBLE);
+                    textInputLayoutBusHour.setVisibility(View.VISIBLE);
                 } else {
                     editTextBusHour.setText("");
-                    tableRowAdvancedOption.setVisibility(View.INVISIBLE);
+                    busHour = "";
+                    textInputLayoutBusHour.setVisibility(View.INVISIBLE);
                 }
             }
         });
@@ -135,13 +137,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             }
         });
         FloatingActionButton fabBus = (FloatingActionButton) findViewById(R.id.fabBus);
-        editTextBusHour = (TextInputEditText) findViewById(R.id.editTextBusHour);
         fabBus.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
-                if (editTextBusHour.getText().toString().contains(":")) {
-                    busHour = editTextBusHour.getText().toString().replace(":", "");
+                String busHourTemp = editTextBusHour.getText().toString();
+                if (busHourTemp.contains(":")) {
+                    busHour = busHourTemp.replace(":", "");
+                } else if (busHourTemp.isEmpty()) {
+                    busHour = "";
+                } else if (busHourTemp.length() == 2) {
+                    busHour = busHourTemp + "00";
+                } else {
+                    busHour = busHourTemp;
                 }
                 if (spinnerBusCode.getSelectedItem().toString().equals("Tutti gli autobus")) {
                     busStop = editTextBusStopCode.getText().toString();
@@ -170,6 +178,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                 checkBus(busStop, busLine, busHour); //TODO Toast for user
             }
         });
+
     }
 
     @Override
