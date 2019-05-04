@@ -71,8 +71,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         String value = listViewBusStation.getItemAtPosition(position).toString();
-                        StringTokenizer token = new StringTokenizer(value, " -");
-                        editTextBusStopCode.setText(token.nextToken());
+                        StringTokenizer token = new StringTokenizer(value, "-");
+                        String temp = token.nextToken();
+                        editTextBusStopCode.setText(temp.substring(0, temp.length() - 1));
                         editTextBusStopName.setText(br.getStopName());
                         viewFlipper.setDisplayedChild(0);
                     }
@@ -187,14 +188,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             viewFlipper.setDisplayedChild(0);
         } else {
             super.onBackPressed();
+            br.busClass.clear();
+            br.stops.clear();
         }
-    }
-
-    @Override
-    public void onDestroy() {
-        br.busClass.clear();
-        br.stops.clear();
-        super.onDestroy();
     }
 
     @Override
