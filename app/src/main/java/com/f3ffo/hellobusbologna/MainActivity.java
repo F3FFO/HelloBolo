@@ -44,22 +44,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private String busHour;
     public static Context context;
     private ArrayAdapter<String> adapter;
-    protected static BusReader br;
+    protected static BusReader br = new BusReader();
     ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        this.context = this;
-        this.br = new BusReader();
+        context = this;
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
 
         RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
-        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
+        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         relativeLayoutProgressBar.addView(progressBar, params);
         progressBar.setVisibility(View.GONE);
@@ -188,7 +187,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
             @Override
             public void onClick(View v) {
-                checkBus(busStop, busLine, busHour); //TODO Toast for user
+                RelativeLayout relativeLayoutProgressBarReload = findViewById(R.id.relativeLayoutProgressBarReload);
+                progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
+                RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
+                params.addRule(RelativeLayout.CENTER_IN_PARENT);
+                relativeLayoutProgressBarReload.addView(progressBar, params);
+                progressBar.setVisibility(View.GONE);
+                checkBus(busStop, busLine, busHour);
             }
         });
 
@@ -244,7 +249,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             UrlElaboration ue = new UrlElaboration();
             ue.setDelegate(this);
-            //ue.setProgressBar(progressBar);
             ue.setBusStop(busStop);
             ue.setBusLine(busLine);
             ue.setBusHour(busHour);
