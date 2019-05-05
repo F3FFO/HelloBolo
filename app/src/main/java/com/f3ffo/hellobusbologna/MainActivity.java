@@ -15,12 +15,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -39,18 +42,27 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     private String busStop;
     private String busLine;
     private String busHour;
-    private Context context;
+    public static Context context;
     private ArrayAdapter<String> adapter;
-    protected static BusReader br = new BusReader();
+    protected static BusReader br;
+    ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         this.context = this;
+        this.br = new BusReader();
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
+
+        RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
+        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyleLarge);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(100, 100);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        relativeLayoutProgressBar.addView(progressBar, params);
+        progressBar.setVisibility(View.GONE);
 
         spinnerBusCode = (Spinner) findViewById(R.id.spinnerBusCode);
 
@@ -211,6 +223,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
 
     @Override
     public void processFinish(ArrayList<String> output) {
+        progressBar.setVisibility(View.GONE);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
         if (output.get(0).contains("non gestita") || output.get(0).contains("assente") || output.get(0).contains("Mancano")) {
             Toast.makeText(context, output.get(0), Toast.LENGTH_LONG).show();
         } else {
@@ -224,18 +238,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
         }
     }
 
-    /**
-     * Send to UrlElaboration the param take from user and run UrlElaboration(AsyncTask)
-     *
-     * @param busStop Code of the bus stop
-     * @param busLine Code of the line bus
-     * @param busHour Specific hour of the day
-     * @see UrlElaboration
-     */
     protected void checkBus(String busStop, String busLine, String busHour) {
         try {
+            progressBar.setVisibility(View.VISIBLE);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             UrlElaboration ue = new UrlElaboration();
             ue.setDelegate(this);
+            //ue.setProgressBar(progressBar);
             ue.setBusStop(busStop);
             ue.setBusLine(busLine);
             ue.setBusHour(busHour);

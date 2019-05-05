@@ -1,7 +1,10 @@
 package com.f3ffo.hellobusbologna;
 
+import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
+import android.widget.ProgressBar;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,10 +16,17 @@ import java.util.ArrayList;
 import java.util.StringTokenizer;
 
 public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> {
-    private String busStop = "";
-    private String busLine = "";
-    private String busHour = "";
-    private AsyncResponse delegate = null;
+    private String busStop;
+    private String busLine;
+    private String busHour;
+    private AsyncResponse delegate;
+
+    public UrlElaboration() {
+        this.busStop = "";
+        this.busLine = "";
+        this.busHour = "";
+        this.delegate = null;
+    }
 
     public void setBusStop(String busStop) {
         this.busStop = busStop;
@@ -79,11 +89,6 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
             Log.e("ERROR urlElaboration: ", e.getMessage());
         }
         return array;
-    }
-
-    @Override
-    protected void onProgressUpdate(Integer... progress) {
-
     }
 
     @Override
