@@ -14,10 +14,6 @@ public class BusClass {
         this.stopAddress = stopAddress;
     }
 
-    public BusClass(String busCode) {
-        this.busCode = busCode;
-    }
-
     public String getbusCode() {
         return busCode;
     }
