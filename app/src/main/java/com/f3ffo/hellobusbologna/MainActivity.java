@@ -2,8 +2,10 @@ package com.f3ffo.hellobusbologna;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 
 import android.app.TimePickerDialog;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +21,7 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -28,7 +32,6 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.StringTokenizer;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener {
@@ -48,6 +51,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
 
         RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
@@ -56,6 +62,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         relativeLayoutProgressBar.addView(progressBar, params);
         progressBar.setVisibility(View.GONE);
+
+        TextInputLayout textInputLayoutBusStopName = (TextInputLayout) findViewById(R.id.textInputLayoutBusStopName);
 
         spinnerBusCode = (Spinner) findViewById(R.id.spinnerBusCode);
         editTextBusStopName = (TextInputEditText) findViewById(R.id.editTextBusStopName);
@@ -82,31 +90,26 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                         viewFlipper.setDisplayedChild(0);
                     }
                 });
-            }
-        });
 
-        EditText editTextSearch = (EditText) findViewById(R.id.editTextSearch);
-        editTextSearch.addTextChangedListener(new TextWatcher() {
+                editTextBusStopName.addTextChangedListener(new TextWatcher() {
 
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-            }
+                    @Override
+                    public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+                    }
 
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-                adapter.getFilter().filter(s.toString()); //TODO create an algorithm to search
-            }
+                    @Override
+                    public void onTextChanged(CharSequence s, int start, int before, int count) {
+                        adapter.getFilter().filter(s.toString()); //TODO create an algorithm to search
+                    }
 
-            @Override
-            public void afterTextChanged(Editable s) {
+                    @Override
+                    public void afterTextChanged(Editable s) {
+                    }
+                });
             }
         });
 
         textViewBusHour = (TextView) findViewById(R.id.textViewBusHour);
-        Calendar now = Calendar.getInstance();
-        int hour = now.get(Calendar.HOUR_OF_DAY);
-        int minute = now.get(Calendar.MINUTE);
-        textViewBusHour.append(hour + ":" + minute);
         textViewBusHour.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -196,12 +199,18 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         if (output.get(0).contains("non gestita") || output.get(0).contains("assente") || output.get(0).contains("Mancano")) {
             Toast.makeText(MainActivity.this, output.get(0), Toast.LENGTH_LONG).show();
         } else {
-            TextView textView = (TextView) findViewById(R.id.textBus1);
+            /*TextView textView = (TextView) findViewById(R.id.textBus1);
             StringBuilder builder = new StringBuilder();
             for (int i = 0; i < output.size(); i++) {
                 builder.append(output.get(i)).append("\n");
             }
-            textView.setText(builder.toString());
+            textView.setText(builder.toString());*/
+
+            for (int i = 0; i < output.size(); i++) {
+                LinearLayout linearLayout = (LinearLayout) findViewById(R.id.linearLayout2);
+                View hiddenInfo = LayoutInflater.from(MainActivity.this).inflate(R.layout.card_layout, linearLayout, false);
+                linearLayout.addView(hiddenInfo);
+            }
             viewFlipper.setDisplayedChild(1);
         }
     }

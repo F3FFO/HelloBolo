@@ -3,10 +3,13 @@
     android:id="@+id/textViewSpinnerElement"
     android:layout_width="match_parent"
     android:layout_height="45dp"
+    android:background="@color/colorPrimary"
     android:ellipsize="marquee"
     android:fontFamily="@font/varela"
     android:gravity="center"
+    android:hapticFeedbackEnabled="true"
     android:singleLine="true"
     android:textAlignment="center"
+    android:textColor="@color/colorWhite"
     android:textIsSelectable="false"
     android:textSize="20sp" />
