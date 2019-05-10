@@ -12,7 +12,7 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:id="@+id/relativeLayoutProgressBar"
@@ -24,169 +24,6 @@
             app:layout_constraintTop_toTopOf="parent">
 
         </RelativeLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutBusStopName"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="300dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:hint="@string/busStopNameText"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxBackgroundMode="outline"
-            app:layout_constraintBottom_toTopOf="@id/textInputLayoutBusStopCode"
-            app:layout_constraintEnd_toStartOf="@id/buttonStopViewer"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextBusStopName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/varela"
-                android:textSize="20sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Button
-            android:id="@+id/buttonStopViewer"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|start|end"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            app:cornerRadius="8dp"
-            app:icon="@drawable/ic_search"
-            app:iconGravity="textStart"
-            app:iconPadding="0dp"
-            app:layout_constraintBottom_toTopOf="@id/textInputLayoutBusStopCode"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/textInputLayoutBusStopName"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutBusStopCode"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:hapticFeedbackEnabled="true"
-            android:hint="@string/busStopCodeText"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxBackgroundMode="outline"
-            app:layout_constraintBottom_toTopOf="@id/busCodeText"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopName">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextBusStopCode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/varela"
-                android:inputType="number"
-                android:textSize="20sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <Spinner
-            android:id="@+id/spinnerBusCode"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|start|end"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:gravity="center"
-            android:minWidth="100dp"
-            android:spinnerMode="dropdown"
-            app:layout_constraintBottom_toTopOf="@id/switchAdvancedOption"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/busCodeText"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopCode" />
-
-        <TextView
-            android:id="@+id/busCodeText"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center|start|end"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:clickable="false"
-            android:contextClickable="false"
-            android:fontFamily="@font/varela"
-            android:gravity="center"
-            android:selectAllOnFocus="false"
-            android:text="@string/busCodeText"
-            android:textAlignment="center"
-            android:textIsSelectable="false"
-            android:textSize="20sp"
-            app:layout_constraintBottom_toTopOf="@id/switchAdvancedOption"
-            app:layout_constraintEnd_toStartOf="@id/spinnerBusCode"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopCode" />
-
-        <Switch
-            android:id="@+id/switchAdvancedOption"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:fontFamily="@font/varela"
-            android:text="@string/advancedOption"
-            app:layout_constraintBottom_toTopOf="@id/switchAdvancedOption"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/busCodeText" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/textInputLayoutBusHour"
-            style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:hapticFeedbackEnabled="true"
-            android:hint="@string/busHourText"
-            android:visibility="invisible"
-            app:boxBackgroundColor="@android:color/transparent"
-            app:boxBackgroundMode="outline"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switchAdvancedOption">
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/editTextBusHour"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:fontFamily="@font/varela"
-                android:inputType="time"
-                android:textSize="20sp" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabBus"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            android:clickable="true"
-            android:focusable="true"
-            android:hapticFeedbackEnabled="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_directions_bus" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -219,29 +56,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabReload"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/fab_margin"
-            android:layout_marginBottom="70dp"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="@id/fabHome"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_update" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fabHome"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_margin="@dimen/fab_margin"
-            android:clickable="true"
-            android:focusable="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/ic_home" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

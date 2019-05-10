@@ -11,20 +11,97 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content">
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayoutBusStopName"
+                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                android:layout_width="0dp"
+                android:layout_height="45dp"
+                android:layout_marginStart="64dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="64dp"
+                android:layout_marginBottom="8dp"
+                android:hint="@string/busStopNameText"
+                android:textColorHint="@color/colorEditTextInto"
+                app:boxBackgroundColor="@color/colorEditText"
+                app:boxBackgroundMode="outline"
+                app:boxCornerRadiusBottomEnd="8dp"
+                app:boxCornerRadiusBottomStart="8dp"
+                app:boxCornerRadiusTopEnd="8dp"
+                app:boxCornerRadiusTopStart="8dp"
+                app:layout_constraintBottom_toTopOf="@id/busCodeText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/editTextBusStopName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fontFamily="@font/varela"
+                    android:textSize="20sp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <TextView
+                android:id="@+id/busCodeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:clickable="false"
+                android:contextClickable="false"
+                android:fontFamily="@font/varela"
+                android:gravity="center"
+                android:selectAllOnFocus="false"
+                android:text="@string/busCodeText"
+                android:textAlignment="center"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                app:layout_constraintBottom_toTopOf="@id/textViewBusHour"
+                app:layout_constraintEnd_toStartOf="@id/spinnerBusCode"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopName" />
+
+            <Spinner
+                android:id="@+id/spinnerBusCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:gravity="center"
+                android:minWidth="100dp"
+                android:spinnerMode="dropdown"
+                app:layout_constraintBottom_toTopOf="@id/textViewBusHour"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/busCodeText"
+                app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopName" />
+
+            <TextView
+                android:id="@+id/textViewBusHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/busHourText"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/busCodeText" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
     <include layout="@layout/content_main" />
 
-    <View
-        android:id="@+id/context_view"
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabBus"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        android:hapticFeedbackEnabled="true"
+        app:srcCompat="@drawable/ic_directions_bus" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

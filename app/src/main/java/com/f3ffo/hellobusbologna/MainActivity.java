@@ -2,14 +2,11 @@ package com.f3ffo.hellobusbologna;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
 
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
+import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,30 +17,24 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
-import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.TimePicker;
 import android.widget.Toast;
 import android.widget.ViewFlipper;
 
-import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.StringTokenizer;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponse {
+public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener {
     private ViewFlipper viewFlipper;
-    private TextInputEditText editTextBusStopCode;
     private TextInputEditText editTextBusStopName;
-    private TextInputEditText editTextBusHour;
+    private TextView textViewBusHour;
     private Spinner spinnerBusCode;
     private String busStop;
     private String busLine;
@@ -56,161 +47,99 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
-        if (isOnline()) {
-            RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
-            progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT);
-            relativeLayoutProgressBar.addView(progressBar, params);
-            progressBar.setVisibility(View.GONE);
 
-            spinnerBusCode = (Spinner) findViewById(R.id.spinnerBusCode);
+        RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
+        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        relativeLayoutProgressBar.addView(progressBar, params);
+        progressBar.setVisibility(View.GONE);
 
-            Button buttonStopViewer = (Button) findViewById(R.id.buttonStopViewer);
-            editTextBusStopName = (TextInputEditText) findViewById(R.id.editTextBusStopName);
-            editTextBusStopName.setEnabled(false);
-            buttonStopViewer.setOnClickListener(new Button.OnClickListener() {
+        spinnerBusCode = (Spinner) findViewById(R.id.spinnerBusCode);
+        editTextBusStopName = (TextInputEditText) findViewById(R.id.editTextBusStopName);
+        editTextBusStopName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewFlipper.setDisplayedChild(2);
+                final ListView listViewBusStation = (ListView) findViewById(R.id.listViewBusStation);
+                adapter = new ArrayAdapter<>(MainActivity.this, R.layout.list_item, br.stops);
+                listViewBusStation.setAdapter(adapter);
+                listViewBusStation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
-                @Override
-                public void onClick(View v) {
-                    viewFlipper.setDisplayedChild(2);
-                    final ListView listViewBusStation = (ListView) findViewById(R.id.listViewBusStation);
-
-                    adapter = new ArrayAdapter<>(MainActivity.this, R.layout.list_item, br.stops);
-                    listViewBusStation.setAdapter(adapter);
-                    listViewBusStation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                            String value = listViewBusStation.getItemAtPosition(position).toString();
-                            StringTokenizer token = new StringTokenizer(value, "-");
-                            String temp = token.nextToken();
-                            editTextBusStopCode.setText(temp.substring(0, temp.length() - 1));
-                            editTextBusStopName.setText(br.getStopName());
-                            viewFlipper.setDisplayedChild(0);
-                        }
-                    });
-                }
-            });
-            EditText editTextSearch = (EditText) findViewById(R.id.editTextSearch);
-            editTextSearch.addTextChangedListener(new TextWatcher() {
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    adapter.getFilter().filter(s.toString());
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-            Switch switchAdvancedOption = (Switch) findViewById(R.id.switchAdvancedOption);
-            editTextBusHour = (TextInputEditText) findViewById(R.id.editTextBusHour);
-            switchAdvancedOption.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-
-                @Override
-                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    TextInputLayout textInputLayoutBusHour = (TextInputLayout) findViewById(R.id.textInputLayoutBusHour);
-                    busHour = "";
-                    if (isChecked) {
-                        textInputLayoutBusHour.setVisibility(View.VISIBLE);
-                    } else {
-                        editTextBusHour.setText("");
-                        busHour = "";
-                        textInputLayoutBusHour.setVisibility(View.INVISIBLE);
-                    }
-                }
-            });
-            editTextBusStopCode = (TextInputEditText) findViewById(R.id.editTextBusStopCode);
-            editTextBusStopCode.addTextChangedListener(new TextWatcher() {
-
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    if (s.length() != 0) {
-                        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(editTextBusStopCode.getText().toString()));
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                        String value = listViewBusStation.getItemAtPosition(position).toString();
+                        StringTokenizer token = new StringTokenizer(value, "-");
+                        String temp = token.nextToken();
+                        busStop = temp.substring(0, temp.length() - 1);
+                        editTextBusStopName.setText(br.getStopName());
+                        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
                         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
                         spinnerBusCode.setAdapter(spinnerArrayAdapter);
                         editTextBusStopName.setText(br.getStopName());
-                    } else {
-                        editTextBusStopName.setText("");
-                        spinnerBusCode.setAdapter(null);
+                        viewFlipper.setDisplayedChild(0);
                     }
-                }
+                });
+            }
+        });
 
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-            FloatingActionButton fabBus = (FloatingActionButton) findViewById(R.id.fabBus);
-            fabBus.setOnClickListener(new View.OnClickListener() {
+        EditText editTextSearch = (EditText) findViewById(R.id.editTextSearch);
+        editTextSearch.addTextChangedListener(new TextWatcher() {
 
-                @Override
-                public void onClick(View v) {
-                    String busHourTemp = editTextBusHour.getText().toString();
-                    if (busHourTemp.contains(":")) {
-                        busHour = busHourTemp.replace(":", "");
-                    } else if (busHourTemp.isEmpty()) {
-                        busHour = "";
-                    } else if (busHourTemp.length() == 2) {
-                        busHour = busHourTemp + "00";
-                    } else {
-                        busHour = busHourTemp;
-                    }
-                    if (spinnerBusCode.getSelectedItem().toString().equals("Tutti gli autobus")) {
-                        busStop = editTextBusStopCode.getText().toString();
-                        busLine = "";
-                        checkBus(busStop, busLine, busHour);
-                    } else {
-                        busStop = editTextBusStopCode.getText().toString();
-                        busLine = spinnerBusCode.getSelectedItem().toString();
-                        checkBus(busStop, busLine, busHour);
-                    }
-                }
-            });
-            FloatingActionButton fabHome = (FloatingActionButton) findViewById(R.id.fabHome);
-            fabHome.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
-                @Override
-                public void onClick(View v) {
-                    viewFlipper.setDisplayedChild(0);
-                }
-            });
-            FloatingActionButton fabReload = (FloatingActionButton) findViewById(R.id.fabReload);
-            fabReload.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s.toString()); //TODO create an algorithm to search
+            }
 
-                @Override
-                public void onClick(View v) {
-                    RelativeLayout relativeLayoutProgressBarReload = findViewById(R.id.relativeLayoutProgressBarReload);
-                    progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
-                    params.addRule(RelativeLayout.CENTER_IN_PARENT);
-                    relativeLayoutProgressBarReload.addView(progressBar, params);
-                    progressBar.setVisibility(View.GONE);
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        textViewBusHour = (TextView) findViewById(R.id.textViewBusHour);
+        Calendar now = Calendar.getInstance();
+        int hour = now.get(Calendar.HOUR_OF_DAY);
+        int minute = now.get(Calendar.MINUTE);
+        textViewBusHour.append(hour + ":" + minute);
+        textViewBusHour.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment timePicker = new TimePickerFragment();
+                timePicker.show(getSupportFragmentManager(), "Ora");
+            }
+        });
+
+        FloatingActionButton fabBus = (FloatingActionButton) findViewById(R.id.fabBus);
+        fabBus.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                if (spinnerBusCode.getSelectedItem().toString().equals("Tutti gli autobus")) {
+                    busLine = "";
+                    checkBus(busStop, busLine, busHour);
+                } else {
+                    busLine = spinnerBusCode.getSelectedItem().toString();
                     checkBus(busStop, busLine, busHour);
                 }
-            });
-        } else {
-            RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
-            progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT);
-            relativeLayoutProgressBar.addView(progressBar, params);
-            progressBar.setVisibility(View.GONE);
-        }
+            }
+        });
     }
 
-    private boolean isOnline() {
+    @Override
+    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+        if (minute < 10) {
+            textViewBusHour.setText("Partenza: " + hourOfDay + ":0" + minute);
+        }
+        busHour = hourOfDay + "0" + minute;
+    }
+
+    /*private boolean isOnline() {
         ConnectivityManager connMan = (ConnectivityManager) MainActivity.this.getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo netInfo = connMan.getActiveNetworkInfo();
         if (netInfo != null && netInfo.isConnected()) {
@@ -231,7 +160,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse {
             }
         }
         return false;
-    }
+    }*/
 
     @Override
     public void onBackPressed() {
