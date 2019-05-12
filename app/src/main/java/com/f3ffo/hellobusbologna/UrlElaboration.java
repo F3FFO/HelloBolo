@@ -10,20 +10,14 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
-public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> {
-    private String busStop;
-    private String busLine;
-    private String busHour;
-    private AsyncResponse delegate;
-
-    public UrlElaboration() {
-        this.busStop = "";
-        this.busLine = "";
-        this.busHour = "";
-        this.delegate = null;
-    }
+public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>> {
+    private String busStop = "";
+    private String busLine = "";
+    private String busHour = "";
+    private AsyncResponse delegate = null;
 
     public void setBusStop(String busStop) {
         this.busStop = busStop;
@@ -42,8 +36,8 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
     }
 
     @Override
-    protected ArrayList<String> doInBackground(Void... params) {
-        ArrayList<String> array = new ArrayList<>();
+    protected List<CardViewItem> doInBackground(Void... params) {
+        List<CardViewItem> cardViewItemList = new ArrayList<>();
         try {
             HttpURLConnection huc = (HttpURLConnection) new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine).openConnection();
             BufferedReader br = new BufferedReader(new InputStreamReader(huc.getInputStream(), StandardCharsets.UTF_8));
@@ -53,29 +47,40 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     //------------------------------Manage error-----------------------------------
                     if (line.startsWith("HellobusHelp")) {
-                        array.add("Fermata non gestita");
+                        //array.add("Fermata non gestita");
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
-                        array.add("Linea assente");
+                        //array.add("Linea assente");
                     } else if (line.equals("NULL")) {
-                        array.add("Mancano dei dati");
+                        //array.add("Mancano dei dati");
                         //------------------------------Manage output-----------------------------------
                     } else {
-                        line = line.substring((line.indexOf(":") + 2));
-                        StringTokenizer token = new StringTokenizer(line, ",");
-                        while (token.hasMoreTokens()) {
-                            String util = token.nextToken();
-                            if (util.startsWith(" ")) {
-                                if (util.contains("CON PEDANA)")) {
-                                    array.add(util.substring(1, util.lastIndexOf("(")) + "CON PEDANA");
-                                } else {
-                                    array.add(util.substring(1) + " SENZA PEDANA");
+                        line = line.substring(line.indexOf(":") + 2);
+                        if (line.startsWith("(")) {
+                            line = line.substring(line.indexOf("(") + 9);
+                            StringTokenizer token = new StringTokenizer(line, ",");
+                            while (token.hasMoreTokens()) {
+                                String util = token.nextToken();
+                                StringTokenizer token2 = new StringTokenizer(util, " ");
+                                String busNumber = token2.nextToken();
+                                int isSatellite = R.drawable.ic_access_time;
+                                if (token2.nextToken().equals("DaSatellite")) {
+                                    isSatellite = R.drawable.ic_satellite;
                                 }
-                            } else {
-                                if (util.contains("CON PEDANA)")) {
-                                    array.add(util.substring(0, util.lastIndexOf("(")) + "CON PEDANA");
-                                } else {
-                                    array.add(util + " SENZA PEDANA");
+                                String busHour = token2.nextToken();
+                                cardViewItemList.add(new CardViewItem(busNumber, busHour, isSatellite));
+                            }
+                        } else {
+                            StringTokenizer token = new StringTokenizer(line, ",");
+                            while (token.hasMoreTokens()) {
+                                String util = token.nextToken();
+                                StringTokenizer token2 = new StringTokenizer(util, " ");
+                                String busNumber = token2.nextToken();
+                                int isSatellite = R.drawable.ic_access_time;
+                                if (token2.nextToken().equals("DaSatellite")) {
+                                    isSatellite = R.drawable.ic_satellite;
                                 }
+                                String busHour = token2.nextToken();
+                                cardViewItemList.add(new CardViewItem(busNumber, busHour, isSatellite));
                             }
                         }
                     }
@@ -85,11 +90,11 @@ public class UrlElaboration extends AsyncTask<Void, Integer, ArrayList<String>> 
         } catch (IOException e) {
             Log.e("ERROR urlElaboration: ", e.getMessage());
         }
-        return array;
+        return cardViewItemList;
     }
 
     @Override
-    protected void onPostExecute(ArrayList<String> result) {
+    protected void onPostExecute(List<CardViewItem> result) {
         super.onPostExecute(result);
         delegate.processFinish(result);
     }

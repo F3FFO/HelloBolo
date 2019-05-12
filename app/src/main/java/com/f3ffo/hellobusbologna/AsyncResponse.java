@@ -1,7 +1,7 @@
 package com.f3ffo.hellobusbologna;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public interface AsyncResponse {
-    void processFinish(ArrayList<String> output);
+    void processFinish(List<CardViewItem> output);
 }
