@@ -150,7 +150,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         if (minute < 10) {
-            textViewBusHour.append("Partenza: " + hourOfDay + ":0" + minute);
+            textViewBusHour.setText("Partenza: " + hourOfDay + ":0" + minute);
             busHour = hourOfDay + "0" + minute;
         } else {
             textViewBusHour.setText("Partenza: " + hourOfDay + ":" + minute);
