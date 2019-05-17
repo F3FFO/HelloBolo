@@ -1,7 +1,8 @@
 <resources>
     <string name="app_name">HelloBus Bologna</string>
-    <string name="busStopNameText">Fermata</string>
+    <string name="busStopNameText">Prova con \"fornace\"</string>
     <string name="busCodeText">Autobus:</string>
     <string name="busHourText">Partenza: Adesso</string>
     <string name="action_info">Info</string>
+    <string name="action_favourite">Preferiti</string>
 </resources>

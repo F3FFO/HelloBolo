@@ -22,35 +22,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayoutBusStopName"
-                style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox.Dense"
+            <com.lapism.searchview.widget.SearchView
+                android:id="@+id/searchViewBusStopName"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="32dp"
-                android:layout_marginBottom="8dp"
-                android:hint="@string/busStopNameText"
-                app:boxBackgroundColor="@color/colorWhite"
-                app:boxCornerRadiusTopEnd="8dp"
-                app:boxCornerRadiusTopStart="8dp"
+                android:layout_height="match_parent"
                 app:layout_constraintBottom_toTopOf="@id/busCodeText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
+                app:layout_constraintTop_toTopOf="parent"
+                app:search_hint="@string/busStopNameText"
+                app:search_logo="hamburger_arrow"
+                app:search_shadow="false"
+                app:search_shape="rounded"
+                app:search_text_style="normal"
+                app:search_theme="play"
+                app:search_version="toolbar"
+                app:search_version_margins="bar" />
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/editTextBusStopName"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/varela"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="20sp" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/busCodeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -65,12 +54,13 @@
                 android:textColor="@color/colorWhite"
                 android:textIsSelectable="false"
                 android:textSize="20sp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@id/textViewBusHour"
                 app:layout_constraintEnd_toStartOf="@id/spinnerBusCode"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopName" />
+                app:layout_constraintTop_toBottomOf="@id/searchViewBusStopName" />
 
-            <Spinner
+            <androidx.appcompat.widget.AppCompatSpinner
                 android:id="@+id/spinnerBusCode"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -78,26 +68,28 @@
                 android:gravity="center"
                 android:minWidth="100dp"
                 android:spinnerMode="dropdown"
+                android:visibility="visible"
                 app:layout_constraintBottom_toTopOf="@id/textViewBusHour"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/busCodeText"
-                app:layout_constraintTop_toBottomOf="@id/textInputLayoutBusStopName" />
+                app:layout_constraintTop_toBottomOf="@id/searchViewBusStopName" />
 
-            <TextView
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewBusHour"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
                 android:fontFamily="@font/varela"
                 android:text="@string/busHourText"
                 android:textAlignment="center"
                 android:textColor="@color/colorWhite"
                 android:textSize="20sp"
+                android:visibility="visible"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/busCodeText" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

@@ -9,7 +9,7 @@
     <androidx.cardview.widget.CardView
         style="@style/Widget.MaterialComponents.CardView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -23,12 +23,17 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <TextView
-                android:id="@+id/textViewBusNumberOutput"
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonBusNumberOutput"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:backgroundTint="@color/colorWhite"
                 android:textColor="@color/colorBlack"
-                android:textSize="30sp"
+                android:textIsSelectable="false"
+                android:textSize="25sp"
+                app:icon="@drawable/ic_directions_bus"
+                app:iconTint="@color/colorBlack"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/imageViewSatOrTable"
                 app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +45,7 @@
                 android:layout_height="wrap_content"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/textViewBusHourOutput"
-                app:layout_constraintStart_toEndOf="@id/textViewBusNumberOutput"
+                app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
                 app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/ic_directions_bus" />
 

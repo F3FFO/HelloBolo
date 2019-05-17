@@ -4,6 +4,7 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -33,7 +34,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
     @Override
     public void onBindViewHolder(@NonNull OutputViewHolder holder, int position) {
         CardViewItem cardViewItem = cardViewItemList.get(position);
-        holder.textViewBusNumberOutput.setText(cardViewItem.getBusNumber());
+        holder.buttonBusNumberOutput.setText(cardViewItem.getBusNumber());
         holder.textViewBusHourOutput.setText(cardViewItem.getBusHour());
         holder.imageViewSatOrTable.setImageDrawable(context.getDrawable(cardViewItem.getImage()));
     }
@@ -45,12 +46,13 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
 
     public static class OutputViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textViewBusNumberOutput, textViewBusHourOutput;
+        TextView textViewBusHourOutput;
+        Button buttonBusNumberOutput;
         ImageView imageViewSatOrTable;
 
         public OutputViewHolder(@NonNull View itemView) {
             super(itemView);
-            textViewBusNumberOutput = itemView.findViewById(R.id.textViewBusNumberOutput);
+            buttonBusNumberOutput = itemView.findViewById(R.id.buttonBusNumberOutput);
             textViewBusHourOutput = itemView.findViewById(R.id.textViewBusHourOutput);
             imageViewSatOrTable = itemView.findViewById(R.id.imageViewSatOrTable);
         }
