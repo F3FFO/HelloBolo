@@ -1,12 +1,13 @@
 package com.f3ffo.hellobusbologna;
 
 public class CardViewItem {
-    private String busNumber, busHour;
+    private String busNumber, busHour, busHourComplete;
     private int image;
 
-    public CardViewItem(String busNumber, String busHour, int image) {
+    public CardViewItem(String busNumber, String busHour, String busHourComplete, int image) {
         this.busNumber = busNumber;
         this.busHour = busHour;
+        this.busHourComplete = busHourComplete;
         this.image = image;
     }
 
@@ -24,6 +25,14 @@ public class CardViewItem {
 
     public void setBusHour(String busHour) {
         this.busHour = busHour;
+    }
+
+    public String getBusHourComplete() {
+        return busHourComplete;
+    }
+
+    public void setBusHourComplete(String busHourComplete) {
+        this.busHourComplete = busHourComplete;
     }
 
     public int getImage() {

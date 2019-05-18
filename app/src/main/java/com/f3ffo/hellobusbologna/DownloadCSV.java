@@ -16,7 +16,7 @@ public class DownloadCSV {
         String urlpath = "https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=20190401&format=csv";
         InputStream input = new URL(urlpath).openStream();
         Reader reader = new InputStreamReader(input, "UTF-8");
-        String[] urldivided = urlpath.split("&");;
+        String[] urldivided = urlpath.split("&");
         String nome = urldivided[1].substring(urldivided[1].lastIndexOf("="), urldivided[1].length());
         nome = nome.substring(1);
         String version = urldivided[2].substring(urldivided[2].lastIndexOf("="), urldivided[2].length());
@@ -66,7 +66,7 @@ public class DownloadCSV {
 
     private static boolean versionControl(String version) {
         String path = ""; //TODO percorso file row
-        
+
         if (!path.isEmpty()) {
             String util = path.substring(path.lastIndexOf("_"), path.lastIndexOf("."));
             if (Integer.parseInt(version) > Integer.parseInt(util.substring(1))) {

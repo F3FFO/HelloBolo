@@ -9,7 +9,6 @@ import androidx.appcompat.widget.AppCompatTextView;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -23,7 +22,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -34,8 +32,11 @@ import android.widget.Toast;
 import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener {
     private ViewFlipper viewFlipper;
@@ -52,17 +53,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
-
-        RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
-        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        relativeLayoutProgressBar.addView(progressBar, params);
-        progressBar.setVisibility(View.GONE);
-
         spinnerBusCode = (AppCompatSpinner) findViewById(R.id.spinnerBusCode);
         textViewBusHour = (AppCompatTextView) findViewById(R.id.textViewBusHour);
         busCodeText = (AppCompatTextView) findViewById(R.id.busCodeText);
@@ -70,11 +62,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
         searchViewBusStopName = (SearchView) findViewById(R.id.searchViewBusStopName);
 
-        swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
+        searchViewBusStopName.setLogoIcon(getDrawable(R.drawable.ic_bus));
 
+        swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
             @Override
             public void onOpen() {
+                searchViewBusStopName.setLogo(Search.Logo.ARROW);
                 spinnerBusCode.setVisibility(View.GONE);
                 textViewBusHour.setVisibility(View.GONE);
                 busCodeText.setVisibility(View.GONE);
@@ -97,8 +91,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        //InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-                        //inputMethodManager.hideSoftInputFromWindow(view.getWindowToken(), 0);
                         viewFlipper.setDisplayedChild(0);
                         searchViewBusStopName.close();
                         StringTokenizer token = new StringTokenizer(listViewBusStation.getItemAtPosition(position).toString(), "-");
@@ -117,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
             @Override
             public void onClose() {
+                searchViewBusStopName.setLogoIcon(getDrawable(R.drawable.ic_bus));
                 viewFlipper.setDisplayedChild(0);
             }
         });
@@ -201,26 +194,39 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.action_favourite) {
-            return true;
-        } else if (id == R.id.action_info) {
-            return true;
+        switch (item.getItemId()) {
+            case R.id.nav_favourites:
+                return true;
+            case R.id.nav_info:
+                return true;
+            case R.id.nav_share:
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
     public void onRefresh() {
         checkBus(busStop, busLine, busHour);
-        Toast.makeText(MainActivity.this, "Aggiornato!", Toast.LENGTH_LONG).show();
         new Handler().postDelayed(new Runnable() {
             @Override
             public void run() {
                 swipeRefreshLayout.setRefreshing(false);
             }
-        }, 4000);
+        }, 3000);
+        Toast.makeText(MainActivity.this, "Aggiornato!", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void processStart() {
+        viewFlipper.setDisplayedChild(0);
+        RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
+        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
+        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        relativeLayoutProgressBar.addView(progressBar, params);
+        progressBar.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -231,11 +237,20 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         List<CardViewItem> cardViewItemList = new ArrayList<>();
+        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+        String diffTime;
         for (int i = 0; i < output.size(); i++) {
-            cardViewItemList.add(new CardViewItem(
-                    output.get(i).getBusNumber(),
-                    output.get(i).getBusHour(),
-                    output.get(i).getImage()));
+            StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
+            int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
+            int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
+            if (diffHour == 0 || diffHour < 0) {
+                diffTime = diffMin + " min";
+            } else if (diffMin < 0) {
+                diffTime = 60 + diffMin + " min";
+            } else {
+                diffTime = diffHour + ":" + diffMin + " min";
+            }
+            cardViewItemList.add(new CardViewItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getImage()));
         }
         OutputAdapter adapter = new OutputAdapter(MainActivity.this, cardViewItemList);
         recyclerViewBusOutput.setAdapter(adapter);
@@ -247,7 +262,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     private void checkBus(String busStop, String busLine, String busHour) {
         try {
-            progressBar.setVisibility(View.VISIBLE);
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
             UrlElaboration ue = new UrlElaboration();
             ue.setDelegate(MainActivity.this);

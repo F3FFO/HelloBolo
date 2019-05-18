@@ -36,6 +36,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
         CardViewItem cardViewItem = cardViewItemList.get(position);
         holder.buttonBusNumberOutput.setText(cardViewItem.getBusNumber());
         holder.textViewBusHourOutput.setText(cardViewItem.getBusHour());
+        holder.textViewBusHourCompleteOutput.setText(cardViewItem.getBusHourComplete());
         holder.imageViewSatOrTable.setImageDrawable(context.getDrawable(cardViewItem.getImage()));
     }
 
@@ -46,7 +47,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
 
     public static class OutputViewHolder extends RecyclerView.ViewHolder {
 
-        TextView textViewBusHourOutput;
+        TextView textViewBusHourOutput, textViewBusHourCompleteOutput;
         Button buttonBusNumberOutput;
         ImageView imageViewSatOrTable;
 
@@ -54,6 +55,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
             super(itemView);
             buttonBusNumberOutput = itemView.findViewById(R.id.buttonBusNumberOutput);
             textViewBusHourOutput = itemView.findViewById(R.id.textViewBusHourOutput);
+            textViewBusHourCompleteOutput = itemView.findViewById(R.id.textViewBusHourCompleteOutput);
             imageViewSatOrTable = itemView.findViewById(R.id.imageViewSatOrTable);
         }
     }

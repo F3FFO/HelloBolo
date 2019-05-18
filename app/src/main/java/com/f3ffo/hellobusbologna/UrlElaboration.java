@@ -36,6 +36,12 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>>
     }
 
     @Override
+    protected void onPreExecute() {
+        super.onPreExecute();
+        delegate.processStart();
+    }
+
+    @Override
     protected List<CardViewItem> doInBackground(Void... params) {
         List<CardViewItem> cardViewItemList = new ArrayList<>();
         try {
@@ -62,12 +68,12 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>>
                                 String util = token.nextToken();
                                 StringTokenizer token2 = new StringTokenizer(util, " ");
                                 String busNumber = token2.nextToken();
-                                int isSatellite = R.drawable.ic_access_time;
+                                int isSatellite = R.drawable.ic_output_time;
                                 if (token2.nextToken().equals("DaSatellite")) {
-                                    isSatellite = R.drawable.ic_satellite;
+                                    isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                cardViewItemList.add(new CardViewItem(busNumber, busHour, isSatellite));
+                                cardViewItemList.add(new CardViewItem(busNumber, busHour, busHour, isSatellite));
                             }
                         } else {
                             StringTokenizer token = new StringTokenizer(line, ",");
@@ -75,12 +81,12 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>>
                                 String util = token.nextToken();
                                 StringTokenizer token2 = new StringTokenizer(util, " ");
                                 String busNumber = token2.nextToken();
-                                int isSatellite = R.drawable.ic_access_time;
+                                int isSatellite = R.drawable.ic_output_time;
                                 if (token2.nextToken().equals("DaSatellite")) {
-                                    isSatellite = R.drawable.ic_satellite;
+                                    isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                cardViewItemList.add(new CardViewItem(busNumber, busHour, isSatellite));
+                                cardViewItemList.add(new CardViewItem(busNumber, busHour, busHour, isSatellite));
                             }
                         }
                     }

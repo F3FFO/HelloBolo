@@ -28,37 +28,46 @@
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
                 android:backgroundTint="@color/colorWhite"
-                android:textColor="@color/colorBlack"
+                android:textColor="@color/colorGreyMaterial"
                 android:textIsSelectable="false"
                 android:textSize="25sp"
-                app:icon="@drawable/ic_directions_bus"
-                app:iconTint="@color/colorBlack"
+                app:icon="@drawable/ic_bus"
+                app:iconTint="@color/colorGreyMaterial"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/imageViewSatOrTable"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
-
-            <ImageView
-                android:id="@+id/imageViewSatOrTable"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/textViewBusHourOutput"
-                app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_directions_bus" />
 
             <TextView
                 android:id="@+id/textViewBusHourOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorBlack"
-                android:textSize="30sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/imageViewSatOrTable"
+                android:layout_marginStart="32dp"
+                android:textColor="@color/colorGreyMaterial"
+                android:textSize="22sp"
+                app:layout_constraintBottom_toTopOf="@id/textViewBusHourCompleteOutput"
+                app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textViewBusHourCompleteOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:textColor="@color/colorGreyMaterial"
+                android:textSize="16sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
+                app:layout_constraintTop_toBottomOf="@id/textViewBusHourOutput" />
+
+            <ImageView
+                android:id="@+id/imageViewSatOrTable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>
 </RelativeLayout>

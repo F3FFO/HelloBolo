@@ -3,6 +3,8 @@
     <string name="busStopNameText">Prova con \"fornace\"</string>
     <string name="busCodeText">Autobus:</string>
     <string name="busHourText">Partenza: Adesso</string>
-    <string name="action_info">Info</string>
-    <string name="action_favourite">Preferiti</string>
+    <string name="swipeToRefresh">Swipe down per aggiornare</string>
+    <string name="menu_info">Info</string>
+    <string name="menu_favourites">Preferiti</string>
+    <string name="menu_share">Condividi</string>
 </resources>
