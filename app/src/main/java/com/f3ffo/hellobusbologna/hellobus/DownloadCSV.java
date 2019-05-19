@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.hellobusbologna.hellobus;
 
 import java.io.BufferedWriter;
 import java.io.File;
@@ -7,12 +7,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 public class DownloadCSV {
 
-    public static void prova() throws MalformedURLException, IOException {
+    public static void prova() throws IOException {
         String urlpath = "https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=20190401&format=csv";
         InputStream input = new URL(urlpath).openStream();
         Reader reader = new InputStreamReader(input, "UTF-8");

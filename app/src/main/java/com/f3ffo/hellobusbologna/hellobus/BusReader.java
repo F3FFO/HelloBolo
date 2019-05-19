@@ -1,6 +1,9 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.hellobusbologna.hellobus;
 
 import android.util.Log;
+
+import com.f3ffo.hellobusbologna.items.SearchListViewItem;
+import com.f3ffo.hellobusbologna.model.BusClass;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -12,7 +15,7 @@ import java.util.StringTokenizer;
 
 public class BusReader {
     public ArrayList<BusClass> busClass = new ArrayList<>();
-    public ArrayList<String> stops = new ArrayList<>();
+    public ArrayList<SearchListViewItem> stops = new ArrayList<>();
     private String stopName;
 
     public String getStopName() {
@@ -55,9 +58,8 @@ public class BusReader {
 
     public void stopsViewer() {
         for (int i = 0; i < busClass.size(); i++) {
-            String element = busClass.get(i).getStopCode() + " - " + busClass.get(i).getStopName() + "\n" + busClass.get(i).getStopAddress();
-            if (!stops.contains(element)) {
-                stops.add(element);
+            if (!stops.get(i).getBusStopCode().equals(busClass.get(i).getStopCode())) {
+                stops.add(new SearchListViewItem(busClass.get(i).getStopCode(), busClass.get(i).getStopName(), busClass.get(i).getStopAddress()));
             }
         }
     }

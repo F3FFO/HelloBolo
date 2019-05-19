@@ -1,7 +1,9 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.hellobusbologna.hellobus;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.f3ffo.hellobusbologna.AsyncResponse;
 
 import java.io.BufferedReader;
 import java.io.IOException;

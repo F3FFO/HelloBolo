@@ -1,7 +1,11 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.hellobusbologna.hellobus;
 
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.f3ffo.hellobusbologna.AsyncResponse;
+import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -13,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>> {
+public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardViewItem>> {
     private String busStop = "";
     private String busLine = "";
     private String busHour = "";
@@ -42,8 +46,8 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>>
     }
 
     @Override
-    protected List<CardViewItem> doInBackground(Void... params) {
-        List<CardViewItem> cardViewItemList = new ArrayList<>();
+    protected List<OutputCardViewItem> doInBackground(Void... params) {
+        List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
         try {
             HttpURLConnection huc = (HttpURLConnection) new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine).openConnection();
             BufferedReader br = new BufferedReader(new InputStreamReader(huc.getInputStream(), StandardCharsets.UTF_8));
@@ -73,7 +77,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>>
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                cardViewItemList.add(new CardViewItem(busNumber, busHour, busHour, isSatellite));
+                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite));
                             }
                         } else {
                             StringTokenizer token = new StringTokenizer(line, ",");
@@ -86,7 +90,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>>
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                cardViewItemList.add(new CardViewItem(busNumber, busHour, busHour, isSatellite));
+                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite));
                             }
                         }
                     }
@@ -96,11 +100,11 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<CardViewItem>>
         } catch (IOException e) {
             Log.e("ERROR urlElaboration: ", e.getMessage());
         }
-        return cardViewItemList;
+        return outputCardViewItemList;
     }
 
     @Override
-    protected void onPostExecute(List<CardViewItem> result) {
+    protected void onPostExecute(List<OutputCardViewItem> result) {
         super.onPostExecute(result);
         delegate.processFinish(result);
     }

@@ -1,10 +1,10 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.hellobusbologna.items;
 
-public class CardViewItem {
+public class OutputCardViewItem {
     private String busNumber, busHour, busHourComplete;
     private int image;
 
-    public CardViewItem(String busNumber, String busHour, String busHourComplete, int image) {
+    public OutputCardViewItem(String busNumber, String busHour, String busHourComplete, int image) {
         this.busNumber = busNumber;
         this.busHour = busHour;
         this.busHourComplete = busHourComplete;

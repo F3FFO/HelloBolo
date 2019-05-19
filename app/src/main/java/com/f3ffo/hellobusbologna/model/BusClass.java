@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.hellobusbologna.model;
 
 public class BusClass {
 

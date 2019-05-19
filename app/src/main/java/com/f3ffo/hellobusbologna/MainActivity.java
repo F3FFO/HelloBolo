@@ -1,5 +1,11 @@
 package com.f3ffo.hellobusbologna;
 
+import com.f3ffo.hellobusbologna.adapter.OutputAdapter;
+import com.f3ffo.hellobusbologna.adapter.SearchAdapter;
+import com.f3ffo.hellobusbologna.hellobus.BusReader;
+import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
+import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.items.SearchListViewItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -15,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -24,7 +31,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
@@ -73,9 +79,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 textViewBusHour.setVisibility(View.GONE);
                 busCodeText.setVisibility(View.GONE);
                 viewFlipper.setDisplayedChild(2);
-                final ListView listViewBusStation = (ListView) findViewById(R.id.listViewBusStation);
-                adapter = new ArrayAdapter<>(MainActivity.this, R.layout.list_item, br.stops);
-                listViewBusStation.setAdapter(adapter);
+
+                final RecyclerView recyclerViewBusStation = (RecyclerView) findViewById(R.id.recyclerViewBusStation);
+                recyclerViewBusStation.setHasFixedSize(true);
+                recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+                List<SearchListViewItem> searchListViewItem = new ArrayList<>();
+                final SearchAdapter adapter = new SearchAdapter(MainActivity.this, searchListViewItem);
+                recyclerViewBusStation.setAdapter(adapter);
+
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(CharSequence query) {
@@ -87,12 +98,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                         adapter.getFilter().filter(newText.toString());
                     }
                 });
-                listViewBusStation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
+                /*listViewBusStation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
                     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                         viewFlipper.setDisplayedChild(0);
                         searchViewBusStopName.close();
+
                         StringTokenizer token = new StringTokenizer(listViewBusStation.getItemAtPosition(position).toString(), "-");
                         String temp = token.nextToken();
                         busStop = temp.substring(0, temp.length() - 1);
@@ -104,7 +117,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                         busCodeText.setVisibility(View.VISIBLE);
                         searchViewBusStopName.setText(br.getStopName());
                     }
-                });
+                });*/
             }
 
             @Override
@@ -230,13 +243,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     }
 
     @Override
-    public void processFinish(List<CardViewItem> output) {
+    public void processFinish(List<OutputCardViewItem> output) {
         //if (output.get(0).contains("non gestita") || output.get(0).contains("assente") || output.get(0).contains("Mancano")) {
         //    Toast.makeText(MainActivity.this, output.get(0), Toast.LENGTH_LONG).show();
         RecyclerView recyclerViewBusOutput = (RecyclerView) findViewById(R.id.recyclerViewBusOutput);
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        List<CardViewItem> cardViewItemList = new ArrayList<>();
+        List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
         Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
         String diffTime;
         for (int i = 0; i < output.size(); i++) {
@@ -250,9 +263,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             } else {
                 diffTime = diffHour + ":" + diffMin + " min";
             }
-            cardViewItemList.add(new CardViewItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getImage()));
+            outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getImage()));
         }
-        OutputAdapter adapter = new OutputAdapter(MainActivity.this, cardViewItemList);
+        OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
         recyclerViewBusOutput.setAdapter(adapter);
         viewFlipper.setDisplayedChild(1);
         //}
