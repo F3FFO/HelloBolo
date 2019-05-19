@@ -2,6 +2,7 @@ package com.f3ffo.hellobusbologna;
 
 import com.f3ffo.hellobusbologna.adapter.OutputAdapter;
 import com.f3ffo.hellobusbologna.adapter.SearchAdapter;
+import com.f3ffo.hellobusbologna.fragment.TimePickerFragment;
 import com.f3ffo.hellobusbologna.hellobus.BusReader;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
@@ -20,8 +21,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import android.app.Activity;
 import android.app.TimePickerDialog;
-import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
@@ -29,7 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.widget.AdapterView;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -69,8 +70,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         searchViewBusStopName = (SearchView) findViewById(R.id.searchViewBusStopName);
 
         searchViewBusStopName.setLogoIcon(getDrawable(R.drawable.ic_bus));
-
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
+
+        RecyclerView recyclerViewBusStation = (RecyclerView) findViewById(R.id.recyclerViewBusStation);
+        recyclerViewBusStation.setHasFixedSize(true);
+        recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        final SearchAdapter adapter = new SearchAdapter(MainActivity.this, br.getStops());
+        recyclerViewBusStation.setAdapter(adapter);
+
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
             @Override
             public void onOpen() {
@@ -79,14 +86,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 textViewBusHour.setVisibility(View.GONE);
                 busCodeText.setVisibility(View.GONE);
                 viewFlipper.setDisplayedChild(2);
-
-                final RecyclerView recyclerViewBusStation = (RecyclerView) findViewById(R.id.recyclerViewBusStation);
-                recyclerViewBusStation.setHasFixedSize(true);
-                recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-                List<SearchListViewItem> searchListViewItem = new ArrayList<>();
-                final SearchAdapter adapter = new SearchAdapter(MainActivity.this, searchListViewItem);
-                recyclerViewBusStation.setAdapter(adapter);
-
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
                     @Override
                     public boolean onQueryTextSubmit(CharSequence query) {
@@ -98,7 +97,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                         adapter.getFilter().filter(newText.toString());
                     }
                 });
-
                 /*listViewBusStation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                     @Override
@@ -184,7 +182,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public void onBackPressed() {
-        if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
+        if (inputMethodManager.isActive() && getCurrentFocus() != null) {
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        } else if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);

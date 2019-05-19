@@ -64,10 +64,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
             if (constraint == null || constraint.length() == 0) {
                 filteredItemList.addAll(outputSearchViewItemListFull);
             } else {
-                String filteredPattern = constraint.toString().toLowerCase().trim();
-
                 for (SearchListViewItem item : outputSearchViewItemListFull) {
-                    if (item.getBusStopCode().toLowerCase().contains(filteredPattern)) {
+                    if (item.getBusStopCode().toUpperCase().contains(constraint.toString().toUpperCase()) ||
+                            item.getBusStopName().toUpperCase().contains(constraint.toString().toUpperCase()) ||
+                            item.getBusStopAddres().toUpperCase().contains(constraint.toString().toUpperCase())) {
                         filteredItemList.add(item);
                     }
                 }

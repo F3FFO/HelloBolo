@@ -1,5 +1,9 @@
 package com.f3ffo.hellobusbologna.hellobus;
 
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
+
 import com.f3ffo.hellobusbologna.model.CheckFileDate;
 
 import java.io.BufferedReader;
@@ -21,21 +25,34 @@ public class DownloadCSV2 {
 
     public static void prova(String file) throws IOException {
         // Checking If The File Exists At The Specified Location Or Not
-        Path filePathObj = null;
+
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) { //TODO check for old version without if
-            filePathObj = Paths.get(pathfile);
-        }
-        CheckFileDate check = checkFile();
-        if (new File(filePathObj.toString()).exists()) {
-            //file esiste
-            if (!check.isVersioncheck()) {
-                fileDownload(check.getVersion());
+            Path filePathObj = Paths.get(pathfile);
+            CheckFileDate check = checkFile();
+            if (new File(filePathObj.toString()).exists()) {
+                //file esiste
+                if (!check.isVersioncheck()) {
+                    fileDownload(check.getVersion());
+                } else {
+                    System.out.println("UltimaVersioneGiaPresente");
+                }
             } else {
-                System.out.println("UltimaVersioneGiaPresente");
+                //file non esiste
+                fileCreation(check.getVersion());
             }
         } else {
-            //file non esiste
-            fileCreation(check.getVersion());
+            CheckFileDate check = checkFile();
+            if (new File(pathfile).exists()) {
+                //file esiste
+                if (!check.isVersioncheck()) {
+                    fileDownload(check.getVersion());
+                } else {
+                    System.out.println("UltimaVersioneGiaPresente");
+                }
+            } else {
+                //file non esiste
+                fileCreation(check.getVersion());
+            }
         }
     }
 

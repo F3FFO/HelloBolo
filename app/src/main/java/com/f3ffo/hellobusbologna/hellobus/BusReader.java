@@ -11,20 +11,25 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class BusReader {
-    public ArrayList<BusClass> busClass = new ArrayList<>();
-    public ArrayList<SearchListViewItem> stops = new ArrayList<>();
+    private ArrayList<BusClass> busClass = new ArrayList<>();
+    private List<SearchListViewItem> stops = new ArrayList<>();
     private String stopName;
 
     public String getStopName() {
         return stopName;
     }
 
+    public List<SearchListViewItem> getStops() {
+        return stops;
+    }
+
     public void extractFromFile(InputStream file) {
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8), 16384);
+            BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("codice_linea")) {
@@ -57,10 +62,14 @@ public class BusReader {
     }
 
     public void stopsViewer() {
+        ArrayList<String> stopsTemp = new ArrayList<>();
         for (int i = 0; i < busClass.size(); i++) {
-            if (!stops.get(i).getBusStopCode().equals(busClass.get(i).getStopCode())) {
-                stops.add(new SearchListViewItem(busClass.get(i).getStopCode(), busClass.get(i).getStopName(), busClass.get(i).getStopAddress()));
+            String element = busClass.get(i).getStopCode();
+            if (!stopsTemp.contains(element)) {
+                stopsTemp.add(element);
+                stops.add(new SearchListViewItem(element, busClass.get(i).getStopName(), busClass.get(i).getStopAddress()));
             }
         }
+        stopsTemp.clear();
     }
 }
