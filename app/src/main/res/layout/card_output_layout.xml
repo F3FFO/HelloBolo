@@ -20,6 +20,7 @@
         tools:ignore="ContentDescription">
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutOutputLayout"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -43,30 +44,37 @@
                 android:id="@+id/textViewBusHourOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginEnd="128dp"
                 android:textColor="@color/colorGreyMaterial"
                 android:textSize="22sp"
                 app:layout_constraintBottom_toTopOf="@id/textViewBusHourCompleteOutput"
-                app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
+                app:layout_constraintEnd_toStartOf="@id/imageViewSatOrTable"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewBusHourCompleteOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
+                android:layout_marginEnd="128dp"
                 android:textColor="@color/colorGreyMaterial"
                 android:textSize="16sp"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
+                app:layout_constraintEnd_toStartOf="@id/imageViewSatOrTable"
                 app:layout_constraintTop_toBottomOf="@id/textViewBusHourOutput" />
 
-            <ImageView
+            <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/imageViewSatOrTable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewHandicap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.cardview.widget.CardView>

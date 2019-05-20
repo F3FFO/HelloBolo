@@ -1,14 +1,20 @@
 package com.f3ffo.hellobusbologna.items;
 
 public class OutputCardViewItem {
-    private String busNumber, busHour, busHourComplete;
-    private int image;
+    private String busNumber, busHour, busHourComplete, error;
+    private int satelliteOrHour, handicap, errorImage;
 
-    public OutputCardViewItem(String busNumber, String busHour, String busHourComplete, int image) {
+    public OutputCardViewItem(String busNumber, String busHour, String busHourComplete, int satelliteOrHour, int handicap) {
         this.busNumber = busNumber;
         this.busHour = busHour;
         this.busHourComplete = busHourComplete;
-        this.image = image;
+        this.satelliteOrHour = satelliteOrHour;
+        this.handicap = handicap;
+    }
+
+    public OutputCardViewItem(int errorImage, String error) {
+        this.errorImage = errorImage;
+        this.error = error;
     }
 
     public String getBusNumber() {
@@ -35,11 +41,35 @@ public class OutputCardViewItem {
         this.busHourComplete = busHourComplete;
     }
 
-    public int getImage() {
-        return image;
+    public int getSatelliteOrHour() {
+        return satelliteOrHour;
     }
 
-    public void setImage(int image) {
-        this.image = image;
+    public void setSatelliteOrHour(int satelliteOrHour) {
+        this.satelliteOrHour = satelliteOrHour;
+    }
+
+    public int getHandicap() {
+        return handicap;
+    }
+
+    public void setHandicap(int handicap) {
+        this.handicap = handicap;
+    }
+
+    public String getError() {
+        return error;
+    }
+
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    public int getErrorImage() {
+        return errorImage;
+    }
+
+    public void setErrorImage(int errorImage) {
+        this.errorImage = errorImage;
     }
 }

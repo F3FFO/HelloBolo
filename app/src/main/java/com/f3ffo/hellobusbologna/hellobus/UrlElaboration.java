@@ -57,11 +57,11 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     //------------------------------Manage error-----------------------------------
                     if (line.startsWith("HellobusHelp")) {
-                        //array.add("Fermata non gestita");
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
-                        //array.add("Linea assente");
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
                     } else if (line.equals("NULL")) {
-                        //array.add("Mancano dei dati");
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
                         //------------------------------Manage output-----------------------------------
                     } else {
                         line = line.substring(line.indexOf(":") + 2);
@@ -70,6 +70,12 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                             StringTokenizer token = new StringTokenizer(line, ",");
                             while (token.hasMoreTokens()) {
                                 String util = token.nextToken();
+                                int isHandicap = R.drawable.ic_handicap_default;
+                                if (util.contains("CON PEDANA")) {
+                                    isHandicap = R.drawable.ic_handicap_green;
+                                } else if (util.contains("SENZA PEDANA")) {
+                                    isHandicap = R.drawable.ic_handicap_red;
+                                }
                                 StringTokenizer token2 = new StringTokenizer(util, " ");
                                 String busNumber = token2.nextToken();
                                 int isSatellite = R.drawable.ic_output_time;
@@ -77,12 +83,18 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite));
+                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
                             }
                         } else {
                             StringTokenizer token = new StringTokenizer(line, ",");
                             while (token.hasMoreTokens()) {
                                 String util = token.nextToken();
+                                int isHandicap = R.drawable.ic_handicap_default; //TODO CHANGE WITH SOMETHING USER FRIENDLY
+                                if (util.contains("CON PEDANA")) {
+                                    isHandicap = R.drawable.ic_handicap_green;
+                                } else if (util.contains("SENZA PEDANA")) {
+                                    isHandicap = R.drawable.ic_handicap_red;
+                                }
                                 StringTokenizer token2 = new StringTokenizer(util, " ");
                                 String busNumber = token2.nextToken();
                                 int isSatellite = R.drawable.ic_output_time;
@@ -90,7 +102,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite));
+                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
                             }
                         }
                     }

@@ -1,15 +1,15 @@
 package com.f3ffo.hellobusbologna.adapter;
 
-import androidx.appcompat.widget.AppCompatTextView;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
@@ -30,8 +30,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
     @NonNull
     @Override
     public OutputViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.card_output_layout, null);
+        View view = LayoutInflater.from(context).inflate(R.layout.card_output_layout, parent, false);
         return new OutputViewHolder(view);
     }
 
@@ -41,7 +40,8 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
         holder.buttonBusNumberOutput.setText(outputCardViewItem.getBusNumber());
         holder.textViewBusHourOutput.setText(outputCardViewItem.getBusHour());
         holder.textViewBusHourCompleteOutput.setText(outputCardViewItem.getBusHourComplete());
-        holder.imageViewSatOrTable.setImageDrawable(context.getDrawable(outputCardViewItem.getImage()));
+        holder.imageViewSatOrTable.setImageDrawable(context.getDrawable(outputCardViewItem.getSatelliteOrHour()));
+        holder.imageViewHandicap.setImageDrawable(context.getDrawable(outputCardViewItem.getHandicap()));
     }
 
     @Override
@@ -53,7 +53,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
 
         AppCompatTextView textViewBusHourOutput, textViewBusHourCompleteOutput;
         Button buttonBusNumberOutput;
-        ImageView imageViewSatOrTable;
+        AppCompatImageView imageViewSatOrTable, imageViewHandicap;
 
         OutputViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -61,6 +61,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
             textViewBusHourOutput = itemView.findViewById(R.id.textViewBusHourOutput);
             textViewBusHourCompleteOutput = itemView.findViewById(R.id.textViewBusHourCompleteOutput);
             imageViewSatOrTable = itemView.findViewById(R.id.imageViewSatOrTable);
+            imageViewHandicap = itemView.findViewById(R.id.imageViewHandicap);
         }
     }
 

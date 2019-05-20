@@ -16,12 +16,14 @@
             android:id="@+id/textViewBusStopCodeOutput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
             android:fontFamily="@font/varela"
             android:gravity="center|start"
             android:textAlignment="textStart"
             android:textIsSelectable="false"
-            android:textSize="15sp"
-            app:layout_constraintBottom_toTopOf="@id/textViewBusStopNameOutput"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@id/textViewBusStopAddressOutput"
+            app:layout_constraintEnd_toStartOf="@id/textViewBusStopNameOutput"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -29,14 +31,15 @@
             android:id="@+id/textViewBusStopNameOutput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:fontFamily="@font/varela"
             android:gravity="center|start"
             android:textAlignment="textStart"
             android:textIsSelectable="false"
-            android:textSize="20sp"
+            android:textSize="18sp"
             app:layout_constraintBottom_toTopOf="@id/textViewBusStopAddressOutput"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewBusStopCodeOutput" />
+            app:layout_constraintStart_toEndOf="@id/textViewBusStopCodeOutput"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textViewBusStopAddressOutput"
@@ -48,8 +51,7 @@
             android:textIsSelectable="false"
             android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewBusStopNameOutput" />
+            app:layout_constraintStart_toStartOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

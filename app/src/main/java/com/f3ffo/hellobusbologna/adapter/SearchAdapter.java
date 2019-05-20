@@ -1,6 +1,5 @@
 package com.f3ffo.hellobusbologna.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,12 +18,11 @@ import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdapterHolder> implements Filterable {
 
-    private Context context;
     private List<SearchListViewItem> outputSearchViewItemList;
     private List<SearchListViewItem> outputSearchViewItemListFull;
+    private OnItemClickListener mListener;
 
-    public SearchAdapter(Context context, List<SearchListViewItem> outputSearchViewItemList) {
-        this.context = context;
+    public SearchAdapter(List<SearchListViewItem> outputSearchViewItemList) {
         this.outputSearchViewItemList = outputSearchViewItemList;
         this.outputSearchViewItemListFull = new ArrayList<>(outputSearchViewItemList);
     }
@@ -32,9 +30,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     @NonNull
     @Override
     public SearchAdapterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        LayoutInflater inflater = LayoutInflater.from(context);
-        View view = inflater.inflate(R.layout.search_list_item, null);
-        return new SearchAdapter.SearchAdapterHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_list_item, parent, false);
+        return new SearchAdapter.SearchAdapterHolder(view, mListener);
     }
 
     @Override
@@ -85,15 +82,35 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
         }
     };
 
-    class SearchAdapterHolder extends RecyclerView.ViewHolder {
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
+
+    static class SearchAdapterHolder extends RecyclerView.ViewHolder {
 
         AppCompatTextView textViewBusStopCodeOutput, textViewBusStopNameOutput, textViewBusStopAddressOutput;
 
-        SearchAdapterHolder(@NonNull View itemView) {
+        SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             textViewBusStopCodeOutput = itemView.findViewById(R.id.textViewBusStopCodeOutput);
             textViewBusStopNameOutput = itemView.findViewById(R.id.textViewBusStopNameOutput);
             textViewBusStopAddressOutput = itemView.findViewById(R.id.textViewBusStopAddressOutput);
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (listener != null) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION) {
+                            listener.onItemClick(position);
+                        }
+                    }
+                }
+            });
         }
     }
 }

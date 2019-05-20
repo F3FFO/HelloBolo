@@ -1,21 +1,23 @@
 package com.f3ffo.hellobusbologna;
 
 import com.f3ffo.hellobusbologna.adapter.OutputAdapter;
+import com.f3ffo.hellobusbologna.adapter.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.adapter.SearchAdapter;
 import com.f3ffo.hellobusbologna.fragment.TimePickerFragment;
 import com.f3ffo.hellobusbologna.hellobus.BusReader;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
-import com.f3ffo.hellobusbologna.items.SearchListViewItem;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
+import com.lapism.searchview.Search;
+import com.lapism.searchview.widget.SearchView;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import com.lapism.searchview.Search;
-import com.lapism.searchview.widget.SearchView;
-
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -50,7 +52,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private AppCompatTextView busCodeText, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private String busStop, busLine, busHour;
-    private ArrayAdapter<String> adapter;
+    private SearchAdapter adapter;
     protected static BusReader br = new BusReader();
     private ProgressBar progressBar;
     private SearchView searchViewBusStopName;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        busHour = "";
         viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
         spinnerBusCode = (AppCompatSpinner) findViewById(R.id.spinnerBusCode);
         textViewBusHour = (AppCompatTextView) findViewById(R.id.textViewBusHour);
@@ -72,13 +75,25 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         searchViewBusStopName.setLogoIcon(getDrawable(R.drawable.ic_bus));
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
 
-        RecyclerView recyclerViewBusStation = (RecyclerView) findViewById(R.id.recyclerViewBusStation);
-        recyclerViewBusStation.setHasFixedSize(true);
-        recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        final SearchAdapter adapter = new SearchAdapter(MainActivity.this, br.getStops());
-        recyclerViewBusStation.setAdapter(adapter);
+        buildRecyclerViewSearch();
 
+        adapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                viewFlipper.setDisplayedChild(0);
+                searchViewBusStopName.close();
+                busStop = br.getStops().get(position).getBusStopCode();
+                ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
+                spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
+                spinnerBusCode.setAdapter(spinnerArrayAdapter);
+                spinnerBusCode.setVisibility(View.VISIBLE);
+                textViewBusHour.setVisibility(View.VISIBLE);
+                busCodeText.setVisibility(View.VISIBLE);
+                searchViewBusStopName.setText(br.getStopName());
+            }
+        });
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
+
             @Override
             public void onOpen() {
                 searchViewBusStopName.setLogo(Search.Logo.ARROW);
@@ -97,25 +112,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                         adapter.getFilter().filter(newText.toString());
                     }
                 });
-                /*listViewBusStation.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-                    @Override
-                    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                        viewFlipper.setDisplayedChild(0);
-                        searchViewBusStopName.close();
-
-                        StringTokenizer token = new StringTokenizer(listViewBusStation.getItemAtPosition(position).toString(), "-");
-                        String temp = token.nextToken();
-                        busStop = temp.substring(0, temp.length() - 1);
-                        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
-                        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
-                        spinnerBusCode.setAdapter(spinnerArrayAdapter);
-                        spinnerBusCode.setVisibility(View.VISIBLE);
-                        textViewBusHour.setVisibility(View.VISIBLE);
-                        busCodeText.setVisibility(View.VISIBLE);
-                        searchViewBusStopName.setText(br.getStopName());
-                    }
-                });*/
             }
 
             @Override
@@ -144,6 +140,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 }
             }
         });
+    }
+
+    public void buildRecyclerViewSearch() {
+        RecyclerView recyclerViewBusStation = (RecyclerView) findViewById(R.id.recyclerViewBusStation);
+        recyclerViewBusStation.setHasFixedSize(true);
+        recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        adapter = new SearchAdapter(br.getStops());
+        recyclerViewBusStation.setAdapter(adapter);
     }
 
     @Override
@@ -245,31 +249,41 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public void processFinish(List<OutputCardViewItem> output) {
-        //if (output.get(0).contains("non gestita") || output.get(0).contains("assente") || output.get(0).contains("Mancano")) {
-        //    Toast.makeText(MainActivity.this, output.get(0), Toast.LENGTH_LONG).show();
         RecyclerView recyclerViewBusOutput = (RecyclerView) findViewById(R.id.recyclerViewBusOutput);
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
-        Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
-        String diffTime;
-        for (int i = 0; i < output.size(); i++) {
-            StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
-            int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
-            int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
-            if (diffHour == 0 || diffHour < 0) {
-                diffTime = diffMin + " min";
-            } else if (diffMin < 0) {
-                diffTime = 60 + diffMin + " min";
-            } else {
-                diffTime = diffHour + ":" + diffMin + " min";
+        if (!("ERRORE").equals(output.get(0).getError()) && "".equals(busHour)) {
+            Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+            String diffTime;
+            for (int i = 0; i < output.size(); i++) {
+                StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
+                int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
+                int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
+                if (diffHour == 0 || diffHour < 0) {
+                    diffTime = diffMin + " min";
+                } else if (diffMin < 0) {
+                    diffTime = 60 + diffMin + " min";
+                } else {
+                    diffTime = diffHour + ":" + diffMin + " min";
+                }
+                outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
+                OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
+                recyclerViewBusOutput.setAdapter(adapter);
             }
-            outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getImage()));
+        } else if (!("ERRORE").equals(output.get(0).getError())) {
+            for (int i = 0; i < output.size(); i++) {
+                outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), output.get(i).getBusHourComplete(), "", output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
+                OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
+                recyclerViewBusOutput.setAdapter(adapter);
+            }
+        } else {
+            outputCardViewItemList.add(new OutputCardViewItem(output.get(0).getErrorImage(), output.get(0).getError()));
+            OutputErrorAdapter adapter = new OutputErrorAdapter(MainActivity.this, outputCardViewItemList);
+            recyclerViewBusOutput.setAdapter(adapter);
         }
-        OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
-        recyclerViewBusOutput.setAdapter(adapter);
+
         viewFlipper.setDisplayedChild(1);
-        //}
         progressBar.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
