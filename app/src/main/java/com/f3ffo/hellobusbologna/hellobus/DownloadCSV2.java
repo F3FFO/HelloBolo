@@ -1,6 +1,7 @@
 package com.f3ffo.hellobusbologna.hellobus;
 
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.RequiresApi;
 
@@ -21,9 +22,9 @@ import java.nio.file.Paths;
 
 public class DownloadCSV2 {
 
-    private static String pathfile = "C:/Users/Emanuele/Desktop/Nuova cartella (2)/";
+    private static String pathfile = "../../../res/raw/";
 
-    public static void prova(String file) throws IOException {
+    public static void prova() throws IOException {
         // Checking If The File Exists At The Specified Location Or Not
 
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) { //TODO check for old version without if
@@ -34,7 +35,7 @@ public class DownloadCSV2 {
                 if (!check.isVersioncheck()) {
                     fileDownload(check.getVersion());
                 } else {
-                    System.out.println("UltimaVersioneGiaPresente");
+                    Log.e("Error prova()", "error in DownloadCSV2.prova");
                 }
             } else {
                 //file non esiste
@@ -47,7 +48,7 @@ public class DownloadCSV2 {
                 if (!check.isVersioncheck()) {
                     fileDownload(check.getVersion());
                 } else {
-                    System.out.println("UltimaVersioneGiaPresente");
+                    Log.i("prova", "UltimaVersioneGiaPresente");
                 }
             } else {
                 //file non esiste
@@ -64,12 +65,12 @@ public class DownloadCSV2 {
         do {
             s2 = br.readLine();
         } while (!s2.startsWith("lineefermate"));
-        s2 = s2.substring(s2.lastIndexOf(";") + 1, s2.length());
+        s2 = s2.substring(s2.lastIndexOf(";") + 1);
         File f1 = new File(pathfile);
         File[] f2 = f1.listFiles();
         if (f2.length != 0) {
             String version = f2[f2.length - 1].getName().substring(13, f2[f2.length - 1].getName().length() - 4);
-            System.out.println("verison number: " + version);
+            Log.i("checkFile", "verison number:" + version);
             if (s2.equals(version)) {
                 return new CheckFileDate(true); //se il file è gia l'ultima verisone
             } else {
@@ -83,7 +84,7 @@ public class DownloadCSV2 {
     }
 
     private static File fileCreation(String filename) {
-        String path = pathfile + filename; //TODO percorso file row
+        String path = pathfile + filename;
         try {
             File file = new File(path);
             if (file.exists()) {
@@ -100,18 +101,18 @@ public class DownloadCSV2 {
     }
 
     private static void fileDownload(String version) {
-        URL urlObj = null;
+        URL urlObj;
         ReadableByteChannel rbcObj = null;
         FileOutputStream fOutStream = null;
         try {
             urlObj = new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=" + version + "&format=csv");
             rbcObj = Channels.newChannel(urlObj.openStream());
-            fOutStream = new FileOutputStream(pathfile + "lineefermate_" + version + ".csv");//TODO aggiustare
+            fOutStream = new FileOutputStream(pathfile + "lineefermate_" + version + ".csv");
 
             fOutStream.getChannel().transferFrom(rbcObj, 0, Long.MAX_VALUE);
-            System.out.println("! File Successfully Downloaded From The Url !");
+            Log.i("fileDownload", "File successfully downloaded");
         } catch (IOException ioExObj) {
-            System.out.println("Problem Occured While Downloading The File= " + ioExObj.getMessage());
+            Log.e("Error fileDownload",ioExObj.getMessage());
         } finally {
             try {
                 if (fOutStream != null) {
@@ -121,7 +122,7 @@ public class DownloadCSV2 {
                     rbcObj.close();
                 }
             } catch (IOException ioExObj) {
-                System.out.println("Problem Occured While Closing The Object= " + ioExObj.getMessage());
+                Log.e("Error fileDownload", ioExObj.getMessage());
             }
         }
     }
