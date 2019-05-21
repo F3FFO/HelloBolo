@@ -2,6 +2,7 @@ package com.f3ffo.hellobusbologna.hellobus;
 
 import android.util.Log;
 
+import com.f3ffo.hellobusbologna.R;
 import com.f3ffo.hellobusbologna.items.SearchListViewItem;
 import com.f3ffo.hellobusbologna.model.BusClass;
 
@@ -67,7 +68,7 @@ public class BusReader {
             String element = busClass.get(i).getStopCode();
             if (!stopsTemp.contains(element)) {
                 stopsTemp.add(element);
-                stops.add(new SearchListViewItem(element, busClass.get(i).getStopName(), busClass.get(i).getStopAddress()));
+                stops.add(new SearchListViewItem(R.drawable.ic_search, element, busClass.get(i).getStopName(), busClass.get(i).getStopAddress()));
             }
         }
         stopsTemp.clear();

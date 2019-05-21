@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayoutSearch"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
@@ -10,48 +11,71 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="12dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textViewBusStopCodeOutput"
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:fontFamily="@font/varela"
-            android:gravity="center|start"
-            android:textAlignment="textStart"
-            android:textIsSelectable="false"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@id/textViewBusStopAddressOutput"
-            app:layout_constraintEnd_toStartOf="@id/textViewBusStopNameOutput"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/prova"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textViewBusStopNameOutput"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/prova"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:fontFamily="@font/varela"
-            android:gravity="center|start"
-            android:textAlignment="textStart"
-            android:textIsSelectable="false"
-            android:textSize="18sp"
-            app:layout_constraintBottom_toTopOf="@id/textViewBusStopAddressOutput"
-            app:layout_constraintStart_toEndOf="@id/textViewBusStopCodeOutput"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textViewBusStopAddressOutput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/varela"
-            android:gravity="center|start"
-            android:textAlignment="textStart"
-            android:textIsSelectable="false"
-            android:textSize="15sp"
+            android:layout_marginStart="24dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/imageViewSearch"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewBusStopCodeSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="4dp"
+                android:fontFamily="@font/varela"
+                android:gravity="center|start"
+                android:textAlignment="textStart"
+                android:textIsSelectable="false"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@id/textViewBusStopAddressSearch"
+                app:layout_constraintEnd_toStartOf="@id/textViewBusStopNameSearch"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewBusStopNameSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginBottom="4dp"
+                android:fontFamily="@font/varela"
+                android:gravity="center|start"
+                android:textAlignment="textStart"
+                android:textIsSelectable="false"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@id/textViewBusStopAddressSearch"
+                app:layout_constraintStart_toEndOf="@id/textViewBusStopCodeSearch"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewBusStopAddressSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/varela"
+                android:gravity="center|start"
+                android:textAlignment="textStart"
+                android:textColor="@color/colorGrey"
+                android:textIsSelectable="false"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewBusStopCodeSearch" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 </RelativeLayout>

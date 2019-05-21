@@ -146,7 +146,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         RecyclerView recyclerViewBusStation = (RecyclerView) findViewById(R.id.recyclerViewBusStation);
         recyclerViewBusStation.setHasFixedSize(true);
         recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        adapter = new SearchAdapter(br.getStops());
+        adapter = new SearchAdapter(MainActivity.this, br.getStops());
         recyclerViewBusStation.setAdapter(adapter);
     }
 
@@ -186,10 +186,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public void onBackPressed() {
-        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Activity.INPUT_METHOD_SERVICE);
-        if (inputMethodManager.isActive() && getCurrentFocus() != null) {
-            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-        } else if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
+        if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);

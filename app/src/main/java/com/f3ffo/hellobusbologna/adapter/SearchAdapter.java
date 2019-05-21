@@ -1,5 +1,6 @@
 package com.f3ffo.hellobusbologna.adapter;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,6 +8,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -21,8 +23,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     private List<SearchListViewItem> outputSearchViewItemList;
     private List<SearchListViewItem> outputSearchViewItemListFull;
     private OnItemClickListener mListener;
+    private Context context;
 
-    public SearchAdapter(List<SearchListViewItem> outputSearchViewItemList) {
+    public SearchAdapter(Context context, List<SearchListViewItem> outputSearchViewItemList) {
+        this.context = context;
         this.outputSearchViewItemList = outputSearchViewItemList;
         this.outputSearchViewItemListFull = new ArrayList<>(outputSearchViewItemList);
     }
@@ -37,9 +41,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     @Override
     public void onBindViewHolder(@NonNull SearchAdapterHolder holder, int position) {
         SearchListViewItem searchListViewItem = outputSearchViewItemList.get(position);
-        holder.textViewBusStopCodeOutput.setText(searchListViewItem.getBusStopCode());
-        holder.textViewBusStopNameOutput.setText(searchListViewItem.getBusStopName());
-        holder.textViewBusStopAddressOutput.setText(searchListViewItem.getBusStopAddres());
+        holder.imageViewSearch.setImageDrawable(context.getDrawable(R.drawable.ic_search));
+        holder.textViewBusStopCodeSearch.setText(searchListViewItem.getBusStopCode());
+        holder.textViewBusStopNameSearch.setText(searchListViewItem.getBusStopName());
+        holder.textViewBusStopAddressSearch.setText(searchListViewItem.getBusStopAddres());
     }
 
     @Override
@@ -57,7 +62,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
             List<SearchListViewItem> filteredItemList = new ArrayList<>();
-
             if (constraint == null || constraint.length() == 0) {
                 filteredItemList.addAll(outputSearchViewItemListFull);
             } else {
@@ -92,13 +96,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
 
     static class SearchAdapterHolder extends RecyclerView.ViewHolder {
 
-        AppCompatTextView textViewBusStopCodeOutput, textViewBusStopNameOutput, textViewBusStopAddressOutput;
+        AppCompatTextView textViewBusStopCodeSearch, textViewBusStopNameSearch, textViewBusStopAddressSearch;
+        AppCompatImageView imageViewSearch;
 
         SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
-            textViewBusStopCodeOutput = itemView.findViewById(R.id.textViewBusStopCodeOutput);
-            textViewBusStopNameOutput = itemView.findViewById(R.id.textViewBusStopNameOutput);
-            textViewBusStopAddressOutput = itemView.findViewById(R.id.textViewBusStopAddressOutput);
+            imageViewSearch = itemView.findViewById(R.id.imageViewSearch);
+            textViewBusStopCodeSearch = itemView.findViewById(R.id.textViewBusStopCodeSearch);
+            textViewBusStopNameSearch = itemView.findViewById(R.id.textViewBusStopNameSearch);
+            textViewBusStopAddressSearch = itemView.findViewById(R.id.textViewBusStopAddressSearch);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override

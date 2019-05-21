@@ -62,6 +62,8 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
                     } else if (line.equals("NULL")) {
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
+                    } else if (line.contains("TEMPORANEAMENTE SOSPESE")) {
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
                         //------------------------------Manage output-----------------------------------
                     } else {
                         line = line.substring(line.indexOf(":") + 2);
@@ -70,7 +72,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                             StringTokenizer token = new StringTokenizer(line, ",");
                             while (token.hasMoreTokens()) {
                                 String util = token.nextToken();
-                                int isHandicap = R.drawable.ic_handicap_default;
+                                int isHandicap = 0;
                                 if (util.contains("CON PEDANA")) {
                                     isHandicap = R.drawable.ic_handicap_green;
                                 } else if (util.contains("SENZA PEDANA")) {
@@ -83,13 +85,17 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
+                                if (isHandicap != 0) {
+                                    outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
+                                } else {
+                                    outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite));
+                                }
                             }
                         } else {
                             StringTokenizer token = new StringTokenizer(line, ",");
                             while (token.hasMoreTokens()) {
                                 String util = token.nextToken();
-                                int isHandicap = R.drawable.ic_handicap_default; //TODO CHANGE WITH SOMETHING USER FRIENDLY
+                                int isHandicap = 0;
                                 if (util.contains("CON PEDANA")) {
                                     isHandicap = R.drawable.ic_handicap_green;
                                 } else if (util.contains("SENZA PEDANA")) {
@@ -102,7 +108,11 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
+                                if (isHandicap != 0) {
+                                    outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
+                                } else {
+                                    outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite));
+                                }
                             }
                         }
                     }
