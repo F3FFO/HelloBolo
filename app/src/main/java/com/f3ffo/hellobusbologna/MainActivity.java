@@ -16,14 +16,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import android.app.Activity;
 import android.app.TimePickerDialog;
 import android.os.Bundle;
 import android.os.Handler;
@@ -32,7 +29,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -89,7 +85,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 spinnerBusCode.setVisibility(View.VISIBLE);
                 textViewBusHour.setVisibility(View.VISIBLE);
                 busCodeText.setVisibility(View.VISIBLE);
-                searchViewBusStopName.setText(br.getStopName());
+                if (br.getStopName().length() > 13) {
+                    String busStopNameSub = br.getStopName().substring(0, 16);
+                    searchViewBusStopName.setText(busStopNameSub + "...");
+                } else {
+                    searchViewBusStopName.setText(br.getStopName());
+                }
+
             }
         });
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
@@ -131,12 +133,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
             @Override
             public void onClick(View v) {
-                if (spinnerBusCode.getSelectedItem().toString().equals("Tutti gli autobus")) {
-                    busLine = "";
-                    checkBus(busStop, busLine, busHour);
+                if (!busHour.isEmpty() && !busLine.isEmpty() && !busStop.isEmpty()) {
+                    if (spinnerBusCode.getSelectedItem().toString().equals("Tutti gli autobus")) {
+                        busLine = "";
+                        checkBus(busStop, busLine, busHour);
+                    } else {
+                        busLine = spinnerBusCode.getSelectedItem().toString();
+                        checkBus(busStop, busLine, busHour);
+                    }
                 } else {
-                    busLine = spinnerBusCode.getSelectedItem().toString();
-                    checkBus(busStop, busLine, busHour);
+                    Toast.makeText(MainActivity.this, "Fermata mancante", Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -250,29 +256,31 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
-        if (!("ERRORE").equals(output.get(0).getError()) && "".equals(busHour)) {
-            Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
-            String diffTime;
-            for (int i = 0; i < output.size(); i++) {
-                StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
-                int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
-                int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
-                if (diffHour == 0 || diffHour < 0) {
-                    diffTime = diffMin + " min";
-                } else if (diffMin < 0) {
-                    diffTime = 60 + diffMin + " min";
-                } else {
-                    diffTime = diffHour + ":" + diffMin + " min";
+        if (!(output.get(0).getError()).contains("NON GESTITA") || !(output.get(0).getError()).contains("ASSENTE") || !(output.get(0).getError()).contains("ERRORE")) {
+            if ("".equals(busHour)) {
+                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+                String diffTime;
+                for (int i = 0; i < output.size(); i++) {
+                    StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
+                    int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
+                    int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
+                    if (diffHour == 0 || diffHour < 0) {
+                        diffTime = diffMin + " min";
+                    } else if (diffMin < 0) {
+                        diffTime = 60 + diffMin + " min";
+                    } else {
+                        diffTime = diffHour + ":" + diffMin + " min";
+                    }
+                    outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
+                    OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
+                    recyclerViewBusOutput.setAdapter(adapter);
                 }
-                outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
-                OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
-                recyclerViewBusOutput.setAdapter(adapter);
-            }
-        } else if (!("ERRORE").equals(output.get(0).getError())) {
-            for (int i = 0; i < output.size(); i++) {
-                outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), output.get(i).getBusHourComplete(), "", output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
-                OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
-                recyclerViewBusOutput.setAdapter(adapter);
+            } else {
+                for (int i = 0; i < output.size(); i++) {
+                    outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), output.get(i).getBusHourComplete(), "", output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
+                    OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
+                    recyclerViewBusOutput.setAdapter(adapter);
+                }
             }
         } else {
             outputCardViewItemList.add(new OutputCardViewItem(output.get(0).getErrorImage(), output.get(0).getError()));

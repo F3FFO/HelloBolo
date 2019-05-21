@@ -56,10 +56,12 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                 if (!line.startsWith("<?xml")) {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     //------------------------------Manage error-----------------------------------
-                    if (line.startsWith("HellobusHelp")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
+                    if (line.contains("FERMATA " + busStop + " NON GESTITA")) {
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "FERMATA " + busStop + " NON GESTITA"));
+                    } else if (line.contains("LINEA " + busLine + " NON GESTITA")) {
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "LINEA " + busLine + " NON GESTITA"));
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "LINEA " + busLine + " ASSENTE"));
                     } else if (line.equals("NULL")) {
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
                     } else if (line.contains("TEMPORANEAMENTE SOSPESE")) {
