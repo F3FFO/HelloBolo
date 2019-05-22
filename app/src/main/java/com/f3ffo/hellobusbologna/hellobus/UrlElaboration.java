@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardViewItem>> {
+public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewItem>> {
     private String busStop = "";
     private String busLine = "";
     private String busHour = "";
@@ -68,6 +68,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
                         //------------------------------Manage output-----------------------------------
                     } else {
+                        outputCardViewItemList.add(new OutputCardViewItem(0, ""));
                         line = line.substring(line.indexOf(":") + 2);
                         if (line.startsWith("(")) {
                             line = line.substring(line.indexOf("(") + 9);
@@ -87,11 +88,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                if (isHandicap != 0) {
-                                    outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
-                                } else {
-                                    outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite));
-                                }
+                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
                             }
                         } else {
                             StringTokenizer token = new StringTokenizer(line, ",");
@@ -110,11 +107,7 @@ public class UrlElaboration extends AsyncTask<Void, Integer, List<OutputCardView
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                if (isHandicap != 0) {
-                                    outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
-                                } else {
-                                    outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite));
-                                }
+                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
                             }
                         }
                     }

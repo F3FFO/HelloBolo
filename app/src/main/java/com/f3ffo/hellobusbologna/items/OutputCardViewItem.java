@@ -12,13 +12,6 @@ public class OutputCardViewItem {
         this.handicap = handicap;
     }
 
-    public OutputCardViewItem(String busNumber, String busHour, String busHourComplete, int satelliteOrHour) {
-        this.busNumber = busNumber;
-        this.busHour = busHour;
-        this.busHourComplete = busHourComplete;
-        this.satelliteOrHour = satelliteOrHour;
-    }
-
     public OutputCardViewItem(int errorImage, String error) {
         this.errorImage = errorImage;
         this.error = error;

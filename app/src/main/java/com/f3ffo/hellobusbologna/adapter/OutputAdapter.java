@@ -41,7 +41,11 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
         holder.textViewBusHourOutput.setText(outputCardViewItem.getBusHour());
         holder.textViewBusHourCompleteOutput.setText(outputCardViewItem.getBusHourComplete());
         holder.imageViewSatOrTable.setImageDrawable(context.getDrawable(outputCardViewItem.getSatelliteOrHour()));
-        holder.imageViewHandicap.setImageDrawable(context.getDrawable(outputCardViewItem.getHandicap()));
+        int isHandicap = outputCardViewItem.getHandicap();
+        if (isHandicap != 0) {
+            holder.imageViewHandicap.setImageDrawable(context.getDrawable(isHandicap));
+        }
+
     }
 
     @Override
