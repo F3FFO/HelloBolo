@@ -2,6 +2,10 @@ apply plugin: 'com.android.application'
 
 android {
     compileSdkVersion 28
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
     defaultConfig {
         applicationId "com.f3ffo.hellobusbologna"
         minSdkVersion 23
@@ -30,4 +34,5 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.0.0'
     implementation 'com.lapism:searchview:27.1.1.0.0'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.2'
 }
