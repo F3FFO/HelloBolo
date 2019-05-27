@@ -36,41 +36,40 @@ public class DownloadCsvAndroidO extends AsyncTask<Void, Void, Void> {
             } while (!versionUpdate.startsWith("lineefermate"));
             this.version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
         } catch (IOException e) {
-            Log.e("ERROR: ", e.getMessage());
+            Log.e("ERROR checkFile: ", e.getMessage());
         }
     }
 
     @Override
     protected Void doInBackground(Void... voids) {
         checkFile();
-        File[] listFiles = new File(context.getFilesDir().getAbsolutePath()).listFiles();
+        File[] listFiles = context.getFilesDir().listFiles();
         for (File listFile : listFiles) {
             if (!listFile.getName().contains(this.version)) {
-                URL urlObj;
-                ReadableByteChannel rbcObj = null;
-                FileOutputStream outputStream = null;
+                if (listFile.delete()) {
+                    Log.i("FILE DELETED: ", listFile.getName());
+                }
+            }
+        }
+        File[] listFiles2 = context.getFilesDir().listFiles();
+        if (listFiles2.length == 0 || !listFiles2[0].getName().contains(this.version)) {
+            ReadableByteChannel readableByteChannel = null;
+            FileOutputStream outputStream = null;
+            try {
+                URL url = new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=" + version + "&format=csv");
+                readableByteChannel = Channels.newChannel(url.openStream());
+                outputStream = context.openFileOutput("lineefermate_" + version + ".csv", Context.MODE_PRIVATE);
+                outputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
+            } catch (IOException e) {
+                Log.e("ERROR fileDownloadO: ", e.getMessage());
+            } finally {
                 try {
-                    urlObj = new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=" + version + "&format=csv");
-                    rbcObj = Channels.newChannel(urlObj.openStream());
-                    outputStream = context.openFileOutput("lineefermate_" + version + ".csv", Context.MODE_PRIVATE);
-                    outputStream = context.openFileOutput("lineefermate_" + version + ".csv", Context.MODE_PRIVATE);
-                    outputStream.getChannel().transferFrom(rbcObj, 0, Long.MAX_VALUE);
-                    Log.i("fileDownload", "File successfully downloaded");
+                    if (outputStream != null && readableByteChannel != null) {
+                        outputStream.close();
+                        readableByteChannel.close();
+                    }
                 } catch (IOException e) {
-                    Log.e("Error fileDownload", e.getMessage());
-                } finally {
-                    if (!listFile.getName().equals("lineefermate_" + this.version + ".csv")) {
-                        listFile.delete();
-                        Log.i("File eliminato: ", listFile.getName());
-                    }
-                    try {
-                        if (outputStream != null && rbcObj != null) {
-                            outputStream.close();
-                            rbcObj.close();
-                        }
-                    } catch (IOException ioExObj) {
-                        Log.e("Error fileDownload", ioExObj.getMessage());
-                    }
+                    Log.e("ERROR closeDownload: ", e.getMessage());
                 }
             }
         }

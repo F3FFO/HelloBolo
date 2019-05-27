@@ -45,7 +45,7 @@ public class DownloadCSV extends AsyncTask<Void, Void, Void> {
     protected Void doInBackground(Void... voids) {
         try {
             // Checking If The File Exists At The Specified Location Or Not
-            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) { //TODO check for old version without if
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
                 Path filePathObj = Paths.get(pathfile);
                 CheckFileDate check = checkFile();
                 if (new File(filePathObj.toString()).exists()) {
