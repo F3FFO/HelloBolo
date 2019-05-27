@@ -3,7 +3,7 @@ package com.f3ffo.hellobusbologna.hellobus;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.f3ffo.hellobusbologna.AsyncResponse;
+import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
 import com.f3ffo.hellobusbologna.R;
 import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
 

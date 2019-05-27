@@ -78,10 +78,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
             return result;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             outputSearchViewItemList.clear();
-            outputSearchViewItemList.addAll((List) results.values);
+            outputSearchViewItemList.addAll((List<SearchListViewItem>) results.values);
             notifyDataSetChanged();
         }
     };
@@ -106,14 +107,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
             textViewBusStopNameSearch = itemView.findViewById(R.id.textViewBusStopNameSearch);
             textViewBusStopAddressSearch = itemView.findViewById(R.id.textViewBusStopAddressSearch);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (listener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            listener.onItemClick(position);
-                        }
+            itemView.setOnClickListener((View v) -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(position);
                     }
                 }
             });

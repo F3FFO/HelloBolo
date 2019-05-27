@@ -3,6 +3,7 @@ package com.f3ffo.hellobusbologna;
 import com.f3ffo.hellobusbologna.adapter.OutputAdapter;
 import com.f3ffo.hellobusbologna.adapter.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.adapter.SearchAdapter;
+import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
 import com.f3ffo.hellobusbologna.fragment.TimePickerFragment;
 import com.f3ffo.hellobusbologna.hellobus.BusReader;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
@@ -22,15 +23,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.TimePickerDialog;
-import android.content.Context;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -60,13 +58,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        viewFlipper = (ViewFlipper) findViewById(R.id.viewflipper);
-        spinnerBusCode = (AppCompatSpinner) findViewById(R.id.spinnerBusCode);
-        textViewBusHour = (AppCompatTextView) findViewById(R.id.textViewBusHour);
-        busCodeText = (AppCompatTextView) findViewById(R.id.busCodeText);
-        FloatingActionButton fabBus = (FloatingActionButton) findViewById(R.id.fabBus);
-        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefreshLayout);
-        searchViewBusStopName = (SearchView) findViewById(R.id.searchViewBusStopName);
+        viewFlipper = findViewById(R.id.viewflipper);
+        spinnerBusCode = findViewById(R.id.spinnerBusCode);
+        textViewBusHour = findViewById(R.id.textViewBusHour);
+        busCodeText = findViewById(R.id.busCodeText);
+        FloatingActionButton fabBus = findViewById(R.id.fabBus);
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
 
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         buildRecyclerViewSearch();
@@ -98,7 +96,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 spinnerBusCode.setVisibility(View.GONE);
                 textViewBusHour.setVisibility(View.GONE);
                 busCodeText.setVisibility(View.GONE);
-                viewFlipper.setDisplayedChild(2);
+                viewFlipper.setDisplayedChild(1);
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
 
                     @Override
@@ -137,7 +135,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     }
 
     public void buildRecyclerViewSearch() {
-        RecyclerView recyclerViewBusStation = (RecyclerView) findViewById(R.id.recyclerViewBusStation);
+        RecyclerView recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
         recyclerViewBusStation.setHasFixedSize(true);
         recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         adapter = new SearchAdapter(MainActivity.this, br.getStops());
@@ -218,13 +216,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     @Override
     public void onRefresh() {
         checkBus(busStop, busLine, busHour);
-        new Handler().postDelayed(() -> swipeRefreshLayout.setRefreshing(false), 3000);
-        Toast.makeText(MainActivity.this, "Aggiornato!", Toast.LENGTH_LONG).show();
+        Toast.makeText(MainActivity.this, "Aggiornato!", Toast.LENGTH_SHORT).show();
+        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void processStart() {
-        viewFlipper.setDisplayedChild(0);
         RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
         progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
@@ -235,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public void processFinish(List<OutputCardViewItem> output) {
-        RecyclerView recyclerViewBusOutput = (RecyclerView) findViewById(R.id.recyclerViewBusOutput);
+        RecyclerView recyclerViewBusOutput = findViewById(R.id.recyclerViewBusOutput);
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
@@ -270,7 +267,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             OutputErrorAdapter adapter = new OutputErrorAdapter(MainActivity.this, outputCardViewItemList);
             recyclerViewBusOutput.setAdapter(adapter);
         }
-        viewFlipper.setDisplayedChild(1);
+        viewFlipper.setDisplayedChild(0);
         progressBar.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }

@@ -5,16 +5,19 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import static com.f3ffo.hellobusbologna.MainActivity.br;
+import com.f3ffo.hellobusbologna.hellobus.DownloadCsvAndroidO;
 
 public class SplashActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        br.extractFromFile(getResources().openRawResource(R.raw.lineefermate_20190501));
-        br.stopsViewer();
-        startActivity(new Intent(this, MainActivity.class));
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+            new DownloadCsvAndroidO(SplashActivity.this).execute();
+        }
+        MainActivity.br.extractFromFile(SplashActivity.this);
+        MainActivity.br.stopsViewer();
+        startActivity(new Intent(SplashActivity.this, MainActivity.class));
         finish();
     }
 }

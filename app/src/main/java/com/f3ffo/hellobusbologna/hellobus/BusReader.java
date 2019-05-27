@@ -1,5 +1,6 @@
 package com.f3ffo.hellobusbologna.hellobus;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.f3ffo.hellobusbologna.R;
@@ -7,8 +8,8 @@ import com.f3ffo.hellobusbologna.items.SearchListViewItem;
 import com.f3ffo.hellobusbologna.model.BusClass;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -28,9 +29,10 @@ public class BusReader {
         return stops;
     }
 
-    public void extractFromFile(InputStream file) {
+    public void extractFromFile(Context context) {
+        File[] listFiles = context.getFilesDir().listFiles();
         try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(file, StandardCharsets.UTF_8));
+            BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFiles[0].getName()), StandardCharsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("codice_linea")) {
@@ -43,7 +45,6 @@ public class BusReader {
                 }
             }
             br.close();
-            file.close();
         } catch (IOException e) {
             Log.e("ERROR extractFromFile: ", e.getMessage());
             busClass.clear();

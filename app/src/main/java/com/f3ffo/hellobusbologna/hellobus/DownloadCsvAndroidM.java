@@ -1,5 +1,4 @@
 package com.f3ffo.hellobusbologna.hellobus;
 
-public class Favourites {
-
+public class DownloadCsvAndroidM {
 }
