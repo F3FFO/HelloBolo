@@ -43,7 +43,13 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
     @Override
     protected void onPreExecute() {
         super.onPreExecute();
-        delegate.processStart();
+        this.delegate.processStart();
+    }
+
+    @Override
+    protected void onProgressUpdate(Void... values) {
+        super.onProgressUpdate(values);
+        this.delegate.progressUpdate();
     }
 
     @Override

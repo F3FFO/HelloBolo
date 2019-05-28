@@ -79,8 +79,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);
-            if (br.getStopName().length() > 16) {
-                String busStopNameSub = br.getStopName().substring(0, 16);
+            if (br.getStopName().length() > 18) {
+                String busStopNameSub = br.getStopName().substring(0, 18);
                 searchViewBusStopName.setText(busStopNameSub + "...");
             } else {
                 searchViewBusStopName.setText(br.getStopName());
@@ -231,6 +231,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     }
 
     @Override
+    public void progressUpdate() {
+        //TODO show processDialog android
+    }
+
+    @Override
     public void processFinish(List<OutputCardViewItem> output) {
         RecyclerView recyclerViewBusOutput = findViewById(R.id.recyclerViewBusOutput);
         recyclerViewBusOutput.setHasFixedSize(true);
@@ -280,7 +285,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             ue.setBusStop(busStop);
             ue.setBusLine(busLine);
             ue.setBusHour(busHour);
-            ue.execute();
+            ue.execute().get();
         } catch (Exception e) {
             Log.e("ERROR checkBus: ", e.getMessage());
         }

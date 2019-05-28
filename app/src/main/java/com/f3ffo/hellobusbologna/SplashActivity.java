@@ -2,6 +2,7 @@ package com.f3ffo.hellobusbologna;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,10 +14,14 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            new DownloadCsvAndroidO(SplashActivity.this).execute();
-        } else {
-            new DownloadCsvAndroidM(SplashActivity.this).execute();
+        try {
+            if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                new DownloadCsvAndroidO(SplashActivity.this).execute().get();
+            } else {
+                new DownloadCsvAndroidM(SplashActivity.this).execute().get();
+            }
+        } catch (Exception e) {
+            Log.e("ERROR: ", e.getMessage());
         }
         //TODO if for wait the result of AsyncTask
         MainActivity.br.extractFromFile(SplashActivity.this);
