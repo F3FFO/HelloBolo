@@ -3,15 +3,15 @@ package com.f3ffo.hellobusbologna.model;
 public class BusClass {
 
     private String busCode;
-    private String stopCode;
-    private String stopName;
-    private String stopAddress;
+    private String busStopCode;
+    private String busStopName;
+    private String busStopAddress;
 
-    public BusClass(String busCode, String stopCode, String stopName, String stopAddress) {
+    public BusClass(String busCode, String busStopCode, String busStopName, String busStopAddress) {
         this.busCode = busCode;
-        this.stopCode = stopCode;
-        this.stopName = stopName;
-        this.stopAddress = stopAddress;
+        this.busStopCode = busStopCode;
+        this.busStopName = busStopName;
+        this.busStopAddress = busStopAddress;
     }
 
     public String getbusCode() {
@@ -22,27 +22,35 @@ public class BusClass {
         this.busCode = busCode;
     }
 
-    public String getStopCode() {
-        return stopCode;
+    public String getBusCode() {
+        return busCode;
     }
 
-    public void setStopCode(String stopCode) {
-        this.stopCode = stopCode;
+    public void setBusCode(String busCode) {
+        this.busCode = busCode;
     }
 
-    public String getStopName() {
-        return stopName;
+    public String getBusStopCode() {
+        return busStopCode;
     }
 
-    public void setStopName(String stopName) {
-        this.stopName = stopName;
+    public void setBusStopCode(String busStopCode) {
+        this.busStopCode = busStopCode;
     }
 
-    public String getStopAddress() {
-        return stopAddress;
+    public String getBusStopName() {
+        return busStopName;
     }
 
-    public void setStopAddress(String stopAddress) {
-        this.stopAddress = stopAddress;
+    public void setBusStopName(String busStopName) {
+        this.busStopName = busStopName;
+    }
+
+    public String getBusStopAddress() {
+        return busStopAddress;
+    }
+
+    public void setBusStopAddress(String busStopAddress) {
+        this.busStopAddress = busStopAddress;
     }
 }

@@ -21,9 +21,8 @@ public class SplashActivity extends AppCompatActivity {
                 new DownloadCsvAndroidM(SplashActivity.this).execute().get();
             }
         } catch (Exception e) {
-            Log.e("ERROR: ", e.getMessage());
+            Log.e("ERROR SplashActivity: ", e.getMessage());
         }
-        //TODO if for wait the result of AsyncTask
         MainActivity.br.extractFromFile(SplashActivity.this);
         MainActivity.br.stopsViewer();
         startActivity(new Intent(SplashActivity.this, MainActivity.class));

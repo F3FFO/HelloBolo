@@ -47,12 +47,6 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
     }
 
     @Override
-    protected void onProgressUpdate(Void... values) {
-        super.onProgressUpdate(values);
-        this.delegate.progressUpdate();
-    }
-
-    @Override
     protected List<OutputCardViewItem> doInBackground(Void... params) {
         List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
         try {

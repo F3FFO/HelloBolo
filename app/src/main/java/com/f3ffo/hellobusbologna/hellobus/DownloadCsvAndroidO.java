@@ -45,14 +45,14 @@ public class DownloadCsvAndroidO extends AsyncTask<Void, Void, Void> {
         checkFile();
         File[] listFiles = context.getFilesDir().listFiles();
         for (File listFile : listFiles) {
-            if (!listFile.getName().contains(this.version)) {
+            if (!listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
                 if (listFile.delete()) {
                     Log.i("FILE DELETED: ", listFile.getName());
                 }
             }
         }
         File[] listFiles2 = context.getFilesDir().listFiles();
-        if (listFiles2.length == 0 || !listFiles2[0].getName().contains(this.version)) {
+        if (listFiles2.length == 0) {
             ReadableByteChannel readableByteChannel = null;
             FileOutputStream outputStream = null;
             try {

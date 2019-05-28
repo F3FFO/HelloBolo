@@ -6,6 +6,5 @@ import java.util.List;
 
 public interface AsyncResponse {
     void processStart();
-    void progressUpdate();
     void processFinish(List<OutputCardViewItem> output);
 }

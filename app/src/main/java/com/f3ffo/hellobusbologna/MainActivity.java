@@ -79,11 +79,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);
-            if (br.getStopName().length() > 18) {
-                String busStopNameSub = br.getStopName().substring(0, 18);
+            if (br.getBusStopName().length() > 18) {
+                String busStopNameSub = br.getBusStopName().substring(0, 18);
                 searchViewBusStopName.setText(busStopNameSub + "...");
             } else {
-                searchViewBusStopName.setText(br.getStopName());
+                searchViewBusStopName.setText(br.getBusStopName());
             }
         });
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
@@ -131,6 +131,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             } else {
                 Toast.makeText(MainActivity.this, "Fermata mancante", Toast.LENGTH_LONG).show();
             }
+        });
+        searchViewBusStopName.setOnLogoClickListener(() -> {
+            //TODO open menu and show
         });
     }
 
@@ -187,6 +190,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             spinnerBusCode.setVisibility(View.GONE);
             textViewBusHour.setVisibility(View.GONE);
             busCodeText.setVisibility(View.GONE);
+            searchViewBusStopName.setText("");
             viewFlipper.setDisplayedChild(0);
         } else {
             super.onBackPressed();
@@ -228,11 +232,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         params.addRule(RelativeLayout.CENTER_IN_PARENT);
         relativeLayoutProgressBar.addView(progressBar, params);
         progressBar.setVisibility(View.VISIBLE);
-    }
-
-    @Override
-    public void progressUpdate() {
-        //TODO show processDialog android
     }
 
     @Override
@@ -285,7 +284,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             ue.setBusStop(busStop);
             ue.setBusLine(busLine);
             ue.setBusHour(busHour);
-            ue.execute().get();
+            ue.execute();
         } catch (Exception e) {
             Log.e("ERROR checkBus: ", e.getMessage());
         }

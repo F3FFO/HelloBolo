@@ -19,10 +19,10 @@ import java.util.StringTokenizer;
 public class BusReader {
     private ArrayList<BusClass> busClass = new ArrayList<>();
     private List<SearchListViewItem> stops = new ArrayList<>();
-    private String stopName;
+    private String busStopName;
 
-    public String getStopName() {
-        return stopName;
+    public String getBusStopName() {
+        return busStopName;
     }
 
     public List<SearchListViewItem> getStops() {
@@ -51,13 +51,13 @@ public class BusReader {
         }
     }
 
-    public ArrayList<String> busViewer(String stopCodeIn) {
+    public ArrayList<String> busViewer(String busStopCodeIn) {
         ArrayList<String> bus = new ArrayList<>();
         bus.add(0, "Tutti gli autobus");
         for (int i = 0; i < busClass.size(); i++) {
-            if (busClass.get(i).getStopCode().equals(stopCodeIn)) {
+            if (busClass.get(i).getBusStopCode().equals(busStopCodeIn)) {
                 bus.add(busClass.get(i).getbusCode());
-                this.stopName = busClass.get(i).getStopName();
+                this.busStopName = busClass.get(i).getBusStopName();
             }
         }
         return bus;
@@ -66,10 +66,10 @@ public class BusReader {
     public void stopsViewer() {
         ArrayList<String> stopsTemp = new ArrayList<>();
         for (int i = 0; i < busClass.size(); i++) {
-            String element = busClass.get(i).getStopCode();
+            String element = busClass.get(i).getBusStopCode();
             if (!stopsTemp.contains(element)) {
                 stopsTemp.add(element);
-                stops.add(new SearchListViewItem(R.drawable.ic_search, element, busClass.get(i).getStopName(), busClass.get(i).getStopAddress()));
+                stops.add(new SearchListViewItem(R.drawable.ic_search, element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress()));
             }
         }
         stopsTemp.clear();
