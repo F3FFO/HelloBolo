@@ -44,10 +44,10 @@ public class DownloadCsvAndroidM extends AsyncTask<Void, Void, Void> {
         checkFile();
         File[] listFiles = context.getFilesDir().listFiles();
         for (File listFile : listFiles) {
-            if (!listFile.getName().contains(this.version)) {
-                if (listFile.delete()) { //TODO review delete
-                    Log.i("FILE DELETED: ", listFile.getName());
-                }
+            if (!listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
+                try {
+                FileUtils.forceDelete(listFile);
+                Log.i("FILE DELETED: ", listFile.getName());
             }
         }
         File[] listFiles2 = context.getFilesDir().listFiles();
