@@ -47,7 +47,7 @@ public class DownloadCsvAndroidO extends AsyncTask<Void, Void, Void> {
         for (File listFile : listFiles) {
             if (!listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
                 if (listFile.delete()) {
-                    Log.i("FILE DELETED: ", listFile.getName());
+                    Log.i("FILE DELETED_O", listFile.getName());
                 }
             }
         }
@@ -61,7 +61,7 @@ public class DownloadCsvAndroidO extends AsyncTask<Void, Void, Void> {
                 outputStream = context.openFileOutput("lineefermate_" + version + ".csv", Context.MODE_PRIVATE);
                 outputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
             } catch (IOException e) {
-                Log.e("ERROR fileDownloadO: ", e.getMessage());
+                Log.e("ERROR fileDownload_O", e.getMessage());
             } finally {
                 try {
                     if (outputStream != null && readableByteChannel != null) {
@@ -69,7 +69,7 @@ public class DownloadCsvAndroidO extends AsyncTask<Void, Void, Void> {
                         readableByteChannel.close();
                     }
                 } catch (IOException e) {
-                    Log.e("ERROR closeDownload: ", e.getMessage());
+                    Log.e("ERROR closeDownload", e.getMessage());
                 }
             }
         }

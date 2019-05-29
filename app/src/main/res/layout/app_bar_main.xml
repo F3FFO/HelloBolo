@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:theme="@style/AppTheme.AppBarOverlay">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.lapism.searchview.widget.SearchView
+                android:id="@+id/searchViewBusStopName"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_constraintBottom_toTopOf="@id/busCodeText"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:search_hint="@string/busStopNameText"
+                app:search_logo="hamburger_arrow"
+                app:search_shadow="false"
+                app:search_shape="rounded"
+                app:search_text_style="normal"
+                app:search_theme="play"
+                app:search_version="toolbar"
+                app:search_version_margins="bar" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/busCodeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:layout_marginStart="32dp"
+                android:clickable="false"
+                android:contextClickable="false"
+                android:fontFamily="@font/varela"
+                android:gravity="center"
+                android:selectAllOnFocus="false"
+                android:text="@string/busCodeText"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/textViewBusHour"
+                app:layout_constraintEnd_toStartOf="@id/spinnerBusCode"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/searchViewBusStopName" />
+
+            <androidx.appcompat.widget.AppCompatSpinner
+                android:id="@+id/spinnerBusCode"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center|start|end"
+                android:gravity="center"
+                android:minWidth="100dp"
+                android:spinnerMode="dialog"
+                android:visibility="gone"
+                app:layout_constraintBottom_toTopOf="@id/textViewBusHour"
+                app:layout_constraintStart_toEndOf="@id/busCodeText"
+                app:layout_constraintTop_toBottomOf="@id/searchViewBusStopName" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewBusHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginBottom="8dp"
+                android:fontFamily="@font/varela"
+                android:text="@string/busHourText"
+                android:textAlignment="center"
+                android:textColor="@color/colorWhite"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/busCodeText" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <include layout="@layout/content_main" />
+
+    <RelativeLayout
+        android:id="@+id/relativeLayoutProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+    </RelativeLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabBus"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="@dimen/fab_margin"
+        app:srcCompat="@drawable/ic_bus" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

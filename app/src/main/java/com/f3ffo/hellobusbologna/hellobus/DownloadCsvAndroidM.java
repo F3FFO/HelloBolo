@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.view.View;
 
 import org.apache.commons.io.FileUtils;
 
@@ -46,17 +47,19 @@ public class DownloadCsvAndroidM extends AsyncTask<Void, Void, Void> {
         for (File listFile : listFiles) {
             if (!listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
                 try {
-                FileUtils.forceDelete(listFile);
-                Log.i("FILE DELETED: ", listFile.getName());
+                    FileUtils.forceDelete(new File(context.getFilesDir() + "/" + listFile.getName()));
+                } catch (IOException e) {
+                    Log.e("FILE DELETED_M", listFile.getName());
+                }
             }
         }
         File[] listFiles2 = context.getFilesDir().listFiles();
-        if (listFiles2.length == 0 || !listFiles2[0].getName().contains(this.version)) {
+        if (listFiles2.length != 0) {
             try {
                 URL url = new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=" + version + "&format=csv");
                 FileUtils.copyURLToFile(url, new File(context.getFilesDir() + "/lineefermate_" + version + ".csv"));
             } catch (IOException e) {
-                Log.e("ERROR fileDownloadM: ", e.getMessage());
+                Log.e("ERROR fileDownload_M", e.getMessage());
             }
         }
         return null;
