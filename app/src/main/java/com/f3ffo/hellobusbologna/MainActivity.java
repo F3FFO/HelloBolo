@@ -65,6 +65,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        busStop = "";
         viewFlipper = findViewById(R.id.viewflipper);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         textViewBusHour = findViewById(R.id.textViewBusHour);
@@ -112,8 +113,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 spinnerBusCode.setVisibility(View.GONE);
                 textViewBusHour.setVisibility(View.GONE);
                 busCodeText.setVisibility(View.GONE);
-                textViewSwipeToRefresh.setVisibility(View.GONE);
-                swipeRefreshLayout.setEnabled(false);
                 outputCardViewItemList.clear();
                 viewFlipper.setDisplayedChild(1);
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
@@ -314,6 +313,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             ue.execute();
         } catch (Exception e) {
             Log.e("ERROR checkBus: ", e.getMessage());
+        } finally {
+            textViewSwipeToRefresh.setVisibility(View.GONE);
+            swipeRefreshLayout.setEnabled(false);
         }
     }
 }
