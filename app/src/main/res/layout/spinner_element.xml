@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="55dp"
     android:ellipsize="marquee"
-    android:fontFamily="@font/varela"
+    android:fontFamily="@font/lato"
     android:gravity="center"
     android:hapticFeedbackEnabled="true"
     android:singleLine="true"

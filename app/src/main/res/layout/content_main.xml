@@ -34,6 +34,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="32dp"
+            android:fontFamily="@font/lato"
             android:text="@string/swipeToRefresh"
             android:textColor="@color/colorGrey"
             android:textSize="14sp"

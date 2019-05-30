@@ -31,23 +31,27 @@ public class BusReader {
 
     public void extractFromFile(Context context) {
         File[] listFiles = context.getFilesDir().listFiles();
-        try {
-            BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFiles[0].getName()), StandardCharsets.UTF_8));
-            String line;
-            while ((line = br.readLine()) != null) {
-                if (!line.startsWith("codice_linea")) {
-                    StringTokenizer token = new StringTokenizer(line, ";");
-                    String busCode = token.nextToken();
-                    String stopCode = token.nextToken();
-                    String stopName = token.nextToken();
-                    String stopAddress = token.nextToken();
-                    busClass.add(new BusClass(busCode, stopCode, stopName, stopAddress));
+        for (File listFile : listFiles) {
+            if (!listFile.isDirectory()) {
+                try {
+                    BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        if (!line.startsWith("codice_linea")) {
+                            StringTokenizer token = new StringTokenizer(line, ";");
+                            String busCode = token.nextToken();
+                            String stopCode = token.nextToken();
+                            String stopName = token.nextToken();
+                            String stopAddress = token.nextToken();
+                            busClass.add(new BusClass(busCode, stopCode, stopName, stopAddress));
+                        }
+                    }
+                    br.close();
+                } catch (IOException e) {
+                    Log.e("ERROR extractFromFile: ", e.getMessage());
+                    busClass.clear();
                 }
             }
-            br.close();
-        } catch (IOException e) {
-            Log.e("ERROR extractFromFile: ", e.getMessage());
-            busClass.clear();
         }
     }
 

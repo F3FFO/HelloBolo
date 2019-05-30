@@ -9,6 +9,7 @@
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         android:theme="@style/AppTheme.AppBarOverlay">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,17 +40,16 @@
                 android:layout_marginStart="32dp"
                 android:clickable="false"
                 android:contextClickable="false"
-                android:fontFamily="@font/varela"
+                android:fontFamily="@font/lato"
                 android:gravity="center"
                 android:selectAllOnFocus="false"
                 android:text="@string/busCodeText"
                 android:textAlignment="center"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/colorGreyMaterial"
                 android:textIsSelectable="false"
                 android:textSize="20sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toTopOf="@id/textViewBusHour"
-                app:layout_constraintEnd_toStartOf="@id/spinnerBusCode"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/searchViewBusStopName" />
 
@@ -72,10 +72,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
                 android:layout_marginBottom="8dp"
-                android:fontFamily="@font/varela"
+                android:fontFamily="@font/lato"
                 android:text="@string/busHourText"
                 android:textAlignment="center"
-                android:textColor="@color/colorWhite"
+                android:textColor="@color/colorGreyMaterial"
                 android:textSize="20sp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"

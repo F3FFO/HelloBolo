@@ -45,9 +45,11 @@ public class DownloadCsvAndroidO extends AsyncTask<Void, Void, Void> {
         checkFile();
         File[] listFiles = context.getFilesDir().listFiles();
         for (File listFile : listFiles) {
-            if (!listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
-                if (listFile.delete()) {
-                    Log.i("FILE DELETED_O", listFile.getName());
+            if (!listFile.isDirectory()) {
+                if (!listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
+                    if (listFile.delete()) {
+                        Log.i("FILE DELETED_O", listFile.getName());
+                    }
                 }
             }
         }

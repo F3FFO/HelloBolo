@@ -1,31 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relativeLayoutSearch"
     android:layout_width="match_parent"
-    android:layout_height="55dp">
+    android:layout_height="wrap_content">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutSearchItem"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="10dp">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp">
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imageViewSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/textViewLayout"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/textViewLayout"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/imageViewSearch"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -33,58 +34,44 @@
                 android:id="@+id/textViewBusStopNameSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:fontFamily="@font/varela"
+                android:fontFamily="@font/lato"
                 android:gravity="center|start"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorGreyMaterial"
                 android:textIsSelectable="false"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toTopOf="@id/textViewBusStopAddressSearch"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="16sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewBusStopCodeSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="6dp"
-                android:layout_marginBottom="4dp"
-                android:fontFamily="@font/varela"
+                android:fontFamily="@font/lato"
                 android:gravity="center|start"
                 android:textAlignment="textStart"
-                android:textColor="@color/colorGreyMaterial"
+                android:textColor="@color/colorGrey"
                 android:textIsSelectable="false"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toTopOf="@id/textViewBusStopAddressSearch"
-                app:layout_constraintStart_toEndOf="@id/textViewBusStopNameSearch"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:textSize="14sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewBusStopAddressSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:fontFamily="@font/varela"
+                android:fontFamily="@font/lato"
                 android:gravity="center|start"
                 android:textAlignment="textStart"
                 android:textColor="@color/colorGrey"
                 android:textIsSelectable="false"
-                android:textSize="14sp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewBusStopCodeSearch" />
+                android:textSize="14sp" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="5dp"
+                android:background="?android:attr/listDivider" />
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
-        android:background="?android:attr/listDivider" />
 
 </RelativeLayout>
 

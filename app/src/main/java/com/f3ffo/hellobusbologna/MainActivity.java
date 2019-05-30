@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private SearchView searchViewBusStopName;
     private SwipeRefreshLayout swipeRefreshLayout;
     private DrawerLayout drawer;
-    private List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
+    private List<OutputCardViewItem> outputCardViewItemList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,6 +74,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
         textViewSwipeToRefresh = findViewById(R.id.textViewSwipeToRefresh);
+        outputCardViewItemList = new ArrayList<>();
 
         drawer = findViewById(R.id.drawer_layout);
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -81,11 +82,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         drawer.addDrawerListener(toggle);
         toggle.syncState();
         navigationView.setNavigationItemSelectedListener(MainActivity.this);
-
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayout.setEnabled(false);
-        buildRecyclerViewSearch();
 
+        buildRecyclerViewSearch();
         adapter.setOnItemClickListener((int position) -> {
             viewFlipper.setDisplayedChild(0);
             searchViewBusStopName.close();
@@ -114,6 +114,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 textViewBusHour.setVisibility(View.GONE);
                 busCodeText.setVisibility(View.GONE);
                 outputCardViewItemList.clear();
+                textViewSwipeToRefresh.setVisibility(View.GONE);
+                swipeRefreshLayout.setEnabled(false);
                 viewFlipper.setDisplayedChild(1);
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
 
@@ -131,6 +133,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
             @Override
             public void onClose() {
+                if ("".equals(busStop)) {
+                    swipeRefreshLayout.setEnabled(false);
+                }
             }
         });
         textViewBusHour.setOnClickListener((View v) -> {
@@ -152,9 +157,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 Toast.makeText(MainActivity.this, "Fermata mancante", Toast.LENGTH_LONG).show();
             }
         });
-        searchViewBusStopName.setOnLogoClickListener(() -> {
-            drawer.openDrawer(GravityCompat.START);
-        });
+        searchViewBusStopName.setOnLogoClickListener(() -> drawer.openDrawer(GravityCompat.START));
     }
 
     public void buildRecyclerViewSearch() {
@@ -226,7 +229,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
         return true;
     }
 
@@ -248,17 +251,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     public void onRefresh() {
         checkBus(busStop, busLine, busHour);
         Toast.makeText(MainActivity.this, "Aggiornato!", Toast.LENGTH_SHORT).show();
-        swipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
     public void processStart() {
-        RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
-        progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
-        RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
-        params.addRule(RelativeLayout.CENTER_IN_PARENT);
-        relativeLayoutProgressBar.addView(progressBar, params);
-        progressBar.setVisibility(View.VISIBLE);
+        if (outputCardViewItemList.isEmpty()) {
+            RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
+            progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
+            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
+            params.addRule(RelativeLayout.CENTER_IN_PARENT);
+            relativeLayoutProgressBar.addView(progressBar, params);
+        } else {
+            outputCardViewItemList.clear();
+        }
     }
 
     @Override
@@ -275,7 +280,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                     int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
                     int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
                     if (diffHour == 0 || diffHour < 0) {
-                        diffTime = diffMin + "min";
+                        if (diffMin == 0) {
+                            diffTime = "In arrivo";
+                        } else {
+                            diffTime = diffMin + "min";
+                        }
                     } else if (diffMin < 0) {
                         diffTime = 60 + diffMin + "min";
                     } else {
@@ -297,7 +306,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             OutputErrorAdapter adapter = new OutputErrorAdapter(MainActivity.this, outputCardViewItemList);
             recyclerViewBusOutput.setAdapter(adapter);
         }
-        viewFlipper.setDisplayedChild(0);
+        swipeRefreshLayout.setRefreshing(false);
         progressBar.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
@@ -313,9 +322,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             ue.execute();
         } catch (Exception e) {
             Log.e("ERROR checkBus: ", e.getMessage());
-        } finally {
-            textViewSwipeToRefresh.setVisibility(View.GONE);
-            swipeRefreshLayout.setEnabled(false);
         }
     }
 }
