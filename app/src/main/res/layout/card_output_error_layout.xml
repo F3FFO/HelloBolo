@@ -32,7 +32,7 @@
                 app:layout_constraintEnd_toStartOf="@id/textViewErrorOutput"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/ic_error" />
+                app:srcCompat="@drawable/round_error" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewErrorOutput"

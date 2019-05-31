@@ -73,7 +73,7 @@ public class BusReader {
             String element = busClass.get(i).getBusStopCode();
             if (!stopsTemp.contains(element)) {
                 stopsTemp.add(element);
-                stops.add(new SearchListViewItem(R.drawable.ic_search, element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress()));
+                stops.add(new SearchListViewItem(R.drawable.round_search, element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress()));
             }
         }
         stopsTemp.clear();

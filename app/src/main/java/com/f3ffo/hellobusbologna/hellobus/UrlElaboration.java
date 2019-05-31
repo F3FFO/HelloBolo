@@ -59,15 +59,15 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     //------------------------------Manage error-----------------------------------
                     if (line.contains("FERMATA " + busStop + " NON GESTITA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "FERMATA " + busStop + " NON GESTITA"));
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "FERMATA " + busStop + " NON GESTITA"));
                     } else if (line.contains("LINEA " + busLine + " NON GESTITA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "LINEA " + busLine + " NON GESTITA"));
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " NON GESTITA"));
                     } else if (line.contains("NESSUNA ALTRA CORSA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "LINEA " + busLine + " ASSENTE"));
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " ASSENTE"));
                     } else if (line.equals("NULL")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
                     } else if (line.contains("TEMPORANEAMENTE SOSPESE")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.ic_error, "ERRORE"));
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
                         //------------------------------Manage output-----------------------------------
                     } else {
                         outputCardViewItemList.add(new OutputCardViewItem(0, ""));
@@ -85,7 +85,7 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
                                 }
                                 StringTokenizer token2 = new StringTokenizer(util, " ");
                                 String busNumber = token2.nextToken();
-                                int isSatellite = R.drawable.ic_output_time;
+                                int isSatellite = R.drawable.round_time;
                                 if (token2.nextToken().equals("DaSatellite")) {
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
@@ -104,7 +104,7 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
                                 }
                                 StringTokenizer token2 = new StringTokenizer(util, " ");
                                 String busNumber = token2.nextToken();
-                                int isSatellite = R.drawable.ic_output_time;
+                                int isSatellite = R.drawable.round_time;
                                 if (token2.nextToken().equals("DaSatellite")) {
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }

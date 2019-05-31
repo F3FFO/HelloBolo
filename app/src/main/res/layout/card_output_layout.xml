@@ -34,7 +34,7 @@
                 android:textColor="@color/colorGreyMaterial"
                 android:textIsSelectable="false"
                 android:textSize="25sp"
-                app:icon="@drawable/ic_bus"
+                app:icon="@drawable/round_directions_bus"
                 app:iconTint="@color/colorGreyMaterial"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

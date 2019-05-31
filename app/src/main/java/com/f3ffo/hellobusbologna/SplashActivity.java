@@ -35,19 +35,13 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         } else {
             new AlertDialog.Builder(SplashActivity.this)
-                    .setTitle("Delete entry")
-                    .setMessage("Are you sure you want to delete this entry?")
-
-                    // Specifying a listener allows you to take an action before dismissing the dialog.
-                    // The dialog is automatically dismissed when a dialog button is clicked.
-                    .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int which) {
-                            // Continue with delete operation
-                        }
+                    .setTitle(R.string.alertDialog_title)
+                    .setMessage(R.string.alertDialog_message)
+                    .setPositiveButton(R.string.alertDialog_yes, (DialogInterface dialog, int which) -> {
+                        finish();
+                        startActivity(new Intent(SplashActivity.this, SplashActivity.class));
                     })
-
-                    // A null listener allows the button to dismiss the dialog and take no further action.
-                    .setNegativeButton(android.R.string.no, null)
+                    .setNegativeButton(R.string.alertDialog_no, (DialogInterface dialog, int which) -> finish())
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .show();
         }

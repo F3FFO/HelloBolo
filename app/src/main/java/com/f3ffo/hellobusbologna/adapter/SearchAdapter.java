@@ -41,7 +41,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     @Override
     public void onBindViewHolder(@NonNull SearchAdapterHolder holder, int position) {
         SearchListViewItem searchListViewItem = outputSearchViewItemList.get(position);
-        holder.imageViewSearch.setImageDrawable(context.getDrawable(R.drawable.ic_search));
+        holder.imageViewSearch.setImageDrawable(context.getDrawable(R.drawable.round_search));
         holder.textViewBusStopCodeSearch.setText(searchListViewItem.getBusStopCode());
         holder.textViewBusStopNameSearch.setText(searchListViewItem.getBusStopName());
         holder.textViewBusStopAddressSearch.setText(searchListViewItem.getBusStopAddres());
