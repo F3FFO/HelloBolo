@@ -41,7 +41,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
-import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -51,7 +50,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener, NavigationView.OnNavigationItemSelectedListener {
-    private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch;
+    private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private AppCompatTextView busCodeText, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private String busStop, busLine, busHour;
@@ -63,14 +62,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private SwipeRefreshLayout swipeRefreshLayout;
     private DrawerLayout drawer;
     private List<OutputCardViewItem> outputCardViewItemList;
+    private BottomNavigationView bottomNavView;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                //TODO something
+                constraintLayoutOutput.setVisibility(View.VISIBLE);
+                constraintLayoutSearch.setVisibility(View.GONE);
+                constraintLayoutFavourites.setVisibility(View.GONE);
                 return true;
             case R.id.navigation_favourites:
-                //TODO something
+                constraintLayoutOutput.setVisibility(View.GONE);
+                constraintLayoutSearch.setVisibility(View.GONE);
+                constraintLayoutFavourites.setVisibility(View.VISIBLE);
                 return true;
             case R.id.navigation_notifications:
                 //TODO something
@@ -83,12 +87,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
-
+        constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
         busStop = "";
-        BottomNavigationView bottomNavView = findViewById(R.id.bottomNavView);
+        bottomNavView = findViewById(R.id.bottomNavView);
         bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         textViewBusHour = findViewById(R.id.textViewBusHour);
@@ -106,10 +109,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         lateralNavView.setNavigationItemSelectedListener(MainActivity.this);
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayout.setEnabled(false);
-
         buildRecyclerViewSearch();
         adapter.setOnItemClickListener((int position) -> {
-            fabBus.show();
             searchViewBusStopName.close();
             busStop = br.getStops().get(position).getBusStopCode();
             ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
@@ -127,6 +128,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.VISIBLE);
             bottomNavView.setVisibility(View.VISIBLE);
+            fabBus.show();
         });
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
@@ -214,6 +216,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             busCodeText.setVisibility(View.VISIBLE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.VISIBLE);
+            bottomNavView.setVisibility(View.VISIBLE);
         } else if (searchViewBusStopName.isOpen() && busStop.isEmpty()) {
             spinnerBusCode.setVisibility(View.GONE);
             textViewBusHour.setVisibility(View.GONE);
@@ -221,6 +224,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             searchViewBusStopName.setText("");
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.VISIBLE);
+            bottomNavView.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
         }
