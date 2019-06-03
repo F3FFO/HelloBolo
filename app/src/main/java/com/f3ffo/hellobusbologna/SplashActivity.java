@@ -11,8 +11,7 @@ import android.util.Log;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.f3ffo.hellobusbologna.hellobus.DownloadCsvAndroidM;
-import com.f3ffo.hellobusbologna.hellobus.DownloadCsvAndroidO;
+import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -21,11 +20,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (isOnline()) {
             try {
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-                    new DownloadCsvAndroidO(SplashActivity.this).execute().get();
-                } else {
-                    new DownloadCsvAndroidM(SplashActivity.this).execute().get();
-                }
+                new DownloadCsv(SplashActivity.this).execute().get();
             } catch (Exception e) {
                 Log.e("ERROR SplashActivity: ", e.getMessage());
             }

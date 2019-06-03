@@ -17,7 +17,7 @@
             android:id="@+id/imageViewSearch"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             app:layout_constraintEnd_toStartOf="@id/linearLayoutSearchItem"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -29,7 +29,7 @@
             android:layout_marginStart="16dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/imageButtonFavourite"
             app:layout_constraintStart_toEndOf="@id/imageViewSearch"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -42,7 +42,7 @@
                 android:textAlignment="textStart"
                 android:textColor="@color/colorGreyMaterial"
                 android:textIsSelectable="false"
-                android:textSize="16sp" />
+                android:textSize="17sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewBusStopAddressSearch"
@@ -53,7 +53,7 @@
                 android:textAlignment="textStart"
                 android:textColor="@color/colorGrey"
                 android:textIsSelectable="false"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/textViewBusStopCodeSearch"
@@ -64,9 +64,31 @@
                 android:textAlignment="textStart"
                 android:textColor="@color/colorGrey"
                 android:textIsSelectable="false"
-                android:textSize="14sp" />
+                android:textSize="15sp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
+
+        <!--<androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/imageViewFavourite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@id/imageButton"
+            app:layout_constraintStart_toEndOf="@id/linearLayoutSearchItem"
+            app:layout_constraintTop_toTopOf="parent" />-->
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/imageButtonFavourite"
+            style="@android:style/Widget.Material.Light.ImageButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:background="@android:color/transparent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/linearLayoutSearchItem"
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

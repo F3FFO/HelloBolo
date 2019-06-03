@@ -6,6 +6,7 @@ import com.f3ffo.hellobusbologna.adapter.SearchAdapter;
 import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
 import com.f3ffo.hellobusbologna.fragment.TimePickerFragment;
 import com.f3ffo.hellobusbologna.hellobus.BusReader;
+import com.f3ffo.hellobusbologna.hellobus.Favourites;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -30,12 +31,14 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.TimePickerDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
@@ -53,7 +56,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private AppCompatTextView busCodeText, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
-    private String busStop, busLine, busHour;
+    private String busStop = "", busLine = "", busHour = "";
     private SearchAdapter adapter;
     private FloatingActionButton fabBus;
     protected static BusReader br = new BusReader();
@@ -63,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private DrawerLayout drawer;
     private List<OutputCardViewItem> outputCardViewItemList;
     private BottomNavigationView bottomNavView;
+    private ArrayAdapter<String> spinnerArrayAdapter;
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
@@ -90,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
-        busStop = "";
         bottomNavView = findViewById(R.id.bottomNavView);
         bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
@@ -100,7 +103,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
         outputCardViewItemList = new ArrayList<>();
-
         drawer = findViewById(R.id.drawer_layout);
         NavigationView lateralNavView = findViewById(R.id.lateralNavView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(MainActivity.this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -110,39 +112,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayout.setEnabled(false);
         buildRecyclerViewSearch();
-        adapter.setOnItemClickListener((int position) -> {
-            searchViewBusStopName.close();
-            busStop = br.getStops().get(position).getBusStopCode();
-            ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
-            spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
-            spinnerBusCode.setAdapter(spinnerArrayAdapter);
-            spinnerBusCode.setVisibility(View.VISIBLE);
-            textViewBusHour.setVisibility(View.VISIBLE);
-            busCodeText.setVisibility(View.VISIBLE);
-            if (br.getBusStopName().length() > 18) {
-                String busStopNameSub = br.getBusStopName().substring(0, 18);
-                searchViewBusStopName.setText(busStopNameSub + "...");
-            } else {
-                searchViewBusStopName.setText(br.getBusStopName());
-            }
-            constraintLayoutSearch.setVisibility(View.GONE);
-            constraintLayoutOutput.setVisibility(View.VISIBLE);
-            bottomNavView.setVisibility(View.VISIBLE);
-            fabBus.show();
-        });
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
             @Override
             public void onOpen() {
-                busLine = "";
-                busHour = "";
-                busStop = "";
                 spinnerBusCode.setVisibility(View.GONE);
                 textViewBusHour.setVisibility(View.GONE);
                 busCodeText.setVisibility(View.GONE);
-                outputCardViewItemList.clear();
-                swipeRefreshLayout.setEnabled(false);
                 bottomNavView.setVisibility(View.GONE);
+                fabBus.hide();
                 constraintLayoutOutput.setVisibility(View.GONE);
                 constraintLayoutSearch.setVisibility(View.VISIBLE);
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
@@ -166,19 +144,55 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 }
             }
         });
+        adapter.setOnItemClickListener((int position) -> {
+            busStop = br.getStops().get(position).getBusStopCode();
+            spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
+            spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
+            spinnerBusCode.setAdapter(spinnerArrayAdapter);
+            searchViewBusStopName.setText(br.getBusStopName());
+            searchViewBusStopName.close();
+            spinnerBusCode.setVisibility(View.VISIBLE);
+            textViewBusHour.setVisibility(View.VISIBLE);
+            busCodeText.setVisibility(View.VISIBLE);
+            constraintLayoutSearch.setVisibility(View.GONE);
+            constraintLayoutOutput.setVisibility(View.VISIBLE);
+            bottomNavView.setVisibility(View.VISIBLE);
+            fabBus.show();
+        });
+        adapter.setOnFavouriteButtonClickListener((int position) -> {
+            Favourites favourites = new Favourites();
+            favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddres());
+        });
         textViewBusHour.setOnClickListener((View v) -> {
             DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "Orario");
+            timePicker.show(getSupportFragmentManager(), "Ora");
+        });
+        spinnerBusCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                if (spinnerArrayAdapter != null) {
+                    if (!spinnerArrayAdapter.getItem(position).equals(busStop)) {
+                        swipeRefreshLayout.setEnabled(false);
+                        outputCardViewItemList.clear();
+                        fabBus.show();
+                    }
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
         });
         fabBus.setOnClickListener((View v) -> {
             if (!busStop.isEmpty()) {
                 if (spinnerBusCode.getSelectedItem().toString().equals("Tutti gli autobus")) {
                     busLine = "";
-                    checkBus(busStop, busLine, busHour);
                 } else {
                     busLine = spinnerBusCode.getSelectedItem().toString();
-                    checkBus(busStop, busLine, busHour);
                 }
+                fabBus.hide();
+                checkBus(busStop, busLine, busHour);
                 swipeRefreshLayout.setEnabled(true);
             } else {
                 Toast.makeText(MainActivity.this, "Fermata mancante", Toast.LENGTH_LONG).show();
@@ -191,7 +205,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         RecyclerView recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
         recyclerViewBusStation.setHasFixedSize(true);
         recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        adapter = new SearchAdapter(MainActivity.this, br.getStops());
+        adapter = new SearchAdapter(br.getStops());
         recyclerViewBusStation.setAdapter(adapter);
     }
 
@@ -204,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             textViewBusHour.setText("Partenza: " + hourOfDay + ":" + minute);
             busHour = hourOfDay + "" + minute;
         }
+        fabBus.show();
     }
 
     @Override
@@ -211,6 +226,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
+            if (searchViewBusStopName.getText().toString().isEmpty()) {
+                searchViewBusStopName.setText(br.getBusStopName());
+            }
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);
@@ -269,7 +287,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
             params.addRule(RelativeLayout.CENTER_IN_PARENT);
             relativeLayoutProgressBar.addView(progressBar, params);
-            fabBus.hide();
         } else {
             outputCardViewItemList.clear();
         }

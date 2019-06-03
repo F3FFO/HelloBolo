@@ -7,6 +7,8 @@ import com.f3ffo.hellobusbologna.R;
 import com.f3ffo.hellobusbologna.items.SearchListViewItem;
 import com.f3ffo.hellobusbologna.model.BusClass;
 
+import org.apache.commons.lang3.StringUtils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
@@ -32,7 +34,7 @@ public class BusReader {
     public void extractFromFile(Context context) {
         File[] listFiles = context.getFilesDir().listFiles();
         for (File listFile : listFiles) {
-            if (!listFile.isDirectory()) {
+            if (!listFile.isDirectory() && !listFile.getName().equals("favourites.properties")) {
                 try {
                     BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
                     String line;
@@ -42,8 +44,8 @@ public class BusReader {
                             String busCode = token.nextToken();
                             String stopCode = token.nextToken();
                             String stopName = token.nextToken();
-                            String stopAddress = token.nextToken();
-                            busClass.add(new BusClass(busCode, stopCode, stopName, stopAddress));
+                            String stopAddress = StringUtils.lowerCase(token.nextToken());
+                            busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress)));
                         }
                     }
                     br.close();
@@ -73,7 +75,7 @@ public class BusReader {
             String element = busClass.get(i).getBusStopCode();
             if (!stopsTemp.contains(element)) {
                 stopsTemp.add(element);
-                stops.add(new SearchListViewItem(R.drawable.round_search, element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress()));
+                stops.add(new SearchListViewItem(R.drawable.round_search, element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
             }
         }
         stopsTemp.clear();

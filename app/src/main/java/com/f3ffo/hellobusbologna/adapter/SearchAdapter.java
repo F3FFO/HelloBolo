@@ -1,6 +1,5 @@
 package com.f3ffo.hellobusbologna.adapter;
 
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,6 +7,7 @@ import android.widget.Filter;
 import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,11 +22,10 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
 
     private List<SearchListViewItem> outputSearchViewItemList;
     private List<SearchListViewItem> outputSearchViewItemListFull;
-    private OnItemClickListener mListener;
-    private Context context;
+    private OnItemClickListener itemClickListener;
+    private OnFavouriteButtonClickListener favouriteButtonClickListener;
 
-    public SearchAdapter(Context context, List<SearchListViewItem> outputSearchViewItemList) {
-        this.context = context;
+    public SearchAdapter(List<SearchListViewItem> outputSearchViewItemList) {
         this.outputSearchViewItemList = outputSearchViewItemList;
         this.outputSearchViewItemListFull = new ArrayList<>(outputSearchViewItemList);
     }
@@ -35,16 +34,17 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     @Override
     public SearchAdapterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_list_item, parent, false);
-        return new SearchAdapter.SearchAdapterHolder(view, mListener);
+        return new SearchAdapter.SearchAdapterHolder(view, itemClickListener, favouriteButtonClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SearchAdapterHolder holder, int position) {
         SearchListViewItem searchListViewItem = outputSearchViewItemList.get(position);
-        holder.imageViewSearch.setImageDrawable(context.getDrawable(R.drawable.round_search));
+        holder.imageViewSearch.setImageResource(R.drawable.round_search);
         holder.textViewBusStopCodeSearch.setText(searchListViewItem.getBusStopCode());
         holder.textViewBusStopNameSearch.setText(searchListViewItem.getBusStopName());
         holder.textViewBusStopAddressSearch.setText(searchListViewItem.getBusStopAddres());
+        holder.imageButtonFavourite.setImageResource(R.drawable.round_favourite_border);
     }
 
     @Override
@@ -92,26 +92,45 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
-        mListener = listener;
+        itemClickListener = listener;
+    }
+
+    public interface OnFavouriteButtonClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnFavouriteButtonClickListener(OnFavouriteButtonClickListener listener) {
+        favouriteButtonClickListener = listener;
     }
 
     static class SearchAdapterHolder extends RecyclerView.ViewHolder {
 
         AppCompatTextView textViewBusStopCodeSearch, textViewBusStopNameSearch, textViewBusStopAddressSearch;
         AppCompatImageView imageViewSearch;
+        AppCompatImageButton imageButtonFavourite;
 
-        SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener) {
+        SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener, final OnFavouriteButtonClickListener listener2) {
             super(itemView);
             imageViewSearch = itemView.findViewById(R.id.imageViewSearch);
             textViewBusStopCodeSearch = itemView.findViewById(R.id.textViewBusStopCodeSearch);
             textViewBusStopNameSearch = itemView.findViewById(R.id.textViewBusStopNameSearch);
             textViewBusStopAddressSearch = itemView.findViewById(R.id.textViewBusStopAddressSearch);
+            imageButtonFavourite = itemView.findViewById(R.id.imageButtonFavourite);
 
             itemView.setOnClickListener((View v) -> {
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         listener.onItemClick(position);
+                    }
+                }
+            });
+
+            imageButtonFavourite.setOnClickListener((View v) -> {
+                if (listener2 != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener2.onItemClick(position);
                     }
                 }
             });
