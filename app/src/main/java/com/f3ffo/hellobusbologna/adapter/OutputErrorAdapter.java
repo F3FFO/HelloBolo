@@ -11,7 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
 
 import java.util.List;
 

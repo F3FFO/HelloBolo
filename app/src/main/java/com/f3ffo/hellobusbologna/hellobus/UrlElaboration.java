@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -51,24 +51,32 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
         List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
         try {
             Request get = new Request.Builder().url("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine).build();
-            //HttpURLConnection huc = (HttpURLConnection) new URL("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine).openConnection();
             BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("<?xml")) {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
-                    //------------------------------Manage error-----------------------------------
-                    if (line.contains("FERMATA " + busStop + " NON GESTITA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "FERMATA " + busStop + " NON GESTITA"));
+
+                    if (line.contains("NESSUNA ALTRA CORSA")) {
+                        if (busLine.isEmpty()) {
+                            outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "NESSUNA LINEA PRESENTE"));
+                        } else {
+                            outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " ASSENTE"));
+                        }
+
                     } else if (line.contains("LINEA " + busLine + " NON GESTITA")) {
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " NON GESTITA"));
-                    } else if (line.contains("NESSUNA ALTRA CORSA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " ASSENTE"));
-                    } else if (line.equals("NULL")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
+
+
                     } else if (line.contains("TEMPORANEAMENTE SOSPESE")) {
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
-                        //------------------------------Manage output-----------------------------------
+
+                    } else if (line.equals("NULL")) {
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
+
+                    } else if (line.contains("FERMATA " + busStop + " NON GESTITA")) {
+                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "FERMATA " + busStop + " NON GESTITA"));
+
                     } else {
                         outputCardViewItemList.add(new OutputCardViewItem(0, ""));
                         line = line.substring(line.indexOf(":") + 2);

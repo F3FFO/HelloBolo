@@ -13,7 +13,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.items.SearchListViewItem;
+import com.f3ffo.hellobusbologna.model.SearchListViewItem;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,17 +34,16 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     @Override
     public SearchAdapterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_list_item, parent, false);
-        return new SearchAdapter.SearchAdapterHolder(view, itemClickListener, favouriteButtonClickListener);
+        return new SearchAdapterHolder(view, itemClickListener, favouriteButtonClickListener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull SearchAdapterHolder holder, int position) {
         SearchListViewItem searchListViewItem = outputSearchViewItemList.get(position);
-        holder.imageViewSearch.setImageResource(R.drawable.round_search);
         holder.textViewBusStopCodeSearch.setText(searchListViewItem.getBusStopCode());
         holder.textViewBusStopNameSearch.setText(searchListViewItem.getBusStopName());
-        holder.textViewBusStopAddressSearch.setText(searchListViewItem.getBusStopAddres());
-        holder.imageButtonFavourite.setImageResource(R.drawable.round_favourite_border);
+        holder.textViewBusStopAddressSearch.setText(searchListViewItem.getBusStopAddress());
+        holder.imageButtonFavouriteSearch.setImageResource(R.drawable.round_favourite_border);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
                 for (SearchListViewItem item : outputSearchViewItemListFull) {
                     if (item.getBusStopCode().toUpperCase().contains(constraint.toString().toUpperCase()) ||
                             item.getBusStopName().toUpperCase().contains(constraint.toString().toUpperCase()) ||
-                            item.getBusStopAddres().toUpperCase().contains(constraint.toString().toUpperCase())) {
+                            item.getBusStopAddress().toUpperCase().contains(constraint.toString().toUpperCase())) {
                         filteredItemList.add(item);
                     }
                 }
@@ -106,16 +105,14 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     static class SearchAdapterHolder extends RecyclerView.ViewHolder {
 
         AppCompatTextView textViewBusStopCodeSearch, textViewBusStopNameSearch, textViewBusStopAddressSearch;
-        AppCompatImageView imageViewSearch;
-        AppCompatImageButton imageButtonFavourite;
+        AppCompatImageButton imageButtonFavouriteSearch;
 
         SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener, final OnFavouriteButtonClickListener listener2) {
             super(itemView);
-            imageViewSearch = itemView.findViewById(R.id.imageViewSearch);
             textViewBusStopCodeSearch = itemView.findViewById(R.id.textViewBusStopCodeSearch);
             textViewBusStopNameSearch = itemView.findViewById(R.id.textViewBusStopNameSearch);
             textViewBusStopAddressSearch = itemView.findViewById(R.id.textViewBusStopAddressSearch);
-            imageButtonFavourite = itemView.findViewById(R.id.imageButtonFavourite);
+            imageButtonFavouriteSearch = itemView.findViewById(R.id.imageButtonFavouriteSearch);
 
             itemView.setOnClickListener((View v) -> {
                 if (listener != null) {
@@ -126,7 +123,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
                 }
             });
 
-            imageButtonFavourite.setOnClickListener((View v) -> {
+            imageButtonFavouriteSearch.setOnClickListener((View v) -> {
                 if (listener2 != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {

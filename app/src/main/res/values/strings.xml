@@ -15,4 +15,6 @@
     <string name="title_home">Home</string>
     <string name="title_favourites">Preferiti</string>
     <string name="title_notifications">Nulla</string>
+    <string name="favourite_added">Aggiunto ai preferiti!</string>
+    <string name="favourite_not_added">Hai già 10 preferiti!</string>
 </resources>

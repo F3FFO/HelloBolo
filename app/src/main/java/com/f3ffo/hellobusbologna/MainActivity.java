@@ -1,5 +1,6 @@
 package com.f3ffo.hellobusbologna;
 
+import com.f3ffo.hellobusbologna.adapter.FavouritesAdapter;
 import com.f3ffo.hellobusbologna.adapter.OutputAdapter;
 import com.f3ffo.hellobusbologna.adapter.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.adapter.SearchAdapter;
@@ -8,7 +9,7 @@ import com.f3ffo.hellobusbologna.fragment.TimePickerFragment;
 import com.f3ffo.hellobusbologna.hellobus.BusReader;
 import com.f3ffo.hellobusbologna.hellobus.Favourites;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
-import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -31,7 +32,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import android.app.TimePickerDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -53,13 +53,16 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener, NavigationView.OnNavigationItemSelectedListener {
+
     private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private AppCompatTextView busCodeText, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private String busStop = "", busLine = "", busHour = "";
-    private SearchAdapter adapter;
+    private SearchAdapter adapterBusStation;
+    private FavouritesAdapter adapterFavourites;
     private FloatingActionButton fabBus;
     protected static BusReader br = new BusReader();
+    private Favourites fv = new Favourites();
     private ProgressBar progressBar;
     private SearchView searchViewBusStopName;
     private SwipeRefreshLayout swipeRefreshLayout;
@@ -112,6 +115,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayout.setEnabled(false);
         buildRecyclerViewSearch();
+        buildRecyclerViewFavourites(true);
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
             @Override
@@ -123,6 +127,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 fabBus.hide();
                 constraintLayoutOutput.setVisibility(View.GONE);
                 constraintLayoutSearch.setVisibility(View.VISIBLE);
+                constraintLayoutFavourites.setVisibility(View.GONE);
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
 
                     @Override
@@ -132,7 +137,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
                     @Override
                     public void onQueryTextChange(CharSequence newText) {
-                        adapter.getFilter().filter(newText.toString());
+                        adapterBusStation.getFilter().filter(newText.toString());
                     }
                 });
             }
@@ -144,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 }
             }
         });
-        adapter.setOnItemClickListener((int position) -> {
+        adapterBusStation.setOnItemClickListener((int position) -> {
             busStop = br.getStops().get(position).getBusStopCode();
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
@@ -159,9 +164,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             bottomNavView.setVisibility(View.VISIBLE);
             fabBus.show();
         });
-        adapter.setOnFavouriteButtonClickListener((int position) -> {
+        adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
-            favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddres());
+            if (favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddress())) {
+                buildRecyclerViewFavourites(false);
+                br.refreshElement(position);
+                adapterBusStation.notifyItemChanged(position);
+                Toast.makeText(MainActivity.this, R.string.favourite_added, Toast.LENGTH_LONG).show();
+            } else {
+                Toast.makeText(MainActivity.this, R.string.favourite_not_added, Toast.LENGTH_LONG).show();
+            }
         });
         textViewBusHour.setOnClickListener((View v) -> {
             DialogFragment timePicker = new TimePickerFragment();
@@ -199,14 +211,27 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             }
         });
         searchViewBusStopName.setOnLogoClickListener(() -> drawer.openDrawer(GravityCompat.START));
+        adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
+            busStop = fv.getFavouritesList().get(position).getBusStopCode();
+            searchViewBusStopName.setText(fv.getFavouritesList().get(position).getBusStopName());
+        });
+    }
+
+    public void buildRecyclerViewFavourites(boolean isFirstTime) {
+        RecyclerView recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
+        recyclerViewFavourites.setHasFixedSize(true);
+        recyclerViewFavourites.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        fv.readFile(MainActivity.this, isFirstTime);
+        adapterFavourites = new FavouritesAdapter(fv.getFavouritesList());
+        recyclerViewFavourites.setAdapter(adapterFavourites);
     }
 
     public void buildRecyclerViewSearch() {
         RecyclerView recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
         recyclerViewBusStation.setHasFixedSize(true);
         recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        adapter = new SearchAdapter(br.getStops());
-        recyclerViewBusStation.setAdapter(adapter);
+        adapterBusStation = new SearchAdapter(br.getStops());
+        recyclerViewBusStation.setAdapter(adapterBusStation);
     }
 
     @Override

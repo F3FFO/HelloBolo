@@ -1,6 +1,5 @@
 package com.f3ffo.hellobusbologna.adapter;
 
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +11,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.f3ffo.hellobusbologna.items.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
 import com.f3ffo.hellobusbologna.R;
 
 import java.util.List;
@@ -30,7 +29,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
     @NonNull
     @Override
     public OutputViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.card_output_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_output_layout, parent, false);
         return new OutputViewHolder(view);
     }
 

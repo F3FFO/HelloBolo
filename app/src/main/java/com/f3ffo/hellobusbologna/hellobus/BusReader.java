@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.items.SearchListViewItem;
+import com.f3ffo.hellobusbologna.model.SearchListViewItem;
 import com.f3ffo.hellobusbologna.model.BusClass;
 
 import org.apache.commons.lang3.StringUtils;
@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.StringTokenizer;
 
 public class BusReader {
+
     private ArrayList<BusClass> busClass = new ArrayList<>();
     private List<SearchListViewItem> stops = new ArrayList<>();
     private String busStopName;
@@ -75,9 +76,14 @@ public class BusReader {
             String element = busClass.get(i).getBusStopCode();
             if (!stopsTemp.contains(element)) {
                 stopsTemp.add(element);
-                stops.add(new SearchListViewItem(R.drawable.round_search, element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
+                stops.add(new SearchListViewItem(element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
             }
         }
         stopsTemp.clear();
+    }
+
+    public void refreshElement(int position) {
+        //stops.get(position).setImageFavourite(R.drawable.ic_star);
+        stops.set(position, new SearchListViewItem(busClass.get(position).getBusStopCode(), busClass.get(position).getBusStopName(), busClass.get(position).getBusStopAddress(), R.drawable.ic_star));
     }
 }

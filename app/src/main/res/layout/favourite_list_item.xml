@@ -12,15 +12,18 @@
         android:layout_marginTop="16dp"
         android:layout_marginBottom="16dp">
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewSearch"
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/imageButtonFavourite"
+            style="@android:style/Widget.Material.Light.ImageButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_star"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/linearLayoutSearchItem"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/round_search" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayoutSearchItem"
@@ -29,12 +32,12 @@
             android:layout_marginStart="16dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/imageButtonFavouriteSearch"
-            app:layout_constraintStart_toEndOf="@id/imageViewSearch"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageButtonFavourite"
             app:layout_constraintTop_toTopOf="parent">
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewBusStopNameSearch"
+                android:id="@+id/textViewBusStopNameFavourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato"
@@ -45,7 +48,7 @@
                 android:textSize="17sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewBusStopAddressSearch"
+                android:id="@+id/textViewBusStopAddressFavourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato"
@@ -56,7 +59,7 @@
                 android:textSize="15sp" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewBusStopCodeSearch"
+                android:id="@+id/textViewBusStopCodeFavourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/lato"
@@ -67,18 +70,6 @@
                 android:textSize="15sp" />
 
         </androidx.appcompat.widget.LinearLayoutCompat>
-
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/imageButtonFavouriteSearch"
-            style="@android:style/Widget.Material.Light.ImageButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@id/linearLayoutSearchItem"
-            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
