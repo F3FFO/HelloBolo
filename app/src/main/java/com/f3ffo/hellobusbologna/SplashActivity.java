@@ -25,7 +25,7 @@ public class SplashActivity extends AppCompatActivity {
                 Log.e("ERROR SplashActivity: ", e.getMessage());
             }
             MainActivity.br.extractFromFile(SplashActivity.this);
-            MainActivity.br.stopsViewer();
+            MainActivity.br.stopsViewer(SplashActivity.this);
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
             finish();
         } else {

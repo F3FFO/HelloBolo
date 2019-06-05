@@ -7,6 +7,7 @@ import com.f3ffo.hellobusbologna.R;
 import com.f3ffo.hellobusbologna.model.SearchListViewItem;
 import com.f3ffo.hellobusbologna.model.BusClass;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import java.io.BufferedReader;
@@ -35,7 +36,7 @@ public class BusReader {
     public void extractFromFile(Context context) {
         File[] listFiles = context.getFilesDir().listFiles();
         for (File listFile : listFiles) {
-            if (!listFile.isDirectory() && !listFile.getName().equals("favourites.properties")) {
+            if (!listFile.isDirectory() && !listFile.getName().equals("favourites.properties") && !listFile.getName().contains("cut_")) {
                 try {
                     BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
                     String line;
@@ -70,13 +71,30 @@ public class BusReader {
         return bus;
     }
 
-    public void stopsViewer() {
+    public String takeFileName(Context context) {
+        File[] listFiles = context.getFilesDir().listFiles();
+        String fileName = "";
+        for (File listFile : listFiles) {
+            if (!listFile.isDirectory() && listFile.getName().contains("cut_")) {
+                fileName = listFile.getName();
+            }
+        }
+        return fileName;
+    }
+
+    public void stopsViewer(Context context) {
         ArrayList<String> stopsTemp = new ArrayList<>();
         for (int i = 0; i < busClass.size(); i++) {
             String element = busClass.get(i).getBusStopCode();
             if (!stopsTemp.contains(element)) {
                 stopsTemp.add(element);
                 stops.add(new SearchListViewItem(element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
+                try {
+                    //TODO check cut file
+                    FileUtils.writeStringToFile(new File(context.getFilesDir(), takeFileName(context)), (element + "," + busClass.get(i).getBusStopName() + "," + busClass.get(i).getBusStopAddress() + "\n"), StandardCharsets.UTF_8, true);
+                } catch (IOException e) {
+                    Log.e("ERROR stopsViewer", e.getMessage());
+                }
             }
         }
         stopsTemp.clear();
@@ -84,6 +102,6 @@ public class BusReader {
 
     public void refreshElement(int position) {
         //stops.get(position).setImageFavourite(R.drawable.ic_star);
-        stops.set(position, new SearchListViewItem(busClass.get(position).getBusStopCode(), busClass.get(position).getBusStopName()+"dddd", busClass.get(position).getBusStopAddress(), R.drawable.ic_star));
+        stops.set(position, new SearchListViewItem(busClass.get(position).getBusStopCode(), busClass.get(position).getBusStopName() + "dddd", busClass.get(position).getBusStopAddress(), R.drawable.ic_star));
     }
 }

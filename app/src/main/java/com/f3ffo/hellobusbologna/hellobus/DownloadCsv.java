@@ -39,7 +39,13 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
             this.version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
         } catch (IOException e) {
             Log.e("ERROR checkFile: ", e.getMessage());
-        }
+        } finally {
+            try {
+                FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
+            } catch (IOException e) {
+
+            }
+         }
     }
 
     @Override
