@@ -43,7 +43,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
         holder.textViewBusStopCodeSearch.setText(searchListViewItem.getBusStopCode());
         holder.textViewBusStopNameSearch.setText(searchListViewItem.getBusStopName());
         holder.textViewBusStopAddressSearch.setText(searchListViewItem.getBusStopAddress());
-        holder.imageButtonFavouriteSearch.setImageResource(R.drawable.round_favourite_border);
+        //holder.imageButtonFavouriteSearch.setImageResource(R.drawable.round_favourite_border);
     }
 
     @Override

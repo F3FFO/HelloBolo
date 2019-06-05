@@ -243,6 +243,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             textViewBusHour.setText("Partenza: " + hourOfDay + ":" + minute);
             busHour = hourOfDay + "" + minute;
         }
+        outputCardViewItemList.clear();
         fabBus.show();
     }
 

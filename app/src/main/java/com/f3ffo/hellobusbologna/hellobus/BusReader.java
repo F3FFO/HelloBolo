@@ -84,6 +84,6 @@ public class BusReader {
 
     public void refreshElement(int position) {
         //stops.get(position).setImageFavourite(R.drawable.ic_star);
-        stops.set(position, new SearchListViewItem(busClass.get(position).getBusStopCode(), busClass.get(position).getBusStopName(), busClass.get(position).getBusStopAddress(), R.drawable.ic_star));
+        stops.set(position, new SearchListViewItem(busClass.get(position).getBusStopCode(), busClass.get(position).getBusStopName()+"dddd", busClass.get(position).getBusStopAddress(), R.drawable.ic_star));
     }
 }
