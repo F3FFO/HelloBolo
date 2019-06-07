@@ -169,6 +169,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             Favourites favourites = new Favourites();
             if (br.refreshElement(position)) {
                 if (favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddress())) {
+                    //TODO I think it doesn't update graphics of recyclerView
                     adapterBusStation.notifyItemChanged(position);
                     adapterFavourites.notifyDataSetChanged();
                     Toast.makeText(MainActivity.this, R.string.favourite_added, Toast.LENGTH_LONG).show();
