@@ -56,27 +56,20 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
             while ((line = br.readLine()) != null) {
                 if (!line.startsWith("<?xml")) {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
-
                     if (line.contains("NESSUNA ALTRA CORSA")) {
                         if (busLine.isEmpty()) {
                             outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "NESSUNA LINEA PRESENTE"));
                         } else {
                             outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " ASSENTE"));
                         }
-
                     } else if (line.contains("LINEA " + busLine + " NON GESTITA")) {
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " NON GESTITA"));
-
-
                     } else if (line.contains("TEMPORANEAMENTE SOSPESE")) {
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
-
                     } else if (line.equals("NULL")) {
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
-
                     } else if (line.contains("FERMATA " + busStop + " NON GESTITA")) {
                         outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "FERMATA " + busStop + " NON GESTITA"));
-
                     } else {
                         outputCardViewItemList.add(new OutputCardViewItem(0, ""));
                         line = line.substring(line.indexOf(":") + 2);

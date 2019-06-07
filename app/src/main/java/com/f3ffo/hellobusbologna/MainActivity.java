@@ -115,7 +115,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayout.setEnabled(false);
         buildRecyclerViewSearch();
-        buildRecyclerViewFavourites(true);
+        fv.readFile(MainActivity.this);
+        buildRecyclerViewFavourites();
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
             @Override
@@ -166,13 +167,20 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
-            if (favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddress())) {
-                buildRecyclerViewFavourites(false);
-                br.refreshElement(position);
-                adapterBusStation.notifyItemChanged(position);
-                Toast.makeText(MainActivity.this, R.string.favourite_added, Toast.LENGTH_LONG).show();
+            if (br.refreshElement(position)) {
+                if (favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddress())) {
+                    adapterBusStation.notifyItemChanged(position);
+                    adapterFavourites.notifyDataSetChanged();
+                    Toast.makeText(MainActivity.this, R.string.favourite_added, Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(MainActivity.this, R.string.favourite_not_added, Toast.LENGTH_LONG).show();
+                }
             } else {
-                Toast.makeText(MainActivity.this, R.string.favourite_not_added, Toast.LENGTH_LONG).show();
+                if (fv.removeFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode())) {
+                    adapterBusStation.notifyItemChanged(position);
+                    adapterFavourites.notifyItemRemoved(fv.positionItemRemoved);
+                    Toast.makeText(MainActivity.this, R.string.favourite_removed, Toast.LENGTH_LONG).show();
+                }
             }
         });
         textViewBusHour.setOnClickListener((View v) -> {
@@ -217,11 +225,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
     }
 
-    public void buildRecyclerViewFavourites(boolean isFirstTime) {
+    public void buildRecyclerViewFavourites() {
         RecyclerView recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
         recyclerViewFavourites.setHasFixedSize(true);
         recyclerViewFavourites.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        fv.readFile(MainActivity.this, isFirstTime);
         adapterFavourites = new FavouritesAdapter(fv.getFavouritesList());
         recyclerViewFavourites.setAdapter(adapterFavourites);
     }
@@ -332,7 +339,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                     int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
                     int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
                     if (diffHour == 0 || diffHour < 0) {
-                        if (diffMin < 3) {
+                        if (diffMin < 4) {
                             diffTime = "In arrivo";
                         } else {
                             diffTime = diffMin + "min";
@@ -373,7 +380,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             ue.setBusHour(busHour);
             ue.execute();
         } catch (Exception e) {
-            Log.e("ERROR checkBus: ", e.getMessage());
+            Log.e("ERROR checkBus", e.getMessage());
         }
     }
 }

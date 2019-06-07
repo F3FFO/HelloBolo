@@ -29,7 +29,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
     @NonNull
     @Override
     public OutputViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.card_output_layout, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.output_layout, parent, false);
         return new OutputViewHolder(view);
     }
 

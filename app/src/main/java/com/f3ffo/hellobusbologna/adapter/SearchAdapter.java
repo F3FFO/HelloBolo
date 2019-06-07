@@ -13,6 +13,7 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.hellobusbologna.hellobus.BusReader;
 import com.f3ffo.hellobusbologna.model.SearchListViewItem;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
         holder.textViewBusStopCodeSearch.setText(searchListViewItem.getBusStopCode());
         holder.textViewBusStopNameSearch.setText(searchListViewItem.getBusStopName());
         holder.textViewBusStopAddressSearch.setText(searchListViewItem.getBusStopAddress());
-        //holder.imageButtonFavouriteSearch.setImageResource(R.drawable.round_favourite_border);
+        holder.imageButtonFavouriteSearch.setImageResource(searchListViewItem.getImageFavourite());
     }
 
     @Override

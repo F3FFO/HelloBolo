@@ -17,6 +17,7 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.StringTokenizer;
 
 public class BusReader {
@@ -52,7 +53,7 @@ public class BusReader {
                     }
                     br.close();
                 } catch (IOException e) {
-                    Log.e("ERROR extractFromFile: ", e.getMessage());
+                    Log.e("ERROR extractFromFile", e.getMessage());
                     busClass.clear();
                 }
             }
@@ -71,37 +72,90 @@ public class BusReader {
         return bus;
     }
 
-    public String takeFileName(Context context) {
+    private File takeFile(Context context) {
         File[] listFiles = context.getFilesDir().listFiles();
-        String fileName = "";
+        File file = null;
         for (File listFile : listFiles) {
-            if (!listFile.isDirectory() && listFile.getName().contains("cut_")) {
-                fileName = listFile.getName();
+            if (listFile.getName().contains("cut_")) {
+                file = listFile;
             }
         }
-        return fileName;
+        return file;
     }
 
     public void stopsViewer(Context context) {
         ArrayList<String> stopsTemp = new ArrayList<>();
-        for (int i = 0; i < busClass.size(); i++) {
-            String element = busClass.get(i).getBusStopCode();
-            if (!stopsTemp.contains(element)) {
-                stopsTemp.add(element);
-                stops.add(new SearchListViewItem(element, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
-                try {
-                    //TODO check cut file
-                    FileUtils.writeStringToFile(new File(context.getFilesDir(), takeFileName(context)), (element + "," + busClass.get(i).getBusStopName() + "," + busClass.get(i).getBusStopAddress() + "\n"), StandardCharsets.UTF_8, true);
-                } catch (IOException e) {
-                    Log.e("ERROR stopsViewer", e.getMessage());
+        File file = takeFile(context);
+        Properties prop = new Properties();
+        String[] propertiesFile = null;
+        try {
+            prop.load(context.openFileInput("favourites.properties"));
+            propertiesFile = new String[prop.size()];
+            for (int j = 0; j < prop.size(); j++) {
+                propertiesFile[j] = prop.getProperty("busStopCode.Fav." + j).substring(0, prop.getProperty("busStopCode.Fav." + j).indexOf(","));
+                System.out.println(propertiesFile[j]);
+            }
+        } catch (IOException e) {
+
+        }
+        if (FileUtils.sizeOf(file) == 0) {
+            for (int i = 0; i < busClass.size(); i++) {
+                String busStopCode = busClass.get(i).getBusStopCode();
+                if (!stopsTemp.contains(busStopCode)) {
+                    stopsTemp.add(busStopCode);
+                    for (int j = 0; j < propertiesFile.length; j++) {
+                        if (!propertiesFile[j].equals(busStopCode)) {
+                            stops.add(new SearchListViewItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
+                        } else {
+                            stops.add(new SearchListViewItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.ic_star));
+                        }
+                    }
+                    try {
+                        FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + "," + busClass.get(i).getBusStopName() + "," + busClass.get(i).getBusStopAddress() + "\n"), StandardCharsets.UTF_8, true);
+                    } catch (IOException e) {
+                        Log.e("ERROR stopsViewer", e.getMessage());
+                    }
                 }
             }
+            stopsTemp.clear();
+        } else {
+            try {
+                BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName()), StandardCharsets.UTF_8));
+                String line;
+                while ((line = br.readLine()) != null) {
+                    StringTokenizer token = new StringTokenizer(line, ",");
+                    String busStopCode = token.nextToken();
+                    String busStopName = token.nextToken();
+                    String busStopAddress = StringUtils.lowerCase(token.nextToken());
+                    boolean isElementAdded = false;
+                    if (propertiesFile.length != 0) {
+                        for (String s : propertiesFile) {
+                            if (s.equals(busStopCode)) {
+                                isElementAdded = true;
+                            }
+                        }
+                        if (!isElementAdded) {
+                            stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
+                        } else {
+                            stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star));
+                        }
+                    } else {
+                        stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
+                    }
+                }
+            } catch (IOException e) {
+                Log.e("ERROR 2nd stopsViewer", e.getMessage());
+            }
         }
-        stopsTemp.clear();
     }
 
-    public void refreshElement(int position) {
-        //stops.get(position).setImageFavourite(R.drawable.ic_star);
-        stops.set(position, new SearchListViewItem(busClass.get(position).getBusStopCode(), busClass.get(position).getBusStopName() + "dddd", busClass.get(position).getBusStopAddress(), R.drawable.ic_star));
+    public boolean refreshElement(int position) {
+        if (stops.get(position).getImageFavourite() == R.drawable.round_favourite_border) {
+            stops.get(position).setImageFavourite(R.drawable.ic_star);
+            return true;
+        } else {
+            stops.get(position).setImageFavourite(R.drawable.round_favourite_border);
+            return false;
+        }
     }
 }

@@ -28,7 +28,7 @@ public class OutputErrorAdapter extends RecyclerView.Adapter<OutputErrorAdapter.
     @NonNull
     @Override
     public OutputErrorViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.card_output_error_layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.output_error_layout, parent, false);
         return new OutputErrorViewHolder(view);
     }
 
