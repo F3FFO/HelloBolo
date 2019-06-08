@@ -9,6 +9,7 @@ import com.f3ffo.hellobusbologna.fragment.TimePickerFragment;
 import com.f3ffo.hellobusbologna.hellobus.BusReader;
 import com.f3ffo.hellobusbologna.hellobus.Favourites;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
+import com.f3ffo.hellobusbologna.model.FavouritesViewItem;
 import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private List<OutputCardViewItem> outputCardViewItemList;
     private BottomNavigationView bottomNavView;
     private ArrayAdapter<String> spinnerArrayAdapter;
+    public static List<FavouritesViewItem> fav = new ArrayList<>();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
@@ -116,6 +118,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         swipeRefreshLayout.setEnabled(false);
         buildRecyclerViewSearch();
         fv.readFile(MainActivity.this);
+        fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
@@ -168,18 +171,25 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
             if (br.refreshElement(position)) {
-                if (favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddress())) {
-                    //TODO I think it doesn't update graphics of recyclerView
+                FavouritesViewItem item = favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddress());
+                if (item != null) {
+                    fav.add(item);
                     adapterBusStation.notifyItemChanged(position);
-                    adapterFavourites.notifyDataSetChanged();
+                    adapterFavourites.notifyItemInserted(fav.size());
                     Toast.makeText(MainActivity.this, R.string.favourite_added, Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(MainActivity.this, R.string.favourite_not_added, Toast.LENGTH_LONG).show();
                 }
             } else {
                 if (fv.removeFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode())) {
+                    int i;
+                    for (i = 0; i < fav.size(); i++) {
+                        if (fav.get(i).getBusStopCode().equals(br.getStops().get(position).getBusStopCode())) {
+                            fav.remove(i);
+                        }
+                    }
                     adapterBusStation.notifyItemChanged(position);
-                    adapterFavourites.notifyItemRemoved(fv.positionItemRemoved);
+                    adapterFavourites.notifyItemRemoved(i);
                     Toast.makeText(MainActivity.this, R.string.favourite_removed, Toast.LENGTH_LONG).show();
                 }
             }
@@ -230,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         RecyclerView recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
         recyclerViewFavourites.setHasFixedSize(true);
         recyclerViewFavourites.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        adapterFavourites = new FavouritesAdapter(fv.getFavouritesList());
+        adapterFavourites = new FavouritesAdapter(fav);
         recyclerViewFavourites.setAdapter(adapterFavourites);
     }
 
