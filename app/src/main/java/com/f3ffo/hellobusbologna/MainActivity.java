@@ -78,14 +78,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
             case R.id.navigation_home:
-                constraintLayoutOutput.setVisibility(View.VISIBLE);
-                constraintLayoutSearch.setVisibility(View.GONE);
-                constraintLayoutFavourites.setVisibility(View.GONE);
+                setDisplayChild(0);
                 return true;
             case R.id.navigation_favourites:
-                constraintLayoutOutput.setVisibility(View.GONE);
-                constraintLayoutSearch.setVisibility(View.GONE);
-                constraintLayoutFavourites.setVisibility(View.VISIBLE);
+                setDisplayChild(2);
                 return true;
             case R.id.navigation_notifications:
                 //TODO something
@@ -129,14 +125,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
             @Override
             public void onOpen() {
-                spinnerBusCode.setVisibility(View.GONE);
-                textViewBusHour.setVisibility(View.GONE);
-                busCodeText.setVisibility(View.GONE);
+                setElementAppBar(false);
                 bottomNavView.setVisibility(View.GONE);
                 fabBus.hide();
-                constraintLayoutOutput.setVisibility(View.GONE);
-                constraintLayoutSearch.setVisibility(View.VISIBLE);
-                constraintLayoutFavourites.setVisibility(View.GONE);
+                setDisplayChild(1);
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
 
                     @Override
@@ -165,11 +157,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
             searchViewBusStopName.setText(stops.get(position).getBusStopName());
             searchViewBusStopName.close();
-            spinnerBusCode.setVisibility(View.VISIBLE);
-            textViewBusHour.setVisibility(View.VISIBLE);
-            busCodeText.setVisibility(View.VISIBLE);
-            constraintLayoutSearch.setVisibility(View.GONE);
-            constraintLayoutOutput.setVisibility(View.VISIBLE);
+            setElementAppBar(true);
+            setDisplayChild(0);
             bottomNavView.setVisibility(View.VISIBLE);
             fabBus.show();
         });
@@ -241,6 +230,35 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
     }
 
+    public void setElementAppBar(boolean isVisible) {
+        if (isVisible) {
+            spinnerBusCode.setVisibility(View.VISIBLE);
+            textViewBusHour.setVisibility(View.VISIBLE);
+            busCodeText.setVisibility(View.VISIBLE);
+        } else {
+            spinnerBusCode.setVisibility(View.GONE);
+            textViewBusHour.setVisibility(View.GONE);
+            busCodeText.setVisibility(View.GONE);
+        }
+
+    }
+
+    public void setDisplayChild(int displayChild) {
+        if (displayChild == 0) {
+            constraintLayoutOutput.setVisibility(View.VISIBLE);
+            constraintLayoutSearch.setVisibility(View.GONE);
+            constraintLayoutFavourites.setVisibility(View.GONE);
+        } else if (displayChild == 1) {
+            constraintLayoutOutput.setVisibility(View.GONE);
+            constraintLayoutSearch.setVisibility(View.VISIBLE);
+            constraintLayoutFavourites.setVisibility(View.GONE);
+        } else if (displayChild == 2) {
+            constraintLayoutOutput.setVisibility(View.GONE);
+            constraintLayoutSearch.setVisibility(View.GONE);
+            constraintLayoutFavourites.setVisibility(View.VISIBLE);
+        }
+    }
+
     public void buildRecyclerViewFavourites() {
         RecyclerView recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
         recyclerViewFavourites.setHasFixedSize(true);
@@ -291,16 +309,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);
-            constraintLayoutSearch.setVisibility(View.GONE);
-            constraintLayoutOutput.setVisibility(View.VISIBLE);
+            setDisplayChild(0);
             bottomNavView.setVisibility(View.VISIBLE);
         } else if (searchViewBusStopName.isOpen() && busStop.isEmpty()) {
             spinnerBusCode.setVisibility(View.GONE);
             textViewBusHour.setVisibility(View.GONE);
             busCodeText.setVisibility(View.GONE);
             searchViewBusStopName.setText("");
-            constraintLayoutSearch.setVisibility(View.GONE);
-            constraintLayoutOutput.setVisibility(View.VISIBLE);
+            setDisplayChild(0);
             bottomNavView.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
