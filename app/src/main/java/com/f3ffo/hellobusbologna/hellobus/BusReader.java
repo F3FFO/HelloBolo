@@ -23,15 +23,10 @@ import java.util.StringTokenizer;
 public class BusReader {
 
     private ArrayList<BusClass> busClass = new ArrayList<>();
-    private List<SearchListViewItem> stops = new ArrayList<>();
     private String busStopName;
 
     public String getBusStopName() {
         return busStopName;
-    }
-
-    public List<SearchListViewItem> getStops() {
-        return stops;
     }
 
     public void extractFromFile(Context context) {
@@ -83,28 +78,28 @@ public class BusReader {
         return file;
     }
 
-    public void stopsViewer(Context context) {
-        ArrayList<String> stopsTemp = new ArrayList<>();
+    public List<SearchListViewItem> stopsViewer(Context context) {
+        List<SearchListViewItem> stops = new ArrayList<>();
         File file = takeFile(context);
         Properties prop = new Properties();
         String[] propertiesFile = null;
         try {
             prop.load(context.openFileInput("favourites.properties"));
             propertiesFile = new String[prop.size()];
-            for (int j = 0; j < prop.size(); j++) {
-                propertiesFile[j] = prop.getProperty("busStopCode.Fav." + j).substring(0, prop.getProperty("busStopCode.Fav." + j).indexOf(","));
-                System.out.println(propertiesFile[j]);
+            for (int i = 0; i < prop.size(); i++) {
+                propertiesFile[i] = prop.getProperty("busStopCode.Fav." + i).substring(0, prop.getProperty("busStopCode.Fav." + i).indexOf(","));
             }
         } catch (IOException e) {
-
+            Log.e("ERROR stopsViewer01", e.getMessage());
         }
+        ArrayList<String> stopsTemp = new ArrayList<>();
         if (FileUtils.sizeOf(file) == 0) {
             for (int i = 0; i < busClass.size(); i++) {
                 String busStopCode = busClass.get(i).getBusStopCode();
                 if (!stopsTemp.contains(busStopCode)) {
                     stopsTemp.add(busStopCode);
-                    for (int j = 0; j < propertiesFile.length; j++) {
-                        if (!propertiesFile[j].equals(busStopCode)) {
+                    for (String s : propertiesFile) {
+                        if (!s.equals(busStopCode)) {
                             stops.add(new SearchListViewItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
                         } else {
                             stops.add(new SearchListViewItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.ic_star));
@@ -113,7 +108,7 @@ public class BusReader {
                     try {
                         FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + "," + busClass.get(i).getBusStopName() + "," + busClass.get(i).getBusStopAddress() + "\n"), StandardCharsets.UTF_8, true);
                     } catch (IOException e) {
-                        Log.e("ERROR stopsViewer", e.getMessage());
+                        Log.e("ERROR stopsViewer02", e.getMessage());
                     }
                 }
             }
@@ -144,18 +139,9 @@ public class BusReader {
                     }
                 }
             } catch (IOException e) {
-                Log.e("ERROR 2nd stopsViewer", e.getMessage());
+                Log.e("ERROR stopsViewer03", e.getMessage());
             }
         }
-    }
-
-    public boolean refreshElement(int position) {
-        if (stops.get(position).getImageFavourite() == R.drawable.round_favourite_border) {
-            stops.get(position).setImageFavourite(R.drawable.ic_star);
-            return true;
-        } else {
-            stops.get(position).setImageFavourite(R.drawable.round_favourite_border);
-            return false;
-        }
+        return stops;
     }
 }

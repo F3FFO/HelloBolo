@@ -2,7 +2,7 @@ package com.f3ffo.hellobusbologna.model;
 
 public class OutputCardViewItem {
     private String busNumber, busHour, busHourComplete, error;
-    private int satelliteOrHour, handicap, errorImage;
+    private int satelliteOrHour, handicap;
 
     public OutputCardViewItem(String busNumber, String busHour, String busHourComplete, int satelliteOrHour, int handicap) {
         this.busNumber = busNumber;
@@ -12,8 +12,7 @@ public class OutputCardViewItem {
         this.handicap = handicap;
     }
 
-    public OutputCardViewItem(int errorImage, String error) {
-        this.errorImage = errorImage;
+    public OutputCardViewItem(String error) {
         this.error = error;
     }
 
@@ -65,11 +64,4 @@ public class OutputCardViewItem {
         this.error = error;
     }
 
-    public int getErrorImage() {
-        return errorImage;
-    }
-
-    public void setErrorImage(int errorImage) {
-        this.errorImage = errorImage;
-    }
 }

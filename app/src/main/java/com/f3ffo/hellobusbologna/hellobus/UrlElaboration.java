@@ -58,20 +58,20 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     if (line.contains("NESSUNA ALTRA CORSA")) {
                         if (busLine.isEmpty()) {
-                            outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "NESSUNA LINEA PRESENTE"));
+                            outputCardViewItemList.add(new OutputCardViewItem("NESSUNA LINEA PRESENTE"));
                         } else {
-                            outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " ASSENTE"));
+                            outputCardViewItemList.add(new OutputCardViewItem("LINEA " + busLine + " ASSENTE"));
                         }
                     } else if (line.contains("LINEA " + busLine + " NON GESTITA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "LINEA " + busLine + " NON GESTITA"));
+                        outputCardViewItemList.add(new OutputCardViewItem("LINEA " + busLine + " NON GESTITA"));
                     } else if (line.contains("TEMPORANEAMENTE SOSPESE")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
+                        outputCardViewItemList.add(new OutputCardViewItem("ERRORE"));
                     } else if (line.equals("NULL")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "ERRORE"));
+                        outputCardViewItemList.add(new OutputCardViewItem("ERRORE"));
                     } else if (line.contains("FERMATA " + busStop + " NON GESTITA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem(R.drawable.round_error, "FERMATA " + busStop + " NON GESTITA"));
+                        outputCardViewItemList.add(new OutputCardViewItem("FERMATA " + busStop + " NON GESTITA"));
                     } else {
-                        outputCardViewItemList.add(new OutputCardViewItem(0, ""));
+                        outputCardViewItemList.add(new OutputCardViewItem(""));
                         line = line.substring(line.indexOf(":") + 2);
                         if (line.startsWith("(")) {
                             line = line.substring(line.indexOf("(") + 9);

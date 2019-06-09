@@ -17,6 +17,10 @@ import java.net.URL;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
+
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class DownloadCsv extends AsyncTask<Void, Void, Void> {
 
@@ -30,35 +34,21 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
 
     private void checkFile() {
         try {
-            HttpURLConnection huc = (HttpURLConnection) new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=opendata-versione&version=1&format=csv").openConnection();
-            BufferedReader br = new BufferedReader(new InputStreamReader(huc.getInputStream(), StandardCharsets.UTF_8));
+            Request get = new Request.Builder().url("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=opendata-versione&version=1&format=csv").build();
+            BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
             String versionUpdate;
             do {
                 versionUpdate = br.readLine();
             } while (!versionUpdate.startsWith("lineefermate"));
             this.version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
         } catch (IOException e) {
-            Log.e("ERROR checkFile", e.getMessage());
+            Log.e("ERROR checkFile01", e.getMessage());
         }
-        File[] listFiles = context.getFilesDir().listFiles();
-        if (listFiles.length != 0) {
-            for (File listFile : listFiles) {
-                if (!listFile.isDirectory() && listFile.getName().contains(this.version) && !listFile.getName().contains("cut_")) {
-                    try {
-                        FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
-                        FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
-                    } catch (IOException e) {
-                        Log.e("ERROR createCutFile", e.getMessage());
-                    }
-                }
-            }
-        } else {
-            try {
-                FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
-                FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
-            } catch (IOException e) {
-                Log.e("ERROR createCutFile", e.getMessage());
-            }
+        try {
+            FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
+            FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
+        } catch (IOException e) {
+            Log.e("ERROR checkFile02", e.getMessage());
         }
     }
 
@@ -70,9 +60,9 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
             if (!listFile.isDirectory() && !listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
                 try {
                     FileUtils.forceDelete(new File(context.getFilesDir(), listFile.getName()));
-                    Log.i("FILE DELETED", listFile.getName());
+                    Log.i("FILE_DELETED", listFile.getName());
                 } catch (IOException e) {
-                    Log.e("FILE DELETED", listFile.getName());
+                    Log.e("ERROR FILE_DELETE", listFile.getName());
                 }
             }
         }

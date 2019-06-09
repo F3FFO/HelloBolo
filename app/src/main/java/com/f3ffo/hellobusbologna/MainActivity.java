@@ -11,6 +11,7 @@ import com.f3ffo.hellobusbologna.hellobus.Favourites;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.model.FavouritesViewItem;
 import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.model.SearchListViewItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -71,7 +72,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private List<OutputCardViewItem> outputCardViewItemList;
     private BottomNavigationView bottomNavView;
     private ArrayAdapter<String> spinnerArrayAdapter;
-    public static List<FavouritesViewItem> fav = new ArrayList<>();
+    private List<FavouritesViewItem> fav = new ArrayList<>();
+    private List<SearchListViewItem> stops = new ArrayList<>();
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
@@ -116,10 +118,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         lateralNavView.setNavigationItemSelectedListener(MainActivity.this);
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayout.setEnabled(false);
+        stops.addAll(br.stopsViewer(MainActivity.this));
         buildRecyclerViewSearch();
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
+
         buildRecyclerViewFavourites();
+
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
             @Override
@@ -154,11 +159,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             }
         });
         adapterBusStation.setOnItemClickListener((int position) -> {
-            busStop = br.getStops().get(position).getBusStopCode();
+            busStop = stops.get(position).getBusStopCode();
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
-            searchViewBusStopName.setText(br.getBusStopName());
+            searchViewBusStopName.setText(stops.get(position).getBusStopName());
             searchViewBusStopName.close();
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
@@ -170,8 +175,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
-            if (br.refreshElement(position)) {
-                FavouritesViewItem item = favourites.addFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode(), br.getStops().get(position).getBusStopName(), br.getStops().get(position).getBusStopAddress());
+            if (refreshElement(position)) {
+                FavouritesViewItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress());
                 if (item != null) {
                     fav.add(item);
                     adapterBusStation.notifyItemChanged(position);
@@ -181,10 +186,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                     Toast.makeText(MainActivity.this, R.string.favourite_not_added, Toast.LENGTH_LONG).show();
                 }
             } else {
-                if (fv.removeFavourite(MainActivity.this, br.getStops().get(position).getBusStopCode())) {
+                if (fv.removeFavourite(MainActivity.this, stops.get(position).getBusStopCode())) {
                     int i;
                     for (i = 0; i < fav.size(); i++) {
-                        if (fav.get(i).getBusStopCode().equals(br.getStops().get(position).getBusStopCode())) {
+                        if (fav.get(i).getBusStopCode().equals(stops.get(position).getBusStopCode())) {
                             fav.remove(i);
                         }
                     }
@@ -248,8 +253,18 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         RecyclerView recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
         recyclerViewBusStation.setHasFixedSize(true);
         recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        adapterBusStation = new SearchAdapter(br.getStops());
+        adapterBusStation = new SearchAdapter(stops);
         recyclerViewBusStation.setAdapter(adapterBusStation);
+    }
+
+    public boolean refreshElement(int position) {
+        if (stops.get(position).getImageFavourite() == R.drawable.round_favourite_border) {
+            stops.get(position).setImageFavourite(R.drawable.ic_star);
+            return true;
+        } else {
+            stops.get(position).setImageFavourite(R.drawable.round_favourite_border);
+            return false;
+        }
     }
 
     @Override
@@ -372,7 +387,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 }
             }
         } else {
-            outputCardViewItemList.add(new OutputCardViewItem(output.get(0).getErrorImage(), output.get(0).getError()));
+            outputCardViewItemList.add(new OutputCardViewItem(output.get(0).getError()));
             OutputErrorAdapter adapter = new OutputErrorAdapter(MainActivity.this, outputCardViewItemList);
             recyclerViewBusOutput.setAdapter(adapter);
         }

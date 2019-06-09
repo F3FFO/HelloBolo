@@ -34,7 +34,7 @@ public class Favourites {
                 favouritesList.add(new FavouritesViewItem(busStopCode, busStopName, busStopAddress));
             }
         } catch (IOException e) {
-            Log.e("ERROR readFileFav: ", e.getMessage());
+            Log.e("ERROR readFileFav", e.getMessage());
         }
     }
 
@@ -65,7 +65,7 @@ public class Favourites {
             }
             return true;
         } catch (IOException e) {
-            Log.e("ERROR", e.getMessage());
+            Log.e("ERROR removeFavourite", e.getMessage());
             return false;
         }
     }
