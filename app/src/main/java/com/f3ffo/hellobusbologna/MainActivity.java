@@ -81,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 setDisplayChild(0);
                 return true;
             case R.id.navigation_favourites:
+                setElementAppBar(false);
                 setDisplayChild(2);
                 return true;
             case R.id.navigation_notifications:

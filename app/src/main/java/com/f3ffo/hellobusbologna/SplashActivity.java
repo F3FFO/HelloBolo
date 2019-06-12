@@ -11,7 +11,7 @@ import android.util.Log;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
+import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -20,7 +20,8 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         if (isOnline()) {
             try {
-                new DownloadCsv(SplashActivity.this).execute().get();
+                new CheckVersion(SplashActivity.this).execute().get();
+                //new DownloadCsv(SplashActivity.this).execute().get();
             } catch (Exception e) {
                 Log.e("ERROR SplashActivity: ", e.getMessage());
             }

@@ -31,25 +31,27 @@ public class BusReader {
 
     public void extractFromFile(Context context) {
         File[] listFiles = context.getFilesDir().listFiles();
-        for (File listFile : listFiles) {
-            if (!listFile.isDirectory() && !listFile.getName().equals("favourites.properties") && !listFile.getName().contains("cut_")) {
-                try {
-                    BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        if (!line.startsWith("codice_linea")) {
-                            StringTokenizer token = new StringTokenizer(line, ";");
-                            String busCode = token.nextToken();
-                            String stopCode = token.nextToken();
-                            String stopName = token.nextToken();
-                            String stopAddress = StringUtils.lowerCase(token.nextToken());
-                            busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress)));
+        if (listFiles != null) {
+            for (File listFile : listFiles) {
+                if (!listFile.isDirectory() && !listFile.getName().equals("favourites.properties") && !listFile.getName().contains("cut_")) {
+                    try {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
+                        String line;
+                        while ((line = br.readLine()) != null) {
+                            if (!line.startsWith("codice_linea")) {
+                                StringTokenizer token = new StringTokenizer(line, ";");
+                                String busCode = token.nextToken();
+                                String stopCode = token.nextToken();
+                                String stopName = token.nextToken();
+                                String stopAddress = StringUtils.lowerCase(token.nextToken());
+                                busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress)));
+                            }
                         }
+                        br.close();
+                    } catch (IOException e) {
+                        Log.e("ERROR extractFromFile", e.getMessage());
+                        busClass.clear();
                     }
-                    br.close();
-                } catch (IOException e) {
-                    Log.e("ERROR extractFromFile", e.getMessage());
-                    busClass.clear();
                 }
             }
         }
@@ -121,9 +123,9 @@ public class BusReader {
                     StringTokenizer token = new StringTokenizer(line, ",");
                     String busStopCode = token.nextToken();
                     String busStopName = token.nextToken();
-                    String busStopAddress = StringUtils.lowerCase(token.nextToken());
-                    boolean isElementAdded = false;
-                    if (propertiesFile.length != 0) {
+                    String busStopAddress = token.nextToken();
+                    if (propertiesFile != null && propertiesFile.length != 0) {
+                        boolean isElementAdded = false;
                         for (String s : propertiesFile) {
                             if (s.equals(busStopCode)) {
                                 isElementAdded = true;
