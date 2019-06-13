@@ -89,7 +89,10 @@ public class BusReader {
             prop.load(context.openFileInput("favourites.properties"));
             propertiesFile = new String[prop.size()];
             for (int i = 0; i < prop.size(); i++) {
-                propertiesFile[i] = prop.getProperty("busStopCode.Fav." + i).substring(0, prop.getProperty("busStopCode.Fav." + i).indexOf(","));
+                String line = prop.getProperty("busStopCode.Fav." + i);
+                if (line != null) {
+                    propertiesFile[i] = line.substring(0, prop.getProperty("busStopCode.Fav." + i).indexOf(","));
+                }
             }
         } catch (IOException e) {
             Log.e("ERROR stopsViewer01", e.getMessage());

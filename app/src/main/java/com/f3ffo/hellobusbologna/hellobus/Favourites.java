@@ -27,14 +27,17 @@ public class Favourites {
             for (int i = 0; i < prop.stringPropertyNames().size(); i++) {
                 String line;
                 line = prop.getProperty("busStopCode.Fav." + i);
-                StringTokenizer token = new StringTokenizer(line, ",");
-                String busStopCode = token.nextToken();
-                String busStopName = token.nextToken();
-                String busStopAddress = token.nextToken();
-                favouritesList.add(new FavouritesViewItem(busStopCode, busStopName, busStopAddress));
+                if (line != null) {
+                    StringTokenizer token = new StringTokenizer(line, ",");
+                    String busStopCode = token.nextToken();
+                    String busStopName = token.nextToken();
+                    String busStopAddress = token.nextToken();
+                    favouritesList.add(new FavouritesViewItem(busStopCode, busStopName, busStopAddress));
+                }
             }
         } catch (IOException e) {
             Log.e("ERROR readFileFav", e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -49,24 +52,28 @@ public class Favourites {
             }
         } catch (IOException e) {
             Log.e("ERROR addFavourite", e.getMessage());
+            e.printStackTrace();
         }
         return item;
     }
 
     public boolean removeFavourite(Context context, String busStopCode) {
+        boolean ris = false;
         try {
             prop.load(context.openFileInput(this.fileName));
             String line;
             for (int i = 0; i < prop.stringPropertyNames().size(); i++) {
                 line = prop.getProperty("busStopCode.Fav." + i);
-                if (line.contains(busStopCode)) {
+                if (line != null && line.contains(busStopCode)) {
                     prop.remove("busStopCode.Fav." + i);
+                    prop.store(context.openFileOutput(this.fileName, Context.MODE_PRIVATE), "User favourite");
+                    ris = true;
                 }
             }
-            return true;
         } catch (IOException e) {
             Log.e("ERROR removeFavourite", e.getMessage());
-            return false;
+            e.printStackTrace();
         }
+        return ris;
     }
 }

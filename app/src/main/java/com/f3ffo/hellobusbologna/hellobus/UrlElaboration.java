@@ -54,6 +54,7 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
             BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
+                System.out.println("------------------------------->"+line);
                 if (!line.startsWith("<?xml")) {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     if (line.contains("NESSUNA ALTRA CORSA")) {
