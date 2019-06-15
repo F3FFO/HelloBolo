@@ -50,7 +50,6 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
                 outputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
                 outputStream.close();
                 readableByteChannel.close();
-                Log.i("FILE SCARICATO", "PORCA MADONNA");
             } catch (IOException e) {
                 Log.e("ERROR fileDownload_O", e.getMessage());
                 e.printStackTrace();

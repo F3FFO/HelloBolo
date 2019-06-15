@@ -193,6 +193,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             timePicker.show(getSupportFragmentManager(), "Ora");
         });
         spinnerBusCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (spinnerArrayAdapter != null) {
@@ -230,7 +231,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
     }
 
-    public void setElementAppBar(boolean isVisible) {
+    private void setElementAppBar(boolean isVisible) {
         if (isVisible) {
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
@@ -243,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     }
 
-    public void setDisplayChild(int displayChild) {
+    private void setDisplayChild(int displayChild) {
         if (displayChild == 0) {
             constraintLayoutOutput.setVisibility(View.VISIBLE);
             constraintLayoutSearch.setVisibility(View.GONE);
@@ -259,7 +260,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         }
     }
 
-    public void buildRecyclerViewFavourites() {
+    private void buildRecyclerViewFavourites() {
         RecyclerView recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
         recyclerViewFavourites.setHasFixedSize(true);
         recyclerViewFavourites.setLayoutManager(new LinearLayoutManager(MainActivity.this));
@@ -267,7 +268,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         recyclerViewFavourites.setAdapter(adapterFavourites);
     }
 
-    public void buildRecyclerViewSearch() {
+    private void buildRecyclerViewSearch() {
         RecyclerView recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
         recyclerViewBusStation.setHasFixedSize(true);
         recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
@@ -275,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         recyclerViewBusStation.setAdapter(adapterBusStation);
     }
 
-    public boolean refreshElement(int position) {
+    private boolean refreshElement(int position) {
         if (stops.get(position).getImageFavourite() == R.drawable.round_favourite_border) {
             stops.get(position).setImageFavourite(R.drawable.ic_star);
             return true;
@@ -415,14 +416,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private void checkBus(String busStop, String busLine, String busHour) {
         try {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            UrlElaboration ue = new UrlElaboration();
-            ue.setDelegate(MainActivity.this);
-            ue.setBusStop(busStop);
-            ue.setBusLine(busLine);
-            ue.setBusHour(busHour);
+            UrlElaboration ue = new UrlElaboration(busStop, busLine, busHour, MainActivity.this);
             ue.execute();
         } catch (Exception e) {
             Log.e("ERROR checkBus", e.getMessage());
+            e.printStackTrace();
         }
     }
 }

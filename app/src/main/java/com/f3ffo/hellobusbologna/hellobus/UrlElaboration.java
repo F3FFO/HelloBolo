@@ -19,24 +19,15 @@ import java.util.StringTokenizer;
 import okhttp3.*;
 
 public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewItem>> {
-    private String busStop = "";
-    private String busLine = "";
-    private String busHour = "";
-    private AsyncResponse delegate = null;
+    private String busStop;
+    private String busLine;
+    private String busHour;
+    private AsyncResponse delegate;
 
-    public void setBusStop(String busStop) {
+    public UrlElaboration(String busStop, String busLine, String busHour, AsyncResponse delegate) {
         this.busStop = busStop;
-    }
-
-    public void setBusLine(String busLine) {
         this.busLine = busLine;
-    }
-
-    public void setBusHour(String busHour) {
         this.busHour = busHour;
-    }
-
-    public void setDelegate(AsyncResponse delegate) {
         this.delegate = delegate;
     }
 
@@ -54,7 +45,6 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
             BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
             String line;
             while ((line = br.readLine()) != null) {
-                System.out.println("------------------------------->"+line);
                 if (!line.startsWith("<?xml")) {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     if (line.contains("NESSUNA ALTRA CORSA")) {

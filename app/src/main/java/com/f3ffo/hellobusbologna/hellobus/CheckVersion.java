@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseVersion;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedReader;
@@ -21,9 +23,11 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
     @SuppressLint("StaticFieldLeak")
     private Context context;
     private String version;
+    private AsyncResponseVersion delegate;
 
-    public CheckVersion(Context context) {
+    public CheckVersion(Context context, AsyncResponseVersion delegate) {
         this.context = context;
+        this.delegate = delegate;
     }
 
     private boolean takeFile() {
@@ -49,7 +53,6 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
                 versionUpdate = br.readLine();
             } while (!versionUpdate.startsWith("lineefermate"));
             this.version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
-            Log.i("CONTROLLO VERSIONE", version);
             FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
             FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
             return true;
@@ -64,12 +67,7 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
         if (aBoolean && !takeFile()) {
-            try {
-                new DownloadCsv(this.context, this.version).execute().get();
-            } catch (Exception e) {
-                Log.e("ERROR CheckVersion02", e.getMessage());
-                e.printStackTrace();
-            }
+            delegate.processFinisVersion(this.version);
         }
     }
 }
