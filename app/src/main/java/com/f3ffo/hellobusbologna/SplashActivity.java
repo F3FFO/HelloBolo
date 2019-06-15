@@ -13,6 +13,8 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
 
+import java.io.IOException;
+
 public class SplashActivity extends AppCompatActivity {
 
     @Override
@@ -44,8 +46,20 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     private boolean isOnline() {
+        //Check if connection exist
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        //Check if connection work
+        boolean connectionWork = false;
+        try {
+            connectionWork = Runtime.getRuntime().exec("ping -c 1 google.com").waitFor() == 0;
+        } catch (InterruptedException e) {
+            Log.e("ErrorIsOnline: ", e.getMessage());
+        } catch (IOException e) {
+            Log.e("ErrorIsOnline: ", e.getMessage());
+        }
+        //Return All
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected() && connectionWork;
     }
+
 }
