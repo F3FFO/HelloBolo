@@ -49,17 +49,18 @@ public class SplashActivity extends AppCompatActivity {
         //Check if connection exist
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        //Check if connection work
-        boolean connectionWork = false;
-        try {
-            connectionWork = Runtime.getRuntime().exec("ping -c 1 google.com").waitFor() == 0;
-        } catch (InterruptedException e) {
-            Log.e("ErrorIsOnline: ", e.getMessage());
-        } catch (IOException e) {
-            Log.e("ErrorIsOnline: ", e.getMessage());
-        }
-        //Return All
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected() && connectionWork;
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected()&&  isConnected();
     }
 
+    private boolean isConnected() {
+        try {
+            return Runtime.getRuntime().exec("/system/bin/ping -c 1 8.8.8.8").waitFor() < 2;
+        } catch (InterruptedException e) {
+            Log.e("ERROR SplashActivity: ", e.getMessage());
+            return false;
+        } catch (IOException e) {
+            Log.e("ERROR SplashActivity: ", e.getMessage());
+            return false;
+        }
+    }
 }
