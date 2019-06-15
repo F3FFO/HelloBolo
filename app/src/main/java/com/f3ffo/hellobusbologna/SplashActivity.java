@@ -44,24 +44,23 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
         }
     }
 
+    private boolean isOnline() {
+        //Check if connection exist
+        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isConnected();
+    }
+
     private boolean isConnected() {
         try {
             return Runtime.getRuntime().exec("/system/bin/ping -c 1 8.8.8.8").waitFor() < 2;
         } catch (InterruptedException e) {
             Log.e("ERROR SplashActivity: ", e.getMessage());
-            e.printStackTrace();
             return false;
         } catch (IOException e) {
             Log.e("ERROR SplashActivity: ", e.getMessage());
-            e.printStackTrace();
             return false;
         }
-    }
-
-    private boolean isOnline() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isConnected();
     }
 
     @Override

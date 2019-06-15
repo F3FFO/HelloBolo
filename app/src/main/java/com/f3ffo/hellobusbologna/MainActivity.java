@@ -227,7 +227,26 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         searchViewBusStopName.setOnLogoClickListener(() -> drawer.openDrawer(GravityCompat.START));
         adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
             busStop = fv.getFavouritesList().get(position).getBusStopCode();
+            spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
+            spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
+            spinnerBusCode.setAdapter(spinnerArrayAdapter);
+            searchViewBusStopName.close();
+            setElementAppBar(true);
+            setDisplayChild(0);
+            fabBus.show();
             searchViewBusStopName.setText(fv.getFavouritesList().get(position).getBusStopName());
+        });
+        adapterFavourites.setOnFavouriteButtonClickListener((int position) ->{
+            if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
+                for (int i = 0; i < fav.size(); i++) {
+                    if (fav.get(i).getBusStopCode().equals(fav.get(position).getBusStopCode())) {
+                        fav.remove(i);
+                        adapterBusStation.notifyItemChanged(position);
+                        adapterFavourites.notifyItemRemoved(i);
+                    }
+                }
+                Toast.makeText(MainActivity.this, R.string.favourite_removed, Toast.LENGTH_LONG).show();
+            }
         });
     }
 
