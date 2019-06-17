@@ -45,7 +45,6 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
     }
 
     private boolean isOnline() {
-        //Check if connection exist
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isConnected();

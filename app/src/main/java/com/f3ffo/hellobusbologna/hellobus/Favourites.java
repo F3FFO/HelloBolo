@@ -24,10 +24,9 @@ public class Favourites {
     public void readFile(Context context) {
         try {
             prop.load(context.openFileInput(this.fileName));
-            for (int i = 0; i < prop.stringPropertyNames().size(); i++) {
-                String line;
-                line = prop.getProperty("busStopCode.Fav." + i);
-                if (line != null) {
+            for (int i = 0; i < prop.size(); i++) {
+                String line = prop.getProperty("busStopCode.Fav." + i);
+                if (!line.equals("")) {
                     StringTokenizer token = new StringTokenizer(line, ",");
                     String busStopCode = token.nextToken();
                     String busStopName = token.nextToken();
@@ -45,10 +44,14 @@ public class Favourites {
         FavouritesViewItem item = null;
         try {
             prop.load(context.openFileInput(this.fileName));
-            if (prop.stringPropertyNames().size() < 10) {
-                prop.setProperty("busStopCode.Fav." + prop.stringPropertyNames().size(), busStopCode + "," + busStopName + "," + busStopAddress);
-                prop.store(context.openFileOutput(this.fileName, Context.MODE_PRIVATE), "User favourite");
-                item = new FavouritesViewItem(busStopCode, busStopName, busStopAddress);
+            boolean isAdded = false;
+            for (int i = 0; i < 10 && !isAdded; i++) {
+                if (prop.getProperty("busStopCode.Fav." + i).equals("")) {
+                    isAdded = true;
+                    prop.setProperty("busStopCode.Fav." + i, busStopCode + "," + busStopName + "," + busStopAddress);
+                    prop.store(context.openFileOutput(this.fileName, Context.MODE_PRIVATE), "User favourite");
+                    item = new FavouritesViewItem(busStopCode, busStopName, busStopAddress);
+                }
             }
         } catch (IOException e) {
             Log.e("ERROR addFavourite", e.getMessage());
@@ -65,7 +68,7 @@ public class Favourites {
             for (int i = 0; i < prop.stringPropertyNames().size(); i++) {
                 line = prop.getProperty("busStopCode.Fav." + i);
                 if (line != null && line.contains(busStopCode)) {
-                    prop.remove("busStopCode.Fav." + i);
+                    prop.setProperty("busStopCode.Fav." + i, "");
                     prop.store(context.openFileOutput(this.fileName, Context.MODE_PRIVATE), "User favourite");
                     ris = true;
                 }

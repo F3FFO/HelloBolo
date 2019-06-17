@@ -84,18 +84,19 @@ public class BusReader {
         List<SearchListViewItem> stops = new ArrayList<>();
         File file = takeFile(context);
         Properties prop = new Properties();
-        String[] propertiesFile = null;
+        String[] propertiesFile = new String[10];
         try {
             prop.load(context.openFileInput("favourites.properties"));
-            propertiesFile = new String[prop.size()];
-            for (int i = 0; i < prop.size(); i++) {
-                String line = prop.getProperty("busStopCode.Fav." + i);
-                if (line != null) {
-                    propertiesFile[i] = line.substring(0, prop.getProperty("busStopCode.Fav." + i).indexOf(","));
+            for (int i = 0; i < propertiesFile.length; i++) {
+                if (!prop.getProperty("busStopCode.Fav." + i).equals("")) {
+                    propertiesFile[i] = prop.getProperty("busStopCode.Fav." + i).substring(0, prop.getProperty("busStopCode.Fav." + i).indexOf(","));
+                } else {
+                    propertiesFile[i] = "";
                 }
             }
         } catch (IOException e) {
             Log.e("ERROR stopsViewer01", e.getMessage());
+            e.printStackTrace();
         }
         ArrayList<String> stopsTemp = new ArrayList<>();
         if (FileUtils.sizeOf(file) == 0) {
@@ -127,20 +128,16 @@ public class BusReader {
                     String busStopCode = token.nextToken();
                     String busStopName = token.nextToken();
                     String busStopAddress = token.nextToken();
-                    if (propertiesFile != null && propertiesFile.length != 0) {
-                        boolean isElementAdded = false;
-                        for (String s : propertiesFile) {
-                            if (s.equals(busStopCode)) {
-                                isElementAdded = true;
-                            }
+                    boolean isElementAdded = false;
+                    for (String s : propertiesFile) {
+                        if (s.equals(busStopCode)) {
+                            isElementAdded = true;
                         }
-                        if (!isElementAdded) {
-                            stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
-                        } else {
-                            stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star));
-                        }
-                    } else {
+                    }
+                    if (!isElementAdded) {
                         stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
+                    } else {
+                        stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star));
                     }
                 }
             } catch (IOException e) {

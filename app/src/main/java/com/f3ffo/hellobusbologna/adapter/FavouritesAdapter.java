@@ -17,8 +17,8 @@ import java.util.List;
 public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.FavouritesAdapterHolder> {
 
     private List<FavouritesViewItem> favouritesViewItemList;
-    private OnFavouriteButtonClickListener favouriteButtonClickListener;
     private OnItemClickListener itemClickListener;
+    private OnFavouriteButtonClickListener favouriteButtonClickListener;
 
     public FavouritesAdapter(List<FavouritesViewItem> favouritesViewItemList) {
         this.favouritesViewItemList = favouritesViewItemList;
@@ -44,21 +44,20 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.Fa
         return favouritesViewItemList.size();
     }
 
-
-    public interface OnFavouriteButtonClickListener {
-        void onItemClick(int position);
-    }
-
-    public void setOnFavouriteButtonClickListener(FavouritesAdapter.OnFavouriteButtonClickListener listener) {
-        favouriteButtonClickListener = listener;
-    }
-
     public interface OnItemClickListener {
         void onItemClick(int position);
     }
 
     public void setOnItemClickListener(OnItemClickListener listener) {
         itemClickListener = listener;
+    }
+
+    public interface OnFavouriteButtonClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnFavouriteButtonClickListener(OnFavouriteButtonClickListener listener) {
+        favouriteButtonClickListener = listener;
     }
 
     static class FavouritesAdapterHolder extends RecyclerView.ViewHolder {

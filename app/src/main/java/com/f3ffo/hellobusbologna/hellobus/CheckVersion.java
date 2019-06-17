@@ -14,6 +14,7 @@ import java.io.File;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import java.util.Properties;
 
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -55,6 +56,14 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
             this.version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
             FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
             FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
+            Properties prop = new Properties();
+            prop.load(context.openFileInput("favourites.properties"));
+            if (prop.stringPropertyNames().size() == 0) {
+                for (int i = 0; i < 10; i++) {
+                    prop.setProperty("busStopCode.Fav." + i, "");
+                    prop.store(context.openFileOutput("favourites.properties", Context.MODE_PRIVATE), "User favourite");
+                }
+            }
             return true;
         } catch (Exception e) {
             Log.e("ERROR CheckVersion01", e.getMessage());
