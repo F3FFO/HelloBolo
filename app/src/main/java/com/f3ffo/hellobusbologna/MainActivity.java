@@ -226,7 +226,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
         searchViewBusStopName.setOnLogoClickListener(() -> drawer.openDrawer(GravityCompat.START));
         adapterFavourites.setOnItemClickListener((int position) -> {
-            busStop = fv.getFavouritesList().get(position).getBusStopCode();
+            //quando aggiungo un preferito e provo a cliccarci sopra va in crash, non crasha solo quando ho riavviato l'app
+            //questa penso che sia la riga incriminata:
+            //busStop = fv.getFavouritesList().get(position).getBusStopCode();
+            //ad intuito la sostituirei con questa:
+            busStop = fav.get(position).getBusStopCode();
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
