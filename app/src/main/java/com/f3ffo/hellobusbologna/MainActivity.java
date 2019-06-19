@@ -1,5 +1,6 @@
 package com.f3ffo.hellobusbologna;
 
+import com.f3ffo.hellobusbologna.adapter.ArticleAdapter;
 import com.f3ffo.hellobusbologna.adapter.FavouritesAdapter;
 import com.f3ffo.hellobusbologna.adapter.OutputAdapter;
 import com.f3ffo.hellobusbologna.adapter.OutputErrorAdapter;
@@ -16,8 +17,10 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
+import com.prof.rssparser.Article;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.ActionBarDrawerToggle;
@@ -30,6 +33,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -57,9 +62,9 @@ import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener, NavigationView.OnNavigationItemSelectedListener {
 
-    private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
+    private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private Toolbar toolbar;
-    private AppCompatTextView busCodeText, textViewBusHour;
+    private AppCompatTextView busCodeText, textViewHourDefault, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private String busStop = "", busLine = "", busHour = "";
     private SearchAdapter adapterBusStation;
@@ -77,12 +82,23 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private List<FavouritesViewItem> fav = new ArrayList<>();
     private List<SearchListViewItem> stops = new ArrayList<>();
 
+
+
+
+    private RecyclerView recyclerViewRss;
+    private ArticleAdapter articleAdapter;
+    private SwipeRefreshLayout swipeRefreshLayoutRss;
+    private ProgressBar progressBarRss;
+    private MainViewModel viewModel;
+    private RelativeLayout relativeLayoutRss;
+
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
             case R.id.navigation_rss:
                 searchViewBusStopName.setVisibility(View.GONE);
                 toolbar.setVisibility(View.VISIBLE);
                 setDisplayChild(0);
+                viewModel.fetchFeed();
                 return true;
             case R.id.navigation_search:
                 searchViewBusStopName.setVisibility(View.VISIBLE);
@@ -104,7 +120,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        constraintLayoutRss = findViewById(R.id.constraintLayoutRss);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
@@ -113,10 +128,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         textViewBusHour = findViewById(R.id.textViewBusHour);
+        textViewHourDefault = findViewById(R.id.textViewHourDefault);
         busCodeText = findViewById(R.id.busCodeText);
         fabBus = findViewById(R.id.fabBus);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
+        progressBarRss = findViewById(R.id.progressBarRss);
+        recyclerViewRss = findViewById(R.id.recyclerViewRss);
+        swipeRefreshLayoutRss = findViewById(R.id.swipeRefreshLayoutRss);
+        relativeLayoutRss = findViewById(R.id.relativeLayoutRss);
+        setSupportActionBar(toolbar);
         outputCardViewItemList = new ArrayList<>();
         drawer = findViewById(R.id.drawer_layout);
         NavigationView lateralNavView = findViewById(R.id.lateralNavView);
@@ -126,11 +147,49 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         lateralNavView.setNavigationItemSelectedListener(MainActivity.this);
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayout.setEnabled(false);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
         stops.addAll(br.stopsViewer(MainActivity.this));
         buildRecyclerViewSearch();
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
+
+
+
+        viewModel = ViewModelProviders.of(MainActivity.this).get(MainViewModel.class);
+        viewModel.fetchFeed();
+
+        recyclerViewRss.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        recyclerViewRss.setItemAnimator(new DefaultItemAnimator());
+        recyclerViewRss.setHasFixedSize(true);
+
+        viewModel.getArticleList().observe(MainActivity.this, (List<Article> articles) -> {
+            if (articles != null) {
+                articleAdapter = new ArticleAdapter(articles, MainActivity.this);
+                recyclerViewRss.setAdapter(articleAdapter);
+                articleAdapter.notifyDataSetChanged();
+                progressBarRss.setVisibility(View.GONE);
+                swipeRefreshLayoutRss.setRefreshing(false);
+            }
+        });
+        viewModel.getSnackbar().observe(MainActivity.this, (String s) -> {
+            if (s != null) {
+                Snackbar.make(relativeLayoutRss, s, Snackbar.LENGTH_LONG).show();
+                viewModel.onSnackbarShowed();
+            }
+        });
+        swipeRefreshLayoutRss.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
+        swipeRefreshLayoutRss.canChildScrollUp();
+        swipeRefreshLayoutRss.setOnRefreshListener(() -> {
+            articleAdapter.getArticleList().clear();
+            articleAdapter.notifyDataSetChanged();
+            swipeRefreshLayoutRss.setRefreshing(true);
+            viewModel.fetchFeed();
+        });
+
+
+
+
 
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
@@ -267,10 +326,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private void setElementAppBar(boolean isVisible) {
         if (isVisible) {
             spinnerBusCode.setVisibility(View.VISIBLE);
+            textViewHourDefault.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);
         } else {
             spinnerBusCode.setVisibility(View.GONE);
+            textViewHourDefault.setVisibility(View.GONE);
             textViewBusHour.setVisibility(View.GONE);
             busCodeText.setVisibility(View.GONE);
         }
@@ -279,22 +340,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     private void setDisplayChild(int displayChild) {
         if (displayChild == 0) {
-            constraintLayoutRss.setVisibility(View.VISIBLE);
+            relativeLayoutRss.setVisibility(View.VISIBLE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 1) {
-            constraintLayoutRss.setVisibility(View.GONE);
+            relativeLayoutRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.VISIBLE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 2) {
-            constraintLayoutRss.setVisibility(View.GONE);
+            relativeLayoutRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.VISIBLE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 3) {
-            constraintLayoutRss.setVisibility(View.GONE);
+            relativeLayoutRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.VISIBLE);
@@ -330,10 +391,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         if (minute < 10) {
-            textViewBusHour.setText("Partenza: " + hourOfDay + ":0" + minute);
+            textViewBusHour.setText(hourOfDay + ":0" + minute);
             busHour = hourOfDay + "0" + minute;
         } else {
-            textViewBusHour.setText("Partenza: " + hourOfDay + ":" + minute);
+            textViewBusHour.setText(hourOfDay + ":" + minute);
             busHour = hourOfDay + "" + minute;
         }
         outputCardViewItemList.clear();
@@ -342,6 +403,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public void onBackPressed() {
+        //TODO rethink
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {

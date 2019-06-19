@@ -4,7 +4,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="busStopNameText">Cerca qui</string>
     <string name="busCodeText">Autobus:</string>
-    <string name="busHourText">Partenza: Adesso</string>
+    <string name="busHourTextDefault">Partenza:</string>
+    <string name="busHourText">Adesso</string>
     <string name="menu_info">Info</string>
     <string name="menu_favourites">Preferiti</string>
     <string name="menu_share">Condividi</string>

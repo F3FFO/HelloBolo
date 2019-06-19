@@ -50,7 +50,7 @@
                 android:textIsSelectable="false"
                 android:textSize="20sp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/textViewBusHour"
+                app:layout_constraintBottom_toTopOf="@id/textViewHourDefault"
                 app:layout_constraintEnd_toStartOf="@id/spinnerBusCode"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/searchViewBusStopName" />
@@ -67,29 +67,51 @@
                 app:layout_constraintTop_toTopOf="@id/busCodeText" />
 
             <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewBusHour"
+                android:id="@+id/textViewHourDefault"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="32dp"
+                android:layout_marginTop="8dp"
                 android:layout_marginBottom="16dp"
+                android:fontFamily="@font/lato"
+                android:gravity="center"
+                android:text="@string/busHourTextDefault"
+                android:textAlignment="center"
+                android:textColor="@color/colorGreyMaterial"
+                android:textIsSelectable="false"
+                android:textSize="20sp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/textViewBusHour"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/busCodeText" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewBusHour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:fontFamily="@font/lato"
                 android:text="@string/busHourText"
                 android:textAlignment="center"
                 android:textColor="@color/colorGreyMaterial"
                 android:textSize="20sp"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/busCodeText" />
+                app:layout_constraintBottom_toBottomOf="@id/textViewHourDefault"
+                app:layout_constraintStart_toEndOf="@id/textViewHourDefault"
+                app:layout_constraintTop_toTopOf="@id/textViewHourDefault" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
+            style="@style/Widget.AppCompat.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:popupTheme="@style/AppTheme.PopupOverlay"
+            app:titleTextAppearance="@android:style/TextAppearance.Material.Widget.Toolbar.Title"
+            app:titleTextColor="@color/colorGreyMaterial" />
 
     </com.google.android.material.appbar.AppBarLayout>
 

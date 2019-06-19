@@ -22,7 +22,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (isOnline()) {
+        if (isNetworkAvailable()) {
             try {
                 new CheckVersion(SplashActivity.this, SplashActivity.this).execute().get();
             } catch (Exception e) {
@@ -44,7 +44,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
         }
     }
 
-    private boolean isOnline() {
+    private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isConnected();
