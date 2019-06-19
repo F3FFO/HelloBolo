@@ -12,9 +12,9 @@
     <string name="alertDialog_message">Controllare la connessione di rete e riprovare</string>
     <string name="alertDialog_yes">Riprova</string>
     <string name="alertDialog_no">Chiudi</string>
-    <string name="title_home">Home</string>
+    <string name="title_rss">News</string>
+    <string name="title_search">Cerca</string>
     <string name="title_favourites">Preferiti</string>
-    <string name="title_notifications">Nulla</string>
     <string name="favourite_added">Aggiunto ai preferiti!</string>
     <string name="favourite_removed">Rimosso ai preferiti!</string>
     <string name="favourite_not_added">Hai già 10 preferiti!</string>

@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
 
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -56,7 +57,8 @@ import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener, NavigationView.OnNavigationItemSelectedListener {
 
-    private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
+    private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
+    private Toolbar toolbar;
     private AppCompatTextView busCodeText, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private String busStop = "", busLine = "", busHour = "";
@@ -77,15 +79,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
-            case R.id.navigation_home:
+            case R.id.navigation_rss:
+                searchViewBusStopName.setVisibility(View.GONE);
+                toolbar.setVisibility(View.VISIBLE);
                 setDisplayChild(0);
                 return true;
-            case R.id.navigation_favourites:
+            case R.id.navigation_search:
+                searchViewBusStopName.setVisibility(View.VISIBLE);
+                toolbar.setVisibility(View.GONE);
                 setElementAppBar(false);
                 setDisplayChild(2);
                 return true;
-            case R.id.navigation_notifications:
-                //TODO something
+            case R.id.navigation_favourites:
+                searchViewBusStopName.setVisibility(View.VISIBLE);
+                toolbar.setVisibility(View.GONE);
+                setElementAppBar(false);
+                setDisplayChild(3);
                 return true;
         }
         return false;
@@ -95,9 +104,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        constraintLayoutRss = findViewById(R.id.constraintLayoutRss);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
+        toolbar = findViewById(R.id.toolbar);
         bottomNavView = findViewById(R.id.bottomNavView);
         bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
@@ -119,7 +130,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         buildRecyclerViewSearch();
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
-
         buildRecyclerViewFavourites();
 
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
@@ -129,7 +139,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 setElementAppBar(false);
                 bottomNavView.setVisibility(View.GONE);
                 fabBus.hide();
-                setDisplayChild(1);
+                setDisplayChild(2);
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
 
                     @Override
@@ -159,7 +169,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             searchViewBusStopName.setText(stops.get(position).getBusStopName());
             searchViewBusStopName.close();
             setElementAppBar(true);
-            setDisplayChild(0);
+            setDisplayChild(1);
             bottomNavView.setVisibility(View.VISIBLE);
             fabBus.show();
         });
@@ -177,11 +187,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 }
             } else {
                 if (fv.removeFavourite(MainActivity.this, stops.get(position).getBusStopCode())) {
-                    for (int i = 0; i < fav.size(); i++) {
+                    boolean isRemoved = false;
+                    for (int i = 0; i < fav.size() && !isRemoved; i++) {
                         if (fav.get(i).getBusStopCode().equals(stops.get(position).getBusStopCode())) {
                             fav.remove(i);
                             adapterBusStation.notifyItemChanged(position);
                             adapterFavourites.notifyItemRemoved(i);
+                            isRemoved = true;
                         }
                     }
                     Toast.makeText(MainActivity.this, R.string.favourite_removed, Toast.LENGTH_LONG).show();
@@ -226,19 +238,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
         searchViewBusStopName.setOnLogoClickListener(() -> drawer.openDrawer(GravityCompat.START));
         adapterFavourites.setOnItemClickListener((int position) -> {
-            //quando aggiungo un preferito e provo a cliccarci sopra va in crash, non crasha solo quando ho riavviato l'app
-            //questa penso che sia la riga incriminata:
-            //busStop = fv.getFavouritesList().get(position).getBusStopCode();
-            //ad intuito la sostituirei con questa:
             busStop = fav.get(position).getBusStopCode();
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
             searchViewBusStopName.close();
             setElementAppBar(true);
-            setDisplayChild(0);
+            setDisplayChild(1);
             fabBus.show();
-            searchViewBusStopName.setText(fv.getFavouritesList().get(position).getBusStopName());
+            searchViewBusStopName.setText(fav.get(position).getBusStopName());
         });
         adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
             if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
@@ -271,14 +279,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     private void setDisplayChild(int displayChild) {
         if (displayChild == 0) {
-            constraintLayoutOutput.setVisibility(View.VISIBLE);
+            constraintLayoutRss.setVisibility(View.VISIBLE);
+            constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 1) {
+            constraintLayoutRss.setVisibility(View.GONE);
+            constraintLayoutOutput.setVisibility(View.VISIBLE);
+            constraintLayoutSearch.setVisibility(View.GONE);
+            constraintLayoutFavourites.setVisibility(View.GONE);
+        } else if (displayChild == 2) {
+            constraintLayoutRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.VISIBLE);
             constraintLayoutFavourites.setVisibility(View.GONE);
-        } else if (displayChild == 2) {
+        } else if (displayChild == 3) {
+            constraintLayoutRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.VISIBLE);
@@ -335,14 +351,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             spinnerBusCode.setVisibility(View.VISIBLE);
             textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);
-            setDisplayChild(0);
+            setDisplayChild(1);
             bottomNavView.setVisibility(View.VISIBLE);
         } else if (searchViewBusStopName.isOpen() && busStop.isEmpty()) {
             spinnerBusCode.setVisibility(View.GONE);
             textViewBusHour.setVisibility(View.GONE);
             busCodeText.setVisibility(View.GONE);
             searchViewBusStopName.setText("");
-            setDisplayChild(0);
+            setDisplayChild(1);
             bottomNavView.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
