@@ -1,15 +1,33 @@
-package com.f3ffo.hellobusbologna.model;
+package com.f3ffo.hellobusbologna.hellobus;
 
-public class SearchListViewItem {
+public class BusClass {
 
-    private int imageFavourite;
-    private String busStopCode, busStopName, busStopAddress;
+    private String busCode;
+    private String busStopCode;
+    private String busStopName;
+    private String busStopAddress;
 
-    public SearchListViewItem(String busStopCode, String busStopName, String busStopAddress, int imageFavourite) {
+    public BusClass(String busCode, String busStopCode, String busStopName, String busStopAddress) {
+        this.busCode = busCode;
         this.busStopCode = busStopCode;
         this.busStopName = busStopName;
         this.busStopAddress = busStopAddress;
-        this.imageFavourite = imageFavourite;
+    }
+
+    public String getbusCode() {
+        return busCode;
+    }
+
+    public void setbusCode(String busCode) {
+        this.busCode = busCode;
+    }
+
+    public String getBusCode() {
+        return busCode;
+    }
+
+    public void setBusCode(String busCode) {
+        this.busCode = busCode;
     }
 
     public String getBusStopCode() {
@@ -34,13 +52,5 @@ public class SearchListViewItem {
 
     public void setBusStopAddress(String busStopAddress) {
         this.busStopAddress = busStopAddress;
-    }
-
-    public int getImageFavourite() {
-        return imageFavourite;
-    }
-
-    public void setImageFavourite(int imageFavourite) {
-        this.imageFavourite = imageFavourite;
     }
 }

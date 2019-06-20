@@ -1,6 +1,6 @@
 package com.f3ffo.hellobusbologna.asyncInterface;
 
-import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.output.OutputCardViewItem;
 
 import java.util.List;
 

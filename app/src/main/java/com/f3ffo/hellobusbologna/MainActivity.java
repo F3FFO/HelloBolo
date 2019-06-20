@@ -1,18 +1,19 @@
 package com.f3ffo.hellobusbologna;
 
-import com.f3ffo.hellobusbologna.adapter.ArticleAdapter;
-import com.f3ffo.hellobusbologna.adapter.FavouritesAdapter;
-import com.f3ffo.hellobusbologna.adapter.OutputAdapter;
-import com.f3ffo.hellobusbologna.adapter.OutputErrorAdapter;
-import com.f3ffo.hellobusbologna.adapter.SearchAdapter;
+import com.f3ffo.hellobusbologna.rss.ArticleAdapter;
+import com.f3ffo.hellobusbologna.favourite.FavouritesAdapter;
+import com.f3ffo.hellobusbologna.output.OutputAdapter;
+import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
+import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
-import com.f3ffo.hellobusbologna.fragment.TimePickerFragment;
+import com.f3ffo.hellobusbologna.timePicker.TimePickerFragment;
 import com.f3ffo.hellobusbologna.hellobus.BusReader;
-import com.f3ffo.hellobusbologna.hellobus.Favourites;
+import com.f3ffo.hellobusbologna.favourite.Favourites;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
-import com.f3ffo.hellobusbologna.model.FavouritesViewItem;
-import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
-import com.f3ffo.hellobusbologna.model.SearchListViewItem;
+import com.f3ffo.hellobusbologna.favourite.FavouritesViewItem;
+import com.f3ffo.hellobusbologna.output.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.search.SearchListViewItem;
+import com.f3ffo.hellobusbologna.rss.MainViewModel;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -62,8 +63,7 @@ import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener, NavigationView.OnNavigationItemSelectedListener {
 
-    private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
-    private Toolbar toolbar;
+    private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private AppCompatTextView busCodeText, textViewHourDefault, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private String busStop = "", busLine = "", busHour = "";
@@ -82,48 +82,20 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private List<FavouritesViewItem> fav = new ArrayList<>();
     private List<SearchListViewItem> stops = new ArrayList<>();
 
-
-
-
     private RecyclerView recyclerViewRss;
     private ArticleAdapter articleAdapter;
     private SwipeRefreshLayout swipeRefreshLayoutRss;
     private ProgressBar progressBarRss;
     private MainViewModel viewModel;
-    private RelativeLayout relativeLayoutRss;
-
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
-        switch (item.getItemId()) {
-            case R.id.navigation_rss:
-                searchViewBusStopName.setVisibility(View.GONE);
-                toolbar.setVisibility(View.VISIBLE);
-                setDisplayChild(0);
-                viewModel.fetchFeed();
-                return true;
-            case R.id.navigation_search:
-                searchViewBusStopName.setVisibility(View.VISIBLE);
-                toolbar.setVisibility(View.GONE);
-                setElementAppBar(false);
-                setDisplayChild(2);
-                return true;
-            case R.id.navigation_favourites:
-                searchViewBusStopName.setVisibility(View.VISIBLE);
-                toolbar.setVisibility(View.GONE);
-                setElementAppBar(false);
-                setDisplayChild(3);
-                return true;
-        }
-        return false;
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        constraintLayoutRss = findViewById(R.id.constraintLayoutRss);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
-        toolbar = findViewById(R.id.toolbar);
         bottomNavView = findViewById(R.id.bottomNavView);
         bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
@@ -136,8 +108,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         progressBarRss = findViewById(R.id.progressBarRss);
         recyclerViewRss = findViewById(R.id.recyclerViewRss);
         swipeRefreshLayoutRss = findViewById(R.id.swipeRefreshLayoutRss);
-        relativeLayoutRss = findViewById(R.id.relativeLayoutRss);
-        setSupportActionBar(toolbar);
         outputCardViewItemList = new ArrayList<>();
         drawer = findViewById(R.id.drawer_layout);
         NavigationView lateralNavView = findViewById(R.id.lateralNavView);
@@ -155,14 +125,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         buildRecyclerViewFavourites();
 
 
-
         viewModel = ViewModelProviders.of(MainActivity.this).get(MainViewModel.class);
         viewModel.fetchFeed();
-
         recyclerViewRss.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerViewRss.setItemAnimator(new DefaultItemAnimator());
         recyclerViewRss.setHasFixedSize(true);
-
         viewModel.getArticleList().observe(MainActivity.this, (List<Article> articles) -> {
             if (articles != null) {
                 articleAdapter = new ArticleAdapter(articles, MainActivity.this);
@@ -174,7 +141,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
         viewModel.getSnackbar().observe(MainActivity.this, (String s) -> {
             if (s != null) {
-                Snackbar.make(relativeLayoutRss, s, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(constraintLayoutRss, s, Snackbar.LENGTH_LONG).show();
                 viewModel.onSnackbarShowed();
             }
         });
@@ -323,6 +290,29 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
     }
 
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
+        switch (item.getItemId()) {
+            case R.id.navigation_rss:
+                searchViewBusStopName.setVisibility(View.GONE);
+                setElementAppBar(false);
+                setDisplayChild(0);
+                fabBus.hide();
+                viewModel.fetchFeed();
+                return true;
+            case R.id.navigation_search:
+                searchViewBusStopName.setVisibility(View.VISIBLE);
+                setElementAppBar(false);
+                setDisplayChild(2);
+                return true;
+            case R.id.navigation_favourites:
+                searchViewBusStopName.setVisibility(View.VISIBLE);
+                setElementAppBar(false);
+                setDisplayChild(3);
+                return true;
+        }
+        return false;
+    };
+
     private void setElementAppBar(boolean isVisible) {
         if (isVisible) {
             spinnerBusCode.setVisibility(View.VISIBLE);
@@ -340,22 +330,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     private void setDisplayChild(int displayChild) {
         if (displayChild == 0) {
-            relativeLayoutRss.setVisibility(View.VISIBLE);
+            constraintLayoutRss.setVisibility(View.VISIBLE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 1) {
-            relativeLayoutRss.setVisibility(View.GONE);
+            constraintLayoutRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.VISIBLE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 2) {
-            relativeLayoutRss.setVisibility(View.GONE);
+            constraintLayoutRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.VISIBLE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 3) {
-            relativeLayoutRss.setVisibility(View.GONE);
+            constraintLayoutRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.VISIBLE);

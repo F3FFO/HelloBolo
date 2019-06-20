@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.fragment;
+package com.f3ffo.hellobusbologna.timePicker;
 
 import android.app.Dialog;
 import android.app.TimePickerDialog;

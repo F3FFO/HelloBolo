@@ -1,18 +1,20 @@
-package com.f3ffo.hellobusbologna.adapter;
+package com.f3ffo.hellobusbologna.rss;
 
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.text.method.LinkMovementMethod;
+import android.content.Intent;
+import android.net.Uri;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
@@ -28,15 +30,15 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHolder> {
+public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
     private List<Article> articles;
-    private Context mContext;
+    private Context context;
     private WebView articleView;
 
     public ArticleAdapter(List<Article> list, Context context) {
         this.articles = list;
-        this.mContext = context;
+        this.context = context;
     }
 
     public List<Article> getArticleList() {
@@ -45,24 +47,22 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.row, viewGroup, false);
-        return new ViewHolder(v);
+    public ArticleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.row, parent, false);
+        return new ArticleViewHolder(view);
     }
 
     @SuppressLint("SetJavaScriptEnabled")
     @Override
-    public void onBindViewHolder(@NonNull final ViewHolder viewHolder, int position) {
+    public void onBindViewHolder(@NonNull final ArticleViewHolder viewHolder, int position) {
         Article currentArticle = articles.get(position);
         String pubDateString;
         try {
             String sourceDateString = currentArticle.getPubDate();
-            SimpleDateFormat sourceSdf = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH);
-            Date date = sourceSdf.parse(sourceDateString);
-            SimpleDateFormat sdf = new SimpleDateFormat("dd MMMM yyyy", Locale.getDefault());
-            pubDateString = sdf.format(date);
-
+            Date date = new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH).parse(sourceDateString);
+            pubDateString = new SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN).format(date);
         } catch (ParseException e) {
+            Log.e("ERROR ArticleAdapter", e.getMessage());
             e.printStackTrace();
             pubDateString = currentArticle.getPubDate();
         }
@@ -77,27 +77,32 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
             if (i == currentArticle.getCategories().size() - 1) {
                 categories.append(currentArticle.getCategories().get(i));
             } else {
-                categories.append(currentArticle.getCategories().get(i)).append(", ");
+                categories.append(currentArticle.getCategories().get(i)).append(" - ");
             }
         }
-
         viewHolder.category.setText(categories.toString());
-
         viewHolder.itemView.setOnClickListener(view -> {
-            articleView = new WebView(mContext);
+            articleView = new WebView(context);
             articleView.getSettings().setLoadWithOverviewMode(true);
             String title = articles.get(viewHolder.getAdapterPosition()).getTitle();
-            String content = articles.get(viewHolder.getAdapterPosition()).getContent();
-            articleView.getSettings().setJavaScriptEnabled(true);
+            String description = articles.get(viewHolder.getAdapterPosition()).getDescription();
+            String link = articles.get(viewHolder.getAdapterPosition()).getLink();
+            articleView.getSettings().setJavaScriptEnabled(false);
+            articleView.getSettings().setGeolocationEnabled(false);
             articleView.setHorizontalScrollBarEnabled(false);
             articleView.setWebChromeClient(new WebChromeClient());
-            articleView.loadDataWithBaseURL(null, "<style>img{display: inline; height: auto; max-width: 100%;} " + "</style>\n" + "<style>iframe{ height: auto; width: auto;}" + "</style>\n" + content, null, "utf-8", null);
-            androidx.appcompat.app.AlertDialog alertDialog = new androidx.appcompat.app.AlertDialog.Builder(mContext).create();
+            //articleView.loadUrl(link);
+            articleView.loadDataWithBaseURL(null, "<style>.field-item { margin-left: 20px; margin-right: 20px;}</style>\n" + description, "text/html", "UTF-8", null);
+            AlertDialog alertDialog = new AlertDialog.Builder(context).create();
             alertDialog.setTitle(title);
             alertDialog.setView(articleView);
-            alertDialog.setButton(androidx.appcompat.app.AlertDialog.BUTTON_NEUTRAL, "OK", (DialogInterface dialog, int which) -> dialog.dismiss());
+            alertDialog.setButton(Dialog.BUTTON_NEGATIVE, "Chiudi", (DialogInterface dialog, int which) -> dialog.dismiss());
+            alertDialog.setButton(Dialog.BUTTON_NEUTRAL, "Apri", (DialogInterface dialog, int which) -> {
+                Uri uri = Uri.parse(link);
+                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                context.startActivity(intent);
+            });
             alertDialog.show();
-            ((TextView) alertDialog.findViewById(android.R.id.message)).setMovementMethod(LinkMovementMethod.getInstance());
         });
     }
 
@@ -106,12 +111,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ViewHold
         return articles == null ? 0 : articles.size();
     }
 
-    class ViewHolder extends RecyclerView.ViewHolder {
+    class ArticleViewHolder extends RecyclerView.ViewHolder {
 
         AppCompatTextView title, pubDate, category;
         AppCompatImageView image;
 
-        public ViewHolder(View itemView) {
+        public ArticleViewHolder(View itemView) {
             super(itemView);
             title = itemView.findViewById(R.id.title);
             pubDate = itemView.findViewById(R.id.pubDate);

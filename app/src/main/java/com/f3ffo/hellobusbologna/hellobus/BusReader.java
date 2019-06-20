@@ -4,8 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.model.SearchListViewItem;
-import com.f3ffo.hellobusbologna.model.BusClass;
+import com.f3ffo.hellobusbologna.search.SearchListViewItem;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;

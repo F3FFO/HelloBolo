@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.adapter;
+package com.f3ffo.hellobusbologna.favourite;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,7 +10,6 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.model.FavouritesViewItem;
 
 import java.util.List;
 

@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.output.OutputCardViewItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;

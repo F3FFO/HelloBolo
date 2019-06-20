@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.adapter;
+package com.f3ffo.hellobusbologna.search;
 
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +12,6 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.model.SearchListViewItem;
 
 import java.util.ArrayList;
 import java.util.List;

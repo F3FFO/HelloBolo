@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.hellobusbologna.rss;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
@@ -15,7 +15,6 @@ public class MainViewModel extends ViewModel {
 
     private MutableLiveData<List<Article>> articleListLive = null;
     private String urlString = "https://www.tper.it/tutte-le-news/rss.xml";
-
     private MutableLiveData<String> snackbar = new MutableLiveData<>();
 
     public MutableLiveData<List<Article>> getArticleList() {
@@ -27,6 +26,14 @@ public class MainViewModel extends ViewModel {
 
     private void setArticleList(List<Article> articleList) {
         this.articleListLive.postValue(articleList);
+    }
+
+    public String getUrlString() {
+        return urlString;
+    }
+
+    public void setUrlString(String urlString) {
+        this.urlString = urlString;
     }
 
     public LiveData<String> getSnackbar() {
@@ -48,9 +55,9 @@ public class MainViewModel extends ViewModel {
 
             @Override
             public void onError(Exception e) {
-                setArticleList(new ArrayList<Article>());
+                setArticleList(new ArrayList<>());
                 e.printStackTrace();
-                snackbar.postValue("An error has occurred. Please try again");
+                snackbar.postValue("C'è stato un errore. Per favore riprova");
             }
         });
         parser.execute(urlString);

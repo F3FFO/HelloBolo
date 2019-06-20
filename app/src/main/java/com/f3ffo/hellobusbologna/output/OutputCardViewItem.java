@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.model;
+package com.f3ffo.hellobusbologna.output;
 
 public class OutputCardViewItem {
     private String busNumber, busHour, busHourComplete, error;

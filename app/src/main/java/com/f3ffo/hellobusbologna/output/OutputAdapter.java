@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.adapter;
+package com.f3ffo.hellobusbologna.output;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -11,7 +11,6 @@ import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.f3ffo.hellobusbologna.model.OutputCardViewItem;
 import com.f3ffo.hellobusbologna.R;
 
 import java.util.List;

@@ -1,9 +1,9 @@
-package com.f3ffo.hellobusbologna.hellobus;
+package com.f3ffo.hellobusbologna.favourite;
 
 import android.content.Context;
 import android.util.Log;
 
-import com.f3ffo.hellobusbologna.model.FavouritesViewItem;
+import com.f3ffo.hellobusbologna.favourite.FavouritesViewItem;
 
 import java.io.IOException;
 import java.util.ArrayList;
