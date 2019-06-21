@@ -29,7 +29,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
 
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
@@ -50,7 +49,6 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -72,7 +70,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private FloatingActionButton fabBus;
     protected static BusReader br = new BusReader();
     private Favourites fv = new Favourites();
-    private ProgressBar progressBar;
+    private ProgressBar progressBarOutput;
     private SearchView searchViewBusStopName;
     private SwipeRefreshLayout swipeRefreshLayout;
     private DrawerLayout drawer;
@@ -105,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         fabBus = findViewById(R.id.fabBus);
         swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
+        progressBarOutput = findViewById(R.id.progressBarOutput);
         progressBarRss = findViewById(R.id.progressBarRss);
         recyclerViewRss = findViewById(R.id.recyclerViewRss);
         swipeRefreshLayoutRss = findViewById(R.id.swipeRefreshLayoutRss);
@@ -139,10 +138,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 swipeRefreshLayoutRss.setRefreshing(false);
             }
         });
-        viewModel.getSnackbar().observe(MainActivity.this, (String s) -> {
+        viewModel.getSnackBar().observe(MainActivity.this, (String s) -> {
             if (s != null) {
                 Snackbar.make(constraintLayoutRss, s, Snackbar.LENGTH_LONG).show();
-                viewModel.onSnackbarShowed();
+                viewModel.onSnackBarShowed();
             }
         });
         swipeRefreshLayoutRss.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
@@ -393,22 +392,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public void onBackPressed() {
-        //TODO rethink
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
             if (searchViewBusStopName.getText().toString().isEmpty()) {
                 searchViewBusStopName.setText(br.getBusStopName());
             }
-            spinnerBusCode.setVisibility(View.VISIBLE);
-            textViewBusHour.setVisibility(View.VISIBLE);
-            busCodeText.setVisibility(View.VISIBLE);
+            setElementAppBar(true);
             setDisplayChild(1);
             bottomNavView.setVisibility(View.VISIBLE);
         } else if (searchViewBusStopName.isOpen() && busStop.isEmpty()) {
-            spinnerBusCode.setVisibility(View.GONE);
-            textViewBusHour.setVisibility(View.GONE);
-            busCodeText.setVisibility(View.GONE);
+            setElementAppBar(false);
             searchViewBusStopName.setText("");
             setDisplayChild(1);
             bottomNavView.setVisibility(View.VISIBLE);
@@ -451,11 +445,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     @Override
     public void processStart() {
         if (outputCardViewItemList.isEmpty()) {
-            RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
+            /*RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
             progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
             params.addRule(RelativeLayout.CENTER_IN_PARENT);
-            relativeLayoutProgressBar.addView(progressBar, params);
+            relativeLayoutProgressBar.addView(progressBar, params);*/
+            progressBarOutput.setVisibility(View.VISIBLE);
         } else {
             outputCardViewItemList.clear();
         }
@@ -502,7 +497,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             recyclerViewBusOutput.setAdapter(adapter);
         }
         swipeRefreshLayout.setRefreshing(false);
-        progressBar.setVisibility(View.GONE);
+        progressBarOutput.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
 

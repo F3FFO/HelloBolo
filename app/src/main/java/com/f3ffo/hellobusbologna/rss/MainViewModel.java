@@ -15,7 +15,7 @@ public class MainViewModel extends ViewModel {
 
     private MutableLiveData<List<Article>> articleListLive = null;
     private String urlString = "https://www.tper.it/tutte-le-news/rss.xml";
-    private MutableLiveData<String> snackbar = new MutableLiveData<>();
+    private MutableLiveData<String> snackBar = new MutableLiveData<>();
 
     public MutableLiveData<List<Article>> getArticleList() {
         if (articleListLive == null) {
@@ -36,12 +36,12 @@ public class MainViewModel extends ViewModel {
         this.urlString = urlString;
     }
 
-    public LiveData<String> getSnackbar() {
-        return snackbar;
+    public LiveData<String> getSnackBar() {
+        return snackBar;
     }
 
-    public void onSnackbarShowed() {
-        snackbar.setValue(null);
+    public void onSnackBarShowed() {
+        snackBar.setValue(null);
     }
 
     public void fetchFeed() {
@@ -57,7 +57,7 @@ public class MainViewModel extends ViewModel {
             public void onError(Exception e) {
                 setArticleList(new ArrayList<>());
                 e.printStackTrace();
-                snackbar.postValue("C'è stato un errore. Per favore riprova");
+                snackBar.postValue("C'è stato un errore. Per favore riprova");
             }
         });
         parser.execute(urlString);
