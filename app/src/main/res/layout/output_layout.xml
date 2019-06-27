@@ -1,84 +1,93 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/relativeLayoutOutput"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintLayoutOutputLayout"
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="16dp">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/buttonBusNumberOutput"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:backgroundTint="@android:color/transparent"
-            android:textColor="@color/colorGreyMaterial"
-            android:textIsSelectable="false"
-            android:textSize="25sp"
-            app:icon="@drawable/round_directions_bus"
-            app:iconTint="@color/colorGreyMaterial"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp">
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textViewBusHourOutput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/lato"
-            android:textColor="@color/colorGreyMaterial"
-            android:textSize="22sp"
-            app:layout_constraintBottom_toTopOf="@id/textViewBusHourCompleteOutput"
-            app:layout_constraintEnd_toStartOf="@id/imageViewSatOrTable"
-            app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
-            app:layout_constraintTop_toTopOf="parent" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/buttonBusNumberOutput"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:fontFamily="sans-serif-medium"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textColor="@color/colorGreyMaterial"
+                android:textIsSelectable="false"
+                app:icon="@drawable/round_directions_bus"
+                app:iconTint="@color/colorGreyMaterial"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatTextView
-            android:id="@+id/textViewBusHourCompleteOutput"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/lato"
-            android:textColor="@color/colorGreyMaterial"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@id/textViewBusHourOutput"
-            app:layout_constraintStart_toStartOf="@id/textViewBusHourOutput"
-            app:layout_constraintTop_toBottomOf="@id/textViewBusHourOutput" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewBusHourOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                android:textColor="@color/colorGreyMaterial"
+                android:textIsSelectable="false"
+                app:layout_constraintBottom_toTopOf="@id/textViewBusHourCompleteOutput"
+                app:layout_constraintEnd_toStartOf="@id/imageViewSatOrTable"
+                app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewSatOrTable"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toTopOf="@id/imageViewHandicap"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/textViewBusHourCompleteOutput"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif"
+                android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                android:textColor="@color/colorGreyMaterial"
+                android:textIsSelectable="false"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="@id/textViewBusHourOutput"
+                app:layout_constraintStart_toStartOf="@id/textViewBusHourOutput"
+                app:layout_constraintTop_toBottomOf="@id/textViewBusHourOutput" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imageViewHandicap"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/imageViewSatOrTable" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewSatOrTable"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintBottom_toTopOf="@id/imageViewHandicap"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/imageViewHandicap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@id/imageViewSatOrTable"
+                app:layout_constraintStart_toStartOf="@id/imageViewSatOrTable"
+                app:layout_constraintTop_toBottomOf="@id/imageViewSatOrTable" />
 
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="1dp"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentBottom="true"
-        android:layout_marginStart="48dp"
-        android:layout_marginEnd="48dp"
-        android:background="?android:attr/listDivider" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentBottom="true"
+            android:layout_marginStart="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="48dp"
+            android:background="?android:attr/listDivider" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </RelativeLayout>

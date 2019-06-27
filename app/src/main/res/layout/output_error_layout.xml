@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/relativeLayoutCardOutput"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -25,9 +24,10 @@
             android:id="@+id/textViewErrorOutput"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/lato"
+            android:fontFamily="sans-serif"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
             android:textColor="@color/colorGreyMaterial"
-            android:textSize="22sp"
+            android:textIsSelectable="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

@@ -4,10 +4,9 @@
     <color name="colorPrimaryDark">#FFF8F9FB</color>
     <color name="colorAccent">#1A73E9</color>
     <color name="colorWhite">#FFFFFFFF</color>
-    <color name="colorBlack">#FF000000</color>
     <color name="colorRed">#FFD32F2F</color>
-    <color name="colorGreyMaterial">#FF3C4043</color>
-    <color name="colorGrey">#FF6E757B</color>
+    <color name="colorGreyMaterial">#FF222222</color>
+    <color name="colorGrey">#FF494949</color>
     <color name="colorIcon">#FF4D5154</color>
     <color name="colorGold">#FFFFD600</color>
 </resources>

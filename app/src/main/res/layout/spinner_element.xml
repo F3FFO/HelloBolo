@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.appcompat.widget.AppCompatCheckedTextView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/textViewSpinnerElement"
-    style="@android:style/Widget.Material.Light.DropDownItem.Spinner"
+    style="@android:style/Widget.Material.Light.TextView.SpinnerItem"
     android:layout_width="match_parent"
     android:layout_height="55dp"
     android:ellipsize="marquee"
-    android:fontFamily="@font/lato"
+    android:fontFamily="sans-serif"
+    android:foregroundTint="@color/colorPrimary"
     android:singleLine="true"
     android:textAlignment="center"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
     android:textColor="@color/colorGreyMaterial"
-    android:textIsSelectable="false"
-    android:textSize="20sp" />
+    android:textIsSelectable="false" />
