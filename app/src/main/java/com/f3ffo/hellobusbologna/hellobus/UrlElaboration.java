@@ -5,7 +5,7 @@ import android.util.Log;
 
 import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.output.OutputCardViewItem;
+import com.f3ffo.hellobusbologna.output.OutputItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -18,7 +18,7 @@ import java.util.StringTokenizer;
 
 import okhttp3.*;
 
-public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewItem>> {
+public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
     private String busStop;
     private String busLine;
     private String busHour;
@@ -38,8 +38,8 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
     }
 
     @Override
-    protected List<OutputCardViewItem> doInBackground(Void... params) {
-        List<OutputCardViewItem> outputCardViewItemList = new ArrayList<>();
+    protected List<OutputItem> doInBackground(Void... params) {
+        List<OutputItem> outputItemList = new ArrayList<>();
         try {
             Request get = new Request.Builder().url("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine).build();
             BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
@@ -49,20 +49,20 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     if (line.contains("NESSUNA ALTRA CORSA")) {
                         if (busLine.isEmpty()) {
-                            outputCardViewItemList.add(new OutputCardViewItem("NESSUNA LINEA PRESENTE"));
+                            outputItemList.add(new OutputItem("NESSUNA LINEA PRESENTE"));
                         } else {
-                            outputCardViewItemList.add(new OutputCardViewItem("LINEA " + busLine + " ASSENTE"));
+                            outputItemList.add(new OutputItem("LINEA " + busLine + " ASSENTE"));
                         }
                     } else if (line.contains("LINEA " + busLine + " NON GESTITA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem("LINEA " + busLine + " NON GESTITA"));
+                        outputItemList.add(new OutputItem("LINEA " + busLine + " NON GESTITA"));
                     } else if (line.contains("TEMPORANEAMENTE SOSPESE")) {
-                        outputCardViewItemList.add(new OutputCardViewItem("ERRORE"));
+                        outputItemList.add(new OutputItem("ERRORE"));
                     } else if (line.equals("NULL")) {
-                        outputCardViewItemList.add(new OutputCardViewItem("ERRORE"));
+                        outputItemList.add(new OutputItem("ERRORE"));
                     } else if (line.contains("FERMATA " + busStop + " NON GESTITA")) {
-                        outputCardViewItemList.add(new OutputCardViewItem("FERMATA " + busStop + " NON GESTITA"));
+                        outputItemList.add(new OutputItem("FERMATA " + busStop + " NON GESTITA"));
                     } else {
-                        outputCardViewItemList.add(new OutputCardViewItem(""));
+                        outputItemList.add(new OutputItem(""));
                         line = line.substring(line.indexOf(":") + 2);
                         if (line.startsWith("(")) {
                             line = line.substring(line.indexOf("(") + 9);
@@ -82,7 +82,7 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
+                                outputItemList.add(new OutputItem(busNumber, busHour, busHour, isSatellite, isHandicap));
                             }
                         } else {
                             StringTokenizer token = new StringTokenizer(line, ",");
@@ -101,7 +101,7 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
                                 String busHour = token2.nextToken();
-                                outputCardViewItemList.add(new OutputCardViewItem(busNumber, busHour, busHour, isSatellite, isHandicap));
+                                outputItemList.add(new OutputItem(busNumber, busHour, busHour, isSatellite, isHandicap));
                             }
                         }
                     }
@@ -111,11 +111,11 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputCardViewIte
         } catch (IOException e) {
             Log.e("ERROR urlElaboration: ", e.getMessage());
         }
-        return outputCardViewItemList;
+        return outputItemList;
     }
 
     @Override
-    protected void onPostExecute(List<OutputCardViewItem> result) {
+    protected void onPostExecute(List<OutputItem> result) {
         super.onPostExecute(result);
         delegate.processFinish(result);
     }

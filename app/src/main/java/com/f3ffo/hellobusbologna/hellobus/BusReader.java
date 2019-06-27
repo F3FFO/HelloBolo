@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.Log;
 
 import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.search.SearchListViewItem;
+import com.f3ffo.hellobusbologna.search.SearchItem;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -21,18 +21,12 @@ import java.util.StringTokenizer;
 
 public class BusReader {
 
-    private ArrayList<BusClass> busClass = new ArrayList<>();
-    private String busStopName;
-
-    public String getBusStopName() {
-        return busStopName;
-    }
-
-    public void extractFromFile(Context context) {
+    public ArrayList<BusClass> extractFromFile(Context context) {
+        ArrayList<BusClass> busClass = new ArrayList<>();
         File[] listFiles = context.getFilesDir().listFiles();
         if (listFiles != null) {
             for (File listFile : listFiles) {
-                if (!listFile.isDirectory() && !listFile.getName().equals("favourites.properties") && !listFile.getName().contains("cut_")) {
+                if (listFile.getName().contains("lineefermate_")) {
                     try {
                         BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
                         String line;
@@ -54,18 +48,7 @@ public class BusReader {
                 }
             }
         }
-    }
-
-    public ArrayList<String> busViewer(String busStopCodeIn) {
-        ArrayList<String> bus = new ArrayList<>();
-        bus.add(0, "Tutti gli autobus");
-        for (int i = 0; i < busClass.size(); i++) {
-            if (busClass.get(i).getBusStopCode().equals(busStopCodeIn)) {
-                bus.add(busClass.get(i).getbusCode());
-                this.busStopName = busClass.get(i).getBusStopName();
-            }
-        }
-        return bus;
+        return busClass;
     }
 
     private File takeFile(Context context) {
@@ -79,8 +62,8 @@ public class BusReader {
         return file;
     }
 
-    public List<SearchListViewItem> stopsViewer(Context context) {
-        List<SearchListViewItem> stops = new ArrayList<>();
+    public List<SearchItem> stopsViewer(Context context, ArrayList<BusClass> busClass) {
+        List<SearchItem> stops = new ArrayList<>();
         File file = takeFile(context);
         Properties prop = new Properties();
         String[] propertiesFile = new String[10];
@@ -105,9 +88,9 @@ public class BusReader {
                     stopsTemp.add(busStopCode);
                     for (String s : propertiesFile) {
                         if (!s.equals(busStopCode)) {
-                            stops.add(new SearchListViewItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
+                            stops.add(new SearchItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
                         } else {
-                            stops.add(new SearchListViewItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.ic_star));
+                            stops.add(new SearchItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.ic_star));
                         }
                     }
                     try {
@@ -134,9 +117,9 @@ public class BusReader {
                         }
                     }
                     if (!isElementAdded) {
-                        stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
+                        stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
                     } else {
-                        stops.add(new SearchListViewItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star));
+                        stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star));
                     }
                 }
             } catch (IOException e) {

@@ -15,7 +15,6 @@ import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseVersion;
 import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
 import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
 
-import java.io.IOException;
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 
@@ -47,10 +46,12 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isConnected();
+        //return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isConnected();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
-    private boolean isConnected() {
+    //TODO rethink because is too slow
+    /*private boolean isConnected() {
         try {
             return Runtime.getRuntime().exec("/system/bin/ping -c 1 8.8.8.8").waitFor() < 2;
         } catch (InterruptedException e) {
@@ -60,7 +61,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             Log.e("ERROR SplashActivity: ", e.getMessage());
             return false;
         }
-    }
+    }*/
 
     @Override
     public void processFinisVersion(String version) {
@@ -70,7 +71,5 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             Log.e("ERROR", e.getMessage());
             e.printStackTrace();
         }
-        MainActivity.br.extractFromFile(SplashActivity.this);
-        MainActivity.br.stopsViewer(SplashActivity.this);
     }
 }
