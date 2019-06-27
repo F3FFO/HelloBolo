@@ -11,7 +11,7 @@ import com.prof.rssparser.Parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainViewModel extends ViewModel {
+public class ArticleItem extends ViewModel {
 
     private MutableLiveData<List<Article>> articleListLive = null;
     private String urlString = "https://www.tper.it/tutte-le-news/rss.xml";
