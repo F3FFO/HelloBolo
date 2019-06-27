@@ -15,12 +15,12 @@ import java.util.List;
 
 public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.FavouritesAdapterHolder> {
 
-    private List<FavouritesViewItem> favouritesViewItemList;
+    private List<FavouritesItem> favouritesItemList;
     private OnItemClickListener itemClickListener;
     private OnFavouriteButtonClickListener favouriteButtonClickListener;
 
-    public FavouritesAdapter(List<FavouritesViewItem> favouritesViewItemList) {
-        this.favouritesViewItemList = favouritesViewItemList;
+    public FavouritesAdapter(List<FavouritesItem> favouritesItemList) {
+        this.favouritesItemList = favouritesItemList;
     }
 
     @NonNull
@@ -32,15 +32,15 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.Fa
 
     @Override
     public void onBindViewHolder(@NonNull FavouritesAdapter.FavouritesAdapterHolder holder, int position) {
-        FavouritesViewItem favouritesViewItem = favouritesViewItemList.get(position);
-        holder.textViewBusStopCodeFavourite.setText(favouritesViewItem.getBusStopCode());
-        holder.textViewBusStopNameFavourite.setText(favouritesViewItem.getBusStopName());
-        holder.textViewBusStopAddressFavourite.setText(favouritesViewItem.getBusStopAddress());
+        FavouritesItem favouritesItem = favouritesItemList.get(position);
+        holder.textViewBusStopCodeFavourite.setText(favouritesItem.getBusStopCode());
+        holder.textViewBusStopNameFavourite.setText(favouritesItem.getBusStopName());
+        holder.textViewBusStopAddressFavourite.setText(favouritesItem.getBusStopAddress());
     }
 
     @Override
     public int getItemCount() {
-        return favouritesViewItemList.size();
+        return favouritesItemList.size();
     }
 
     public interface OnItemClickListener {

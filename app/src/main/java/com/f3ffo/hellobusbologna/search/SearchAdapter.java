@@ -18,12 +18,12 @@ import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdapterHolder> implements Filterable {
 
-    private List<SearchListViewItem> outputSearchViewItemList;
-    private List<SearchListViewItem> outputSearchViewItemListFull;
+    private List<SearchItem> outputSearchViewItemList;
+    private List<SearchItem> outputSearchViewItemListFull;
     private OnItemClickListener itemClickListener;
     private OnFavouriteButtonClickListener favouriteButtonClickListener;
 
-    public SearchAdapter(List<SearchListViewItem> outputSearchViewItemList) {
+    public SearchAdapter(List<SearchItem> outputSearchViewItemList) {
         this.outputSearchViewItemList = outputSearchViewItemList;
         this.outputSearchViewItemListFull = new ArrayList<>(outputSearchViewItemList);
     }
@@ -37,11 +37,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
 
     @Override
     public void onBindViewHolder(@NonNull SearchAdapterHolder holder, int position) {
-        SearchListViewItem searchListViewItem = outputSearchViewItemList.get(position);
-        holder.textViewBusStopCodeSearch.setText(searchListViewItem.getBusStopCode());
-        holder.textViewBusStopNameSearch.setText(searchListViewItem.getBusStopName());
-        holder.textViewBusStopAddressSearch.setText(searchListViewItem.getBusStopAddress());
-        holder.imageButtonFavouriteSearch.setImageResource(searchListViewItem.getImageFavourite());
+        SearchItem searchItem = outputSearchViewItemList.get(position);
+        holder.textViewBusStopCodeSearch.setText(searchItem.getBusStopCode());
+        holder.textViewBusStopNameSearch.setText(searchItem.getBusStopName());
+        holder.textViewBusStopAddressSearch.setText(searchItem.getBusStopAddress());
+        holder.imageButtonFavouriteSearch.setImageResource(searchItem.getImageFavourite());
     }
 
     @Override
@@ -58,11 +58,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
 
         @Override
         protected FilterResults performFiltering(CharSequence constraint) {
-            List<SearchListViewItem> filteredItemList = new ArrayList<>();
+            List<SearchItem> filteredItemList = new ArrayList<>();
             if (constraint == null || constraint.length() == 0) {
                 filteredItemList.addAll(outputSearchViewItemListFull);
             } else {
-                for (SearchListViewItem item : outputSearchViewItemListFull) {
+                for (SearchItem item : outputSearchViewItemListFull) {
                     if (item.getBusStopCode().toUpperCase().contains(constraint.toString().toUpperCase()) ||
                             item.getBusStopName().toUpperCase().contains(constraint.toString().toUpperCase()) ||
                             item.getBusStopAddress().toUpperCase().contains(constraint.toString().toUpperCase())) {
@@ -79,7 +79,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
         @Override
         protected void publishResults(CharSequence constraint, FilterResults results) {
             outputSearchViewItemList.clear();
-            outputSearchViewItemList.addAll((List<SearchListViewItem>) results.values);
+            outputSearchViewItemList.addAll((List<SearchItem>) results.values);
             notifyDataSetChanged();
         }
     };

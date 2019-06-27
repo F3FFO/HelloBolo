@@ -1,10 +1,10 @@
 package com.f3ffo.hellobusbologna.output;
 
-public class OutputCardViewItem {
+public class OutputItem {
     private String busNumber, busHour, busHourComplete, error;
     private int satelliteOrHour, handicap;
 
-    public OutputCardViewItem(String busNumber, String busHour, String busHourComplete, int satelliteOrHour, int handicap) {
+    public OutputItem(String busNumber, String busHour, String busHourComplete, int satelliteOrHour, int handicap) {
         this.busNumber = busNumber;
         this.busHour = busHour;
         this.busHourComplete = busHourComplete;
@@ -12,7 +12,7 @@ public class OutputCardViewItem {
         this.handicap = handicap;
     }
 
-    public OutputCardViewItem(String error) {
+    public OutputItem(String error) {
         this.error = error;
     }
 

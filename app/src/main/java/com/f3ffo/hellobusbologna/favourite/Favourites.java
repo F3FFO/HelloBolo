@@ -3,8 +3,6 @@ package com.f3ffo.hellobusbologna.favourite;
 import android.content.Context;
 import android.util.Log;
 
-import com.f3ffo.hellobusbologna.favourite.FavouritesViewItem;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,10 +12,10 @@ import java.util.StringTokenizer;
 public class Favourites {
 
     private String fileName = "favourites.properties";
-    private List<FavouritesViewItem> favouritesList = new ArrayList<>();
+    private List<FavouritesItem> favouritesList = new ArrayList<>();
     private Properties prop = new Properties();
 
-    public List<FavouritesViewItem> getFavouritesList() {
+    public List<FavouritesItem> getFavouritesList() {
         return favouritesList;
     }
 
@@ -31,7 +29,7 @@ public class Favourites {
                     String busStopCode = token.nextToken();
                     String busStopName = token.nextToken();
                     String busStopAddress = token.nextToken();
-                    favouritesList.add(new FavouritesViewItem(busStopCode, busStopName, busStopAddress));
+                    favouritesList.add(new FavouritesItem(busStopCode, busStopName, busStopAddress));
                 }
             }
         } catch (IOException e) {
@@ -40,8 +38,8 @@ public class Favourites {
         }
     }
 
-    public FavouritesViewItem addFavourite(Context context, String busStopCode, String busStopName, String busStopAddress) {
-        FavouritesViewItem item = null;
+    public FavouritesItem addFavourite(Context context, String busStopCode, String busStopName, String busStopAddress) {
+        FavouritesItem item = null;
         try {
             prop.load(context.openFileInput(this.fileName));
             boolean isAdded = false;
@@ -50,7 +48,7 @@ public class Favourites {
                     isAdded = true;
                     prop.setProperty("busStopCode.Fav." + i, busStopCode + "," + busStopName + "," + busStopAddress);
                     prop.store(context.openFileOutput(this.fileName, Context.MODE_PRIVATE), "User favourite");
-                    item = new FavouritesViewItem(busStopCode, busStopName, busStopAddress);
+                    item = new FavouritesItem(busStopCode, busStopName, busStopAddress);
                 }
             }
         } catch (IOException e) {

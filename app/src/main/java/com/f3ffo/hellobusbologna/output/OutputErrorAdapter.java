@@ -17,11 +17,11 @@ import java.util.List;
 public class OutputErrorAdapter extends RecyclerView.Adapter<OutputErrorAdapter.OutputErrorViewHolder> {
 
     private Context context;
-    private List<OutputCardViewItem> outputCardViewItemList;
+    private List<OutputItem> outputItemList;
 
-    public OutputErrorAdapter(Context context, List<OutputCardViewItem> outputCardViewItemList) {
+    public OutputErrorAdapter(Context context, List<OutputItem> outputItemList) {
         this.context = context;
-        this.outputCardViewItemList = outputCardViewItemList;
+        this.outputItemList = outputItemList;
     }
 
     @NonNull
@@ -33,14 +33,14 @@ public class OutputErrorAdapter extends RecyclerView.Adapter<OutputErrorAdapter.
 
     @Override
     public void onBindViewHolder(@NonNull OutputErrorViewHolder holder, int position) {
-        OutputCardViewItem outputCardViewItem = outputCardViewItemList.get(position);
-        holder.textViewErrorOutput.setText(outputCardViewItem.getError());
+        OutputItem outputItem = outputItemList.get(position);
+        holder.textViewErrorOutput.setText(outputItem.getError());
         holder.imageViewErrorOutput.setImageDrawable(context.getDrawable(R.drawable.round_error));
     }
 
     @Override
     public int getItemCount() {
-        return outputCardViewItemList.size();
+        return outputItemList.size();
     }
 
     static class OutputErrorViewHolder extends RecyclerView.ViewHolder {

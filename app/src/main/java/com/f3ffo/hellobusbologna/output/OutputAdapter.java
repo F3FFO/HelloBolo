@@ -18,11 +18,11 @@ import java.util.List;
 public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputViewHolder> {
 
     private Context context;
-    private List<OutputCardViewItem> outputCardViewItemList;
+    private List<OutputItem> outputItemList;
 
-    public OutputAdapter(Context context, List<OutputCardViewItem> outputCardViewItemList) {
+    public OutputAdapter(Context context, List<OutputItem> outputItemList) {
         this.context = context;
-        this.outputCardViewItemList = outputCardViewItemList;
+        this.outputItemList = outputItemList;
     }
 
     @NonNull
@@ -34,12 +34,12 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
 
     @Override
     public void onBindViewHolder(@NonNull OutputViewHolder holder, int position) {
-        OutputCardViewItem outputCardViewItem = outputCardViewItemList.get(position);
-        holder.buttonBusNumberOutput.setText(outputCardViewItem.getBusNumber());
-        holder.textViewBusHourOutput.setText(outputCardViewItem.getBusHour());
-        holder.textViewBusHourCompleteOutput.setText(outputCardViewItem.getBusHourComplete());
-        holder.imageViewSatOrTable.setImageDrawable(context.getDrawable(outputCardViewItem.getSatelliteOrHour()));
-        int isHandicap = outputCardViewItem.getHandicap();
+        OutputItem outputItem = outputItemList.get(position);
+        holder.buttonBusNumberOutput.setText(outputItem.getBusNumber());
+        holder.textViewBusHourOutput.setText(outputItem.getBusHour());
+        holder.textViewBusHourCompleteOutput.setText(outputItem.getBusHourComplete());
+        holder.imageViewSatOrTable.setImageDrawable(context.getDrawable(outputItem.getSatelliteOrHour()));
+        int isHandicap = outputItem.getHandicap();
         if (isHandicap != 0) {
             holder.imageViewHandicap.setImageDrawable(context.getDrawable(isHandicap));
         }
@@ -48,7 +48,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
 
     @Override
     public int getItemCount() {
-        return outputCardViewItemList.size();
+        return outputItemList.size();
     }
 
     static class OutputViewHolder extends RecyclerView.ViewHolder {

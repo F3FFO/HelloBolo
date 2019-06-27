@@ -1,10 +1,10 @@
 package com.f3ffo.hellobusbologna.favourite;
 
-public class FavouritesViewItem {
+public class FavouritesItem {
 
     private String busStopCode, busStopName, busStopAddress;
 
-    public FavouritesViewItem(String busStopCode, String busStopName, String busStopAddress) {
+    public FavouritesItem(String busStopCode, String busStopName, String busStopAddress) {
         this.busStopCode = busStopCode;
         this.busStopName = busStopName;
         this.busStopAddress = busStopAddress;

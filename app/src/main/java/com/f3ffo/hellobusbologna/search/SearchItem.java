@@ -1,11 +1,11 @@
 package com.f3ffo.hellobusbologna.search;
 
-public class SearchListViewItem {
+public class SearchItem {
 
     private int imageFavourite;
     private String busStopCode, busStopName, busStopAddress;
 
-    public SearchListViewItem(String busStopCode, String busStopName, String busStopAddress, int imageFavourite) {
+    public SearchItem(String busStopCode, String busStopName, String busStopAddress, int imageFavourite) {
         this.busStopCode = busStopCode;
         this.busStopName = busStopName;
         this.busStopAddress = busStopAddress;
