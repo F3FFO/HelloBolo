@@ -1,5 +1,6 @@
 package com.f3ffo.hellobusbologna;
 
+import com.f3ffo.hellobusbologna.hellobus.BusClass;
 import com.f3ffo.hellobusbologna.rss.ArticleAdapter;
 import com.f3ffo.hellobusbologna.favourite.FavouritesAdapter;
 import com.f3ffo.hellobusbologna.output.OutputAdapter;
@@ -10,10 +11,10 @@ import com.f3ffo.hellobusbologna.timePicker.TimePickerFragment;
 import com.f3ffo.hellobusbologna.hellobus.BusReader;
 import com.f3ffo.hellobusbologna.favourite.Favourites;
 import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
-import com.f3ffo.hellobusbologna.favourite.FavouritesViewItem;
-import com.f3ffo.hellobusbologna.output.OutputCardViewItem;
-import com.f3ffo.hellobusbologna.search.SearchListViewItem;
-import com.f3ffo.hellobusbologna.rss.MainViewModel;
+import com.f3ffo.hellobusbologna.favourite.FavouritesItem;
+import com.f3ffo.hellobusbologna.output.OutputItem;
+import com.f3ffo.hellobusbologna.search.SearchItem;
+import com.f3ffo.hellobusbologna.rss.ArticleItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
@@ -64,27 +65,28 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private AppCompatTextView busCodeText, textViewHourDefault, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
-    private String busStop = "", busLine = "", busHour = "";
+    private String busStop = "", busLine = "", busHour = "", currentBusStopName = "";
     private SearchAdapter adapterBusStation;
     private FavouritesAdapter adapterFavourites;
     private FloatingActionButton fabBus;
-    protected static BusReader br = new BusReader();
+    private BusReader br = new BusReader();
     private Favourites fv = new Favourites();
     private ProgressBar progressBarOutput;
     private SearchView searchViewBusStopName;
     private SwipeRefreshLayout swipeRefreshLayout;
     private DrawerLayout drawer;
-    private List<OutputCardViewItem> outputCardViewItemList;
+    private List<OutputItem> outputItemList;
     private BottomNavigationView bottomNavView;
     private ArrayAdapter<String> spinnerArrayAdapter;
-    private List<FavouritesViewItem> fav = new ArrayList<>();
-    private List<SearchListViewItem> stops = new ArrayList<>();
+    private List<FavouritesItem> fav = new ArrayList<>();
+    private List<SearchItem> stops = new ArrayList<>();
+    private ArrayList<BusClass> busClass = new ArrayList<>();
 
     private RecyclerView recyclerViewRss;
     private ArticleAdapter articleAdapter;
     private SwipeRefreshLayout swipeRefreshLayoutRss;
     private ProgressBar progressBarRss;
-    private MainViewModel viewModel;
+    private ArticleItem viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -107,7 +109,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         progressBarRss = findViewById(R.id.progressBarRss);
         recyclerViewRss = findViewById(R.id.recyclerViewRss);
         swipeRefreshLayoutRss = findViewById(R.id.swipeRefreshLayoutRss);
-        outputCardViewItemList = new ArrayList<>();
+        outputItemList = new ArrayList<>();
         drawer = findViewById(R.id.drawer_layout);
         NavigationView lateralNavView = findViewById(R.id.lateralNavView);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(MainActivity.this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
@@ -117,14 +119,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayout.setEnabled(false);
         swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
-        stops.addAll(br.stopsViewer(MainActivity.this));
+        busClass.addAll(br.extractFromFile(MainActivity.this));
+        stops.addAll(br.stopsViewer(MainActivity.this, busClass));
         buildRecyclerViewSearch();
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
-
-
-        viewModel = ViewModelProviders.of(MainActivity.this).get(MainViewModel.class);
+        viewModel = ViewModelProviders.of(MainActivity.this).get(ArticleItem.class);
         viewModel.fetchFeed();
         recyclerViewRss.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerViewRss.setItemAnimator(new DefaultItemAnimator());
@@ -152,9 +153,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             swipeRefreshLayoutRss.setRefreshing(true);
             viewModel.fetchFeed();
         });
-
-
-
 
 
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
@@ -188,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
         adapterBusStation.setOnItemClickListener((int position) -> {
             busStop = stops.get(position).getBusStopCode();
-            spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
+            spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStop));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
             searchViewBusStopName.setText(stops.get(position).getBusStopName());
@@ -201,7 +199,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
             if (refreshElement(position)) {
-                FavouritesViewItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress());
+                FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress());
                 if (item != null) {
                     fav.add(item);
                     adapterBusStation.notifyItemChanged(position);
@@ -236,7 +234,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                 if (spinnerArrayAdapter != null) {
                     if (!spinnerArrayAdapter.getItem(position).equals(busStop)) {
                         swipeRefreshLayout.setEnabled(false);
-                        outputCardViewItemList.clear();
+                        outputItemList.clear();
                         fabBus.show();
                     }
                 }
@@ -264,7 +262,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         searchViewBusStopName.setOnLogoClickListener(() -> drawer.openDrawer(GravityCompat.START));
         adapterFavourites.setOnItemClickListener((int position) -> {
             busStop = fav.get(position).getBusStopCode();
-            spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, br.busViewer(busStop));
+            spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStop));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
             searchViewBusStopName.close();
@@ -311,6 +309,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         }
         return false;
     };
+
+    private ArrayList<String> busViewer(String busStopCodeIn) {
+        ArrayList<String> bus = new ArrayList<>();
+        bus.add(0, "Tutti gli autobus");
+        for (int i = 0; i < busClass.size(); i++) {
+            String busStopCode = busClass.get(i).getBusStopCode();
+            if (busStopCode.equals(busStopCodeIn)) {
+                bus.add(busClass.get(i).getBusCode());
+                this.currentBusStopName = busClass.get(i).getBusStopName();
+            }
+        }
+        return bus;
+    }
 
     private void setElementAppBar(boolean isVisible) {
         if (isVisible) {
@@ -386,7 +397,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             textViewBusHour.setText(hourOfDay + ":" + minute);
             busHour = hourOfDay + "" + minute;
         }
-        outputCardViewItemList.clear();
+        outputItemList.clear();
         fabBus.show();
     }
 
@@ -396,7 +407,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             drawer.closeDrawer(GravityCompat.START);
         } else if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
             if (searchViewBusStopName.getText().toString().isEmpty()) {
-                searchViewBusStopName.setText(br.getBusStopName());
+                searchViewBusStopName.setText(this.currentBusStopName);
             }
             setElementAppBar(true);
             setDisplayChild(1);
@@ -444,20 +455,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
 
     @Override
     public void processStart() {
-        if (outputCardViewItemList.isEmpty()) {
-            /*RelativeLayout relativeLayoutProgressBar = findViewById(R.id.relativeLayoutProgressBar);
-            progressBar = new ProgressBar(MainActivity.this, null, android.R.attr.progressBarStyle);
-            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(150, 150);
-            params.addRule(RelativeLayout.CENTER_IN_PARENT);
-            relativeLayoutProgressBar.addView(progressBar, params);*/
+        if (outputItemList.isEmpty()) {
             progressBarOutput.setVisibility(View.VISIBLE);
         } else {
-            outputCardViewItemList.clear();
+            outputItemList.clear();
         }
     }
 
     @Override
-    public void processFinish(List<OutputCardViewItem> output) {
+    public void processFinish(List<OutputItem> output) {
         RecyclerView recyclerViewBusOutput = findViewById(R.id.recyclerViewBusOutput);
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
@@ -480,20 +486,20 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
                     } else {
                         diffTime = diffHour + "h " + diffMin + "min";
                     }
-                    outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
-                    OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
+                    outputItemList.add(new OutputItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
+                    OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputItemList);
                     recyclerViewBusOutput.setAdapter(adapter);
                 }
             } else {
                 for (int i = 1; i < output.size(); i++) {
-                    outputCardViewItemList.add(new OutputCardViewItem(output.get(i).getBusNumber(), output.get(i).getBusHourComplete(), "", output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
-                    OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputCardViewItemList);
+                    outputItemList.add(new OutputItem(output.get(i).getBusNumber(), output.get(i).getBusHourComplete(), "", output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
+                    OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputItemList);
                     recyclerViewBusOutput.setAdapter(adapter);
                 }
             }
         } else {
-            outputCardViewItemList.add(new OutputCardViewItem(output.get(0).getError()));
-            OutputErrorAdapter adapter = new OutputErrorAdapter(MainActivity.this, outputCardViewItemList);
+            outputItemList.add(new OutputItem(output.get(0).getError()));
+            OutputErrorAdapter adapter = new OutputErrorAdapter(MainActivity.this, outputItemList);
             recyclerViewBusOutput.setAdapter(adapter);
         }
         swipeRefreshLayout.setRefreshing(false);
