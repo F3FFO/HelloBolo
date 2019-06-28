@@ -42,7 +42,6 @@ public class BusReader {
                         }
                         br.close();
                     } catch (IOException e) {
-                        Log.e("ERROR extractFromFile", e.getMessage());
                         busClass.clear();
                     }
                 }
@@ -51,7 +50,7 @@ public class BusReader {
         return busClass;
     }
 
-    private File takeFile(Context context) {
+    private File takeFileCut(Context context) {
         File[] listFiles = context.getFilesDir().listFiles();
         File file = null;
         for (File listFile : listFiles) {
@@ -62,9 +61,7 @@ public class BusReader {
         return file;
     }
 
-    public List<SearchItem> stopsViewer(Context context, ArrayList<BusClass> busClass) {
-        List<SearchItem> stops = new ArrayList<>();
-        File file = takeFile(context);
+    private String[] takeFavElement(Context context) {
         Properties prop = new Properties();
         String[] propertiesFile = new String[10];
         try {
@@ -77,54 +74,63 @@ public class BusReader {
                 }
             }
         } catch (IOException e) {
-            Log.e("ERROR stopsViewer01", e.getMessage());
             e.printStackTrace();
         }
+        return propertiesFile;
+    }
+
+    private void writeFile(Context context, File file, ArrayList<BusClass> busClass) {
         ArrayList<String> stopsTemp = new ArrayList<>();
+        String busStopCode;
+        for (int i = 0; i < busClass.size(); i++) {
+            busStopCode = busClass.get(i).getBusStopCode();
+            if (!stopsTemp.contains(busStopCode)) {
+                stopsTemp.add(busStopCode);
+                try {
+                    FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + "," + busClass.get(i).getBusStopName() + "," + busClass.get(i).getBusStopAddress() + "\n"), StandardCharsets.UTF_8, true);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        stopsTemp.clear();
+    }
+
+    private void extractFromFileCutted(Context context, File file, String[] propertiesFile, List<SearchItem> stops) {
+        try {
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName()), StandardCharsets.UTF_8));
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                StringTokenizer token = new StringTokenizer(line, ",");
+                String busStopCode = token.nextToken();
+                String busStopName = token.nextToken();
+                String busStopAddress = token.nextToken();
+                boolean isElementAdded = false;
+                for (String s : propertiesFile) {
+                    if (s.equals(busStopCode)) {
+                        isElementAdded = true;
+                    }
+                }
+                if (!isElementAdded) {
+                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
+                } else {
+                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public List<SearchItem> stopsViewer(Context context, ArrayList<BusClass> busClass) {
+        List<SearchItem> stops = new ArrayList<>();
+        File file = takeFileCut(context);
+        String[] propertiesFile = takeFavElement(context);
         if (FileUtils.sizeOf(file) == 0) {
-            for (int i = 0; i < busClass.size(); i++) {
-                String busStopCode = busClass.get(i).getBusStopCode();
-                if (!stopsTemp.contains(busStopCode)) {
-                    stopsTemp.add(busStopCode);
-                    for (String s : propertiesFile) {
-                        if (!s.equals(busStopCode)) {
-                            stops.add(new SearchItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.round_favourite_border));
-                        } else {
-                            stops.add(new SearchItem(busStopCode, busClass.get(i).getBusStopName(), busClass.get(i).getBusStopAddress(), R.drawable.ic_star));
-                        }
-                    }
-                    try {
-                        FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + "," + busClass.get(i).getBusStopName() + "," + busClass.get(i).getBusStopAddress() + "\n"), StandardCharsets.UTF_8, true);
-                    } catch (IOException e) {
-                        Log.e("ERROR stopsViewer02", e.getMessage());
-                    }
-                }
-            }
-            stopsTemp.clear();
+            writeFile(context, file, busClass);
+            extractFromFileCutted(context, file, propertiesFile, stops);
         } else {
-            try {
-                BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName()), StandardCharsets.UTF_8));
-                String line;
-                while ((line = br.readLine()) != null) {
-                    StringTokenizer token = new StringTokenizer(line, ",");
-                    String busStopCode = token.nextToken();
-                    String busStopName = token.nextToken();
-                    String busStopAddress = token.nextToken();
-                    boolean isElementAdded = false;
-                    for (String s : propertiesFile) {
-                        if (s.equals(busStopCode)) {
-                            isElementAdded = true;
-                        }
-                    }
-                    if (!isElementAdded) {
-                        stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
-                    } else {
-                        stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star));
-                    }
-                }
-            } catch (IOException e) {
-                Log.e("ERROR stopsViewer03", e.getMessage());
-            }
+            extractFromFileCutted(context, file, propertiesFile, stops);
         }
         return stops;
     }
