@@ -15,6 +15,8 @@ import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseVersion;
 import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
 import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
 
+import java.net.InetAddress;
+
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 
@@ -25,7 +27,6 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             try {
                 new CheckVersion(SplashActivity.this, SplashActivity.this).execute().get();
             } catch (Exception e) {
-                Log.e("ERROR SplashActivity: ", e.getMessage());
                 e.printStackTrace();
             }
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
@@ -46,29 +47,25 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
     private boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        //return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isConnected();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        //return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isInternetAvailable();
     }
 
-    //TODO rethink because is too slow
-    /*private boolean isConnected() {
+    private boolean isInternetAvailable() {
         try {
-            return Runtime.getRuntime().exec("/system/bin/ping -c 1 8.8.8.8").waitFor() < 2;
-        } catch (InterruptedException e) {
-            Log.e("ERROR SplashActivity: ", e.getMessage());
-            return false;
-        } catch (IOException e) {
-            Log.e("ERROR SplashActivity: ", e.getMessage());
+            InetAddress address = InetAddress.getByName("www.google.com");
+            return !address.equals("");
+        } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-    }*/
+    }
 
     @Override
     public void processFinisVersion(String version) {
         try {
             new DownloadCsv(SplashActivity.this, version).execute().get();
         } catch (Exception e) {
-            Log.e("ERROR", e.getMessage());
             e.printStackTrace();
         }
     }
