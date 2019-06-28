@@ -33,7 +33,6 @@ public class Favourites {
                 }
             }
         } catch (IOException e) {
-            Log.e("ERROR readFileFav", e.getMessage());
             e.printStackTrace();
         }
     }
@@ -52,7 +51,6 @@ public class Favourites {
                 }
             }
         } catch (IOException e) {
-            Log.e("ERROR addFavourite", e.getMessage());
             e.printStackTrace();
         }
         return item;
@@ -72,7 +70,6 @@ public class Favourites {
                 }
             }
         } catch (IOException e) {
-            Log.e("ERROR removeFavourite", e.getMessage());
             e.printStackTrace();
         }
         return ris;

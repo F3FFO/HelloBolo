@@ -513,7 +513,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             UrlElaboration ue = new UrlElaboration(busStop, busLine, busHour, MainActivity.this);
             ue.execute();
         } catch (Exception e) {
-            Log.e("ERROR checkBus", e.getMessage());
             e.printStackTrace();
         }
     }

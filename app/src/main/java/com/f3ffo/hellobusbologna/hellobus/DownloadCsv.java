@@ -51,7 +51,6 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
                 outputStream.close();
                 readableByteChannel.close();
             } catch (IOException e) {
-                Log.e("ERROR fileDownload_O", e.getMessage());
                 e.printStackTrace();
             }
         } else {
@@ -59,7 +58,6 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
                 URL url = new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=" + version + "&format=csv");
                 FileUtils.copyURLToFile(url, new File(context.getFilesDir() + "/lineefermate_" + version + ".csv"));
             } catch (IOException e) {
-                Log.e("ERROR fileDownload_M", e.getMessage());
                 e.printStackTrace();
             }
         }

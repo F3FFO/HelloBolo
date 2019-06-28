@@ -109,7 +109,7 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
             }
             br.close();
         } catch (IOException e) {
-            Log.e("ERROR urlElaboration: ", e.getMessage());
+            e.printStackTrace();
         }
         return outputItemList;
     }

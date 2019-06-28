@@ -66,7 +66,6 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
             }
             return true;
         } catch (Exception e) {
-            Log.e("ERROR CheckVersion01", e.getMessage());
             e.printStackTrace();
             return false;
         }
