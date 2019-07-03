@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +53,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         try {
             articleDate = new SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN).format(new SimpleDateFormat("EEE, d MMM yyyy HH:mm:ss Z", Locale.ENGLISH).parse(currentArticle.getPubDate()));
         } catch (ParseException e) {
-            Log.e("ERROR ArticleAdapter", e.getMessage());
             e.printStackTrace();
             articleDate = currentArticle.getPubDate();
         }

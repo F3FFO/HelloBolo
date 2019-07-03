@@ -3,7 +3,6 @@ package com.f3ffo.hellobusbologna.hellobus;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import org.apache.commons.io.FileUtils;
 
@@ -33,9 +32,8 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
                 if (!listFile.isDirectory() && !listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
                     try {
                         FileUtils.forceDelete(new File(context.getFilesDir(), listFile.getName()));
-                        Log.i("FILE_DELETED", listFile.getName());
                     } catch (IOException e) {
-                        Log.e("ERROR FILE_DELETE", listFile.getName());
+                        e.printStackTrace();
                     }
                 }
             }

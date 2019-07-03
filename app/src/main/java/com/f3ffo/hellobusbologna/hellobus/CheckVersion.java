@@ -3,7 +3,6 @@ package com.f3ffo.hellobusbologna.hellobus;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseVersion;
 

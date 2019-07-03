@@ -1,7 +1,6 @@
 package com.f3ffo.hellobusbologna.favourite;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.io.IOException;
 import java.util.ArrayList;

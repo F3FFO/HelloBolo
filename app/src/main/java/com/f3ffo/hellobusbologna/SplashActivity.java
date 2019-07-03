@@ -6,7 +6,6 @@ import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.util.Log;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -16,7 +15,6 @@ import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
 import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
 
 import java.net.InetAddress;
-
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 

@@ -1,7 +1,6 @@
 package com.f3ffo.hellobusbologna.hellobus;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.f3ffo.hellobusbologna.R;
 import com.f3ffo.hellobusbologna.search.SearchItem;

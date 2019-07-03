@@ -1,10 +1,9 @@
 package com.f3ffo.hellobusbologna.hellobus;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
-import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
 import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseUrl;
 import com.f3ffo.hellobusbologna.output.OutputItem;
 
 import java.io.BufferedReader;
@@ -16,15 +15,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.StringTokenizer;
 
-import okhttp3.*;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
 
 public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
     private String busStop;
     private String busLine;
     private String busHour;
-    private AsyncResponse delegate;
+    private AsyncResponseUrl delegate;
 
-    public UrlElaboration(String busStop, String busLine, String busHour, AsyncResponse delegate) {
+    public UrlElaboration(String busStop, String busLine, String busHour, AsyncResponseUrl delegate) {
         this.busStop = busStop;
         this.busLine = busLine;
         this.busHour = busHour;

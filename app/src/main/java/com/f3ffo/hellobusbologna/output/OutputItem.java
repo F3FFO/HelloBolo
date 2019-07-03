@@ -1,6 +1,7 @@
 package com.f3ffo.hellobusbologna.output;
 
 public class OutputItem {
+
     private String busNumber, busHour, busHourComplete, error;
     private int satelliteOrHour, handicap;
 

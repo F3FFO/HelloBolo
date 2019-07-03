@@ -5,8 +5,7 @@
     android:layout_height="wrap_content"
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
-    android:layout_marginEnd="8dp"
-    app:cardElevation="8dp">
+    android:layout_marginEnd="8dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -39,10 +38,10 @@
             android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
             android:textColor="@color/colorGreyMaterial"
             android:textIsSelectable="false"
+            app:layout_constraintBottom_toTopOf="@id/textViewArticleCategory"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewArticleDate"
-            app:layout_constraintBottom_toTopOf="@id/textViewArticleCategory"/>
+            app:layout_constraintTop_toBottomOf="@id/textViewArticleDate" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/textViewArticleCategory"
