@@ -303,7 +303,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 setDisplayChild(2);
                 return true;
             case R.id.navigation_favourites:
-                searchViewBusStopName.open(item);
+                if (searchViewBusStopName.isOpen()) {
+                    searchViewBusStopName.close();
+                }
                 setElementAppBar(false);
                 setDisplayChild(3);
                 return true;
