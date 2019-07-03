@@ -1,48 +1,7 @@
 package com.f3ffo.hellobusbologna;
 
-import com.f3ffo.hellobusbologna.hellobus.BusClass;
-import com.f3ffo.hellobusbologna.rss.ArticleAdapter;
-import com.f3ffo.hellobusbologna.favourite.FavouritesAdapter;
-import com.f3ffo.hellobusbologna.output.OutputAdapter;
-import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
-import com.f3ffo.hellobusbologna.search.SearchAdapter;
-import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponse;
-import com.f3ffo.hellobusbologna.timePicker.TimePickerFragment;
-import com.f3ffo.hellobusbologna.hellobus.BusReader;
-import com.f3ffo.hellobusbologna.favourite.Favourites;
-import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
-import com.f3ffo.hellobusbologna.favourite.FavouritesItem;
-import com.f3ffo.hellobusbologna.output.OutputItem;
-import com.f3ffo.hellobusbologna.search.SearchItem;
-import com.f3ffo.hellobusbologna.rss.ArticleItem;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
-import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.Snackbar;
-import com.lapism.searchview.Search;
-import com.lapism.searchview.widget.SearchView;
-import com.prof.rssparser.Article;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.appcompat.widget.AppCompatTextView;
-
-import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.fragment.app.DialogFragment;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DefaultItemAnimator;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -53,6 +12,44 @@ import android.widget.ProgressBar;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatSpinner;
+import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.fragment.app.DialogFragment;
+import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+
+import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseUrl;
+import com.f3ffo.hellobusbologna.favourite.Favourites;
+import com.f3ffo.hellobusbologna.favourite.FavouritesAdapter;
+import com.f3ffo.hellobusbologna.favourite.FavouritesItem;
+import com.f3ffo.hellobusbologna.hellobus.BusClass;
+import com.f3ffo.hellobusbologna.hellobus.BusReader;
+import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
+import com.f3ffo.hellobusbologna.output.OutputAdapter;
+import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
+import com.f3ffo.hellobusbologna.output.OutputItem;
+import com.f3ffo.hellobusbologna.rss.ArticleAdapter;
+import com.f3ffo.hellobusbologna.rss.ArticleItem;
+import com.f3ffo.hellobusbologna.search.SearchAdapter;
+import com.f3ffo.hellobusbologna.search.SearchItem;
+import com.f3ffo.hellobusbologna.timePicker.TimePickerFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.Snackbar;
+import com.lapism.searchview.Search;
+import com.lapism.searchview.widget.SearchView;
+import com.prof.rssparser.Article;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -60,7 +57,7 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponse, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener, NavigationView.OnNavigationItemSelectedListener {
 
     private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private AppCompatTextView busCodeText, textViewHourDefault, textViewBusHour;
@@ -76,7 +73,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     private SwipeRefreshLayout swipeRefreshLayout;
     private DrawerLayout drawer;
     private List<OutputItem> outputItemList;
-    private BottomNavigationView bottomNavView;
     private ArrayAdapter<String> spinnerArrayAdapter;
     private List<FavouritesItem> fav = new ArrayList<>();
     private List<SearchItem> stops = new ArrayList<>();
@@ -92,12 +88,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
         constraintLayoutRss = findViewById(R.id.constraintLayoutRss);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
-        bottomNavView = findViewById(R.id.bottomNavView);
-        bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         textViewBusHour = findViewById(R.id.textViewBusHour);
         textViewHourDefault = findViewById(R.id.textViewHourDefault);
@@ -160,7 +156,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             @Override
             public void onOpen() {
                 setElementAppBar(false);
-                bottomNavView.setVisibility(View.GONE);
                 fabBus.hide();
                 setDisplayChild(2);
                 searchViewBusStopName.setOnQueryTextListener(new Search.OnQueryTextListener() {
@@ -193,7 +188,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             searchViewBusStopName.close();
             setElementAppBar(true);
             setDisplayChild(1);
-            bottomNavView.setVisibility(View.VISIBLE);
             fabBus.show();
         });
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
@@ -287,28 +281,36 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
         });
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
+    @Override
+    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.navigation_rss:
-                searchViewBusStopName.setVisibility(View.GONE);
-                setElementAppBar(false);
-                setDisplayChild(0);
-                fabBus.hide();
-                viewModel.fetchFeed();
-                return true;
             case R.id.navigation_search:
-                searchViewBusStopName.setVisibility(View.VISIBLE);
+                searchViewBusStopName.open(item);
                 setElementAppBar(false);
                 setDisplayChild(2);
                 return true;
             case R.id.navigation_favourites:
-                searchViewBusStopName.setVisibility(View.VISIBLE);
+                searchViewBusStopName.open(item);
                 setElementAppBar(false);
                 setDisplayChild(3);
                 return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        return false;
-    };
+    }
 
     private ArrayList<String> busViewer(String busStopCodeIn) {
         ArrayList<String> bus = new ArrayList<>();
@@ -335,7 +337,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             textViewBusHour.setVisibility(View.GONE);
             busCodeText.setVisibility(View.GONE);
         }
-
     }
 
     private void setDisplayChild(int displayChild) {
@@ -411,39 +412,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponse, Ti
             }
             setElementAppBar(true);
             setDisplayChild(1);
-            bottomNavView.setVisibility(View.VISIBLE);
         } else if (searchViewBusStopName.isOpen() && busStop.isEmpty()) {
             setElementAppBar(false);
             searchViewBusStopName.setText("");
             setDisplayChild(1);
-            bottomNavView.setVisibility(View.VISIBLE);
         } else {
             super.onBackPressed();
-        }
-    }
-
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        return false;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.activity_main_drawer, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.nav_favourites:
-                return true;
-            case R.id.nav_info:
-                return true;
-            case R.id.nav_share:
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
     }
 

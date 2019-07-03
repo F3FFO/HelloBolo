@@ -1,18 +1,24 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context="com.f3ffo.myapplication.MainActivity">
+
     <group android:checkableBehavior="single">
         <item
-            android:id="@+id/nav_favourites"
             android:icon="@drawable/round_bookmarks"
-            android:title="@string/menu_favourites" />
+            android:orderInCategory="100"
+            android:title="@string/menu_favourites"
+            app:showAsAction="ifRoom" />
         <item
-            android:id="@+id/nav_info"
             android:icon="@drawable/round_info"
-            android:title="@string/menu_info" />
+            android:orderInCategory="300"
+            android:title="@string/menu_info"
+            app:showAsAction="ifRoom" />
         <item
-            android:id="@+id/nav_share"
             android:icon="@drawable/round_share"
-            android:title="@string/menu_share" />
+            android:orderInCategory="200"
+            android:title="@string/menu_share"
+            app:showAsAction="ifRoom" />
     </group>
+
 </menu>
