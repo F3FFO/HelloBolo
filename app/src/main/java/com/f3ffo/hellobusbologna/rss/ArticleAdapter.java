@@ -7,12 +7,11 @@ import android.net.Uri;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
+import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
@@ -30,8 +29,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
     private List<Article> articles;
     private Context context;
 
-    public ArticleAdapter(List<Article> list, Context context) {
-        this.articles = list;
+    public ArticleAdapter(List<Article> articles, Context context) {
+        this.articles = articles;
         this.context = context;
     }
 
@@ -68,43 +67,26 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         }
         viewHolder.textViewArticleCategory.setText(categories.toString());
         viewHolder.itemView.setOnClickListener(view -> {
-            WebView articleView = new WebView(context);
-            articleView.getSettings().setLoadWithOverviewMode(true);
-            //String title = articles.get(viewHolder.getAdapterPosition()).getTitle();
-            String description = articles.get(viewHolder.getAdapterPosition()).getDescription();
-            articleView.getSettings().setJavaScriptEnabled(false);
-            articleView.getSettings().setGeolocationEnabled(false);
-            articleView.setWebChromeClient(new WebChromeClient());
-            //articleView.loadUrl(link);
-            articleView.loadDataWithBaseURL(null, "<style>p {color: #494949; font-size: 1rem;}</style>" + description, "text/html", "UTF-8", null);
-
             AppCompatTextView title = new AppCompatTextView(context);
             title.setText(articles.get(viewHolder.getAdapterPosition()).getTitle());
             title.setTextColor(ContextCompat.getColor(context, R.color.colorGreyMaterial));
             title.setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline6);
+            title.setPadding(64, 64, 64, 0);
             title.setTextIsSelectable(false);
-
-            new MaterialAlertDialogBuilder(context, R.style.Theme_MaterialComponents_Light_Dialog_Alert)
+            AppCompatTextView description = new AppCompatTextView(context);
+            description.setText(HtmlCompat.fromHtml(articles.get(viewHolder.getAdapterPosition()).getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
+            description.setTextAppearance(R.style.TextAppearance_MaterialComponents_Body1);
+            description.setPadding(64, 32, 64, 0);
+            description.setTextIsSelectable(false);
+            new MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
                     .setCustomTitle(title)
-                    .setView(articleView)
+                    .setView(description)
                     .setNegativeButton("Chiudi", (DialogInterface dialog, int which) -> dialog.dismiss())
                     .setNeutralButton("Apri", (DialogInterface dialog, int which) -> {
                         Uri uri = Uri.parse(articles.get(viewHolder.getAdapterPosition()).getLink());
-                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                        context.startActivity(intent);
+                        context.startActivity(new Intent(Intent.ACTION_VIEW, uri));
                     })
                     .show();
-
-            /*AlertDialog alertDialog = new AlertDialog.Builder(context).create();
-            alertDialog.setTitle(title);
-            alertDialog.setView(articleView);
-            alertDialog.setButton(Dialog.BUTTON_NEGATIVE, "Chiudi", (DialogInterface dialog, int which) -> dialog.dismiss());
-            alertDialog.setButton(Dialog.BUTTON_NEUTRAL, "Apri", (DialogInterface dialog, int which) -> {
-                Uri uri = Uri.parse(link);
-                Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                context.startActivity(intent);
-            });
-            alertDialog.show();*/
         });
     }
 
