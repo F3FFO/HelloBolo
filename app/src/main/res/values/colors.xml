@@ -9,4 +9,5 @@
     <color name="colorGrey">#FF494949</color>
     <color name="colorIcon">#FF4D5154</color>
     <color name="colorGold">#FFFFD600</color>
+    <color name="transparent">#00FFFFFF</color>
 </resources>
