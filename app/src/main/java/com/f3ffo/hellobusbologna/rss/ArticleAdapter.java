@@ -81,8 +81,8 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             new MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
                     .setCustomTitle(title)
                     .setView(description)
-                    .setNegativeButton("Chiudi", (DialogInterface dialog, int which) -> dialog.dismiss())
-                    .setNeutralButton("Apri", (DialogInterface dialog, int which) -> {
+                    .setNegativeButton(R.string.alertDialog_no, (DialogInterface dialog, int which) -> dialog.dismiss())
+                    .setNeutralButton(R.string.alertDialog_open, (DialogInterface dialog, int which) -> {
                         Uri uri = Uri.parse(articles.get(viewHolder.getAdapterPosition()).getLink());
                         context.startActivity(new Intent(Intent.ACTION_VIEW, uri));
                     })

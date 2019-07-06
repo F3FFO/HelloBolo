@@ -2,7 +2,6 @@ package com.f3ffo.hellobusbologna;
 
 import android.app.TimePickerDialog;
 import android.os.Bundle;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,14 +12,10 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
-import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.view.GravityCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.DialogFragment;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
@@ -43,8 +38,9 @@ import com.f3ffo.hellobusbologna.rss.ArticleItem;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
 import com.f3ffo.hellobusbologna.timePicker.TimePickerFragment;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.navigation.NavigationView;
 import com.google.android.material.snackbar.Snackbar;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
@@ -57,76 +53,69 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener, NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener {
 
     private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private AppCompatTextView busCodeText, textViewHourDefault, textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
-    private String busStop = "", busLine = "", busHour = "", currentBusStopName = "";
+    private FloatingActionButton fabBus;
+    private ProgressBar progressBarRss, progressBarOutput;
+    private SwipeRefreshLayout swipeRefreshLayoutRss, swipeRefreshLayoutOutput;
+    private SearchView searchViewBusStopName;
+    private RecyclerView recyclerViewRss;
+    private BottomNavigationView bottomNavView;
+    private ArticleAdapter articleAdapter;
     private SearchAdapter adapterBusStation;
     private FavouritesAdapter adapterFavourites;
-    private FloatingActionButton fabBus;
-    private BusReader br = new BusReader();
-    private Favourites fv = new Favourites();
-    private ProgressBar progressBarOutput;
-    private SearchView searchViewBusStopName;
-    private SwipeRefreshLayout swipeRefreshLayout;
-    private DrawerLayout drawer;
-    private List<OutputItem> outputItemList;
     private ArrayAdapter<String> spinnerArrayAdapter;
+    private List<OutputItem> outputItemList;
     private List<FavouritesItem> fav = new ArrayList<>();
     private List<SearchItem> stops = new ArrayList<>();
     private ArrayList<BusClass> busClass = new ArrayList<>();
-
-    private RecyclerView recyclerViewRss;
-    private ArticleAdapter articleAdapter;
-    private SwipeRefreshLayout swipeRefreshLayoutRss;
-    private ProgressBar progressBarRss;
-    private ArticleItem viewModel;
+    private String busStop = "", busLine = "", busHour = "", currentBusStopName = "";
+    private Favourites fv = new Favourites();
+    private ArticleItem articleItem;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         constraintLayoutRss = findViewById(R.id.constraintLayoutRss);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
+        bottomNavView = findViewById(R.id.bottomNavView);
+        bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         textViewBusHour = findViewById(R.id.textViewBusHour);
         textViewHourDefault = findViewById(R.id.textViewHourDefault);
         busCodeText = findViewById(R.id.busCodeText);
         fabBus = findViewById(R.id.fabBus);
-        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayoutOutput = findViewById(R.id.swipeRefreshLayoutOutput);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
         progressBarOutput = findViewById(R.id.progressBarOutput);
         progressBarRss = findViewById(R.id.progressBarRss);
         recyclerViewRss = findViewById(R.id.recyclerViewRss);
         swipeRefreshLayoutRss = findViewById(R.id.swipeRefreshLayoutRss);
         outputItemList = new ArrayList<>();
-        drawer = findViewById(R.id.drawer_layout);
-        NavigationView lateralNavView = findViewById(R.id.lateralNavView);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(MainActivity.this, drawer, null, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
-        drawer.addDrawerListener(toggle);
-        toggle.syncState();
-        lateralNavView.setNavigationItemSelectedListener(MainActivity.this);
-        swipeRefreshLayout.setOnRefreshListener(MainActivity.this);
-        swipeRefreshLayout.setEnabled(false);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
+        swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
+        swipeRefreshLayoutOutput.setEnabled(false);
+        swipeRefreshLayoutOutput.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
+        BusReader br = new BusReader();
         busClass.addAll(br.extractFromFile(MainActivity.this));
         stops.addAll(br.stopsViewer(MainActivity.this, busClass));
         buildRecyclerViewSearch();
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
-        viewModel = ViewModelProviders.of(MainActivity.this).get(ArticleItem.class);
-        viewModel.fetchFeed();
+        articleItem = ViewModelProviders.of(MainActivity.this).get(ArticleItem.class);
+        articleItem.fetchFeed();
         recyclerViewRss.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerViewRss.setItemAnimator(new DefaultItemAnimator());
         recyclerViewRss.setHasFixedSize(true);
-        viewModel.getArticleList().observe(MainActivity.this, (List<Article> articles) -> {
+        articleItem.getArticleList().observe(MainActivity.this, (List<Article> articles) -> {
             if (articles != null) {
                 articleAdapter = new ArticleAdapter(articles, MainActivity.this);
                 recyclerViewRss.setAdapter(articleAdapter);
@@ -135,10 +124,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 swipeRefreshLayoutRss.setRefreshing(false);
             }
         });
-        viewModel.getSnackBar().observe(MainActivity.this, (String s) -> {
+        articleItem.getSnackBar().observe(MainActivity.this, (String s) -> {
             if (s != null) {
                 Snackbar.make(constraintLayoutRss, s, Snackbar.LENGTH_LONG).show();
-                viewModel.onSnackBarShowed();
+                articleItem.onSnackBarShowed();
             }
         });
         swipeRefreshLayoutRss.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
@@ -147,10 +136,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             articleAdapter.getArticleList().clear();
             articleAdapter.notifyDataSetChanged();
             swipeRefreshLayoutRss.setRefreshing(true);
-            viewModel.fetchFeed();
+            articleItem.fetchFeed();
         });
-
-
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
             @Override
@@ -175,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             @Override
             public void onClose() {
                 if ("".equals(busStop)) {
-                    swipeRefreshLayout.setEnabled(false);
+                    swipeRefreshLayoutOutput.setEnabled(false);
                 }
             }
         });
@@ -227,7 +214,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if (spinnerArrayAdapter != null) {
                     if (!spinnerArrayAdapter.getItem(position).equals(busStop)) {
-                        swipeRefreshLayout.setEnabled(false);
+                        swipeRefreshLayoutOutput.setEnabled(false);
                         outputItemList.clear();
                         fabBus.show();
                     }
@@ -248,12 +235,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 }
                 fabBus.hide();
                 checkBus(busStop, busLine, busHour);
-                swipeRefreshLayout.setEnabled(true);
+                swipeRefreshLayoutOutput.setEnabled(true);
             } else {
                 Toast.makeText(MainActivity.this, "Fermata mancante", Toast.LENGTH_LONG).show();
             }
         });
-        searchViewBusStopName.setOnLogoClickListener(() -> drawer.openDrawer(GravityCompat.START));
         adapterFavourites.setOnItemClickListener((int position) -> {
             busStop = fav.get(position).getBusStopCode();
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStop));
@@ -281,38 +267,28 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         });
     }
 
-    @Override
-    public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-        switch (menuItem.getItemId()) {
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_menu, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
+            case R.id.navigation_home:
+                setElementAppBar(false);
+                setDisplayChild(0);
+                fabBus.hide();
+                bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
+                articleItem.fetchFeed();
+                return true;
             case R.id.navigation_search:
-                searchViewBusStopName.open(item);
                 setElementAppBar(false);
                 setDisplayChild(2);
+                bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
             case R.id.navigation_favourites:
-                if (searchViewBusStopName.isOpen()) {
-                    searchViewBusStopName.close();
-                }
                 setElementAppBar(false);
                 setDisplayChild(3);
+                bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
-            default:
-                return super.onOptionsItemSelected(item);
         }
-    }
+        return false;
+    };
 
     private ArrayList<String> busViewer(String busStopCodeIn) {
         ArrayList<String> bus = new ArrayList<>();
@@ -371,6 +347,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         recyclerViewFavourites.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         adapterFavourites = new FavouritesAdapter(fav);
         recyclerViewFavourites.setAdapter(adapterFavourites);
+        adapterFavourites.notifyDataSetChanged();
     }
 
     private void buildRecyclerViewSearch() {
@@ -379,6 +356,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         adapterBusStation = new SearchAdapter(stops);
         recyclerViewBusStation.setAdapter(adapterBusStation);
+        adapterBusStation.notifyDataSetChanged();
     }
 
     private boolean refreshElement(int position) {
@@ -406,9 +384,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     @Override
     public void onBackPressed() {
-        if (drawer.isDrawerOpen(GravityCompat.START)) {
-            drawer.closeDrawer(GravityCompat.START);
-        } else if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
+        if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
             if (searchViewBusStopName.getText().toString().isEmpty()) {
                 searchViewBusStopName.setText(this.currentBusStopName);
             }
@@ -478,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             OutputErrorAdapter adapter = new OutputErrorAdapter(MainActivity.this, outputItemList);
             recyclerViewBusOutput.setAdapter(adapter);
         }
-        swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayoutOutput.setRefreshing(false);
         progressBarOutput.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
     }
