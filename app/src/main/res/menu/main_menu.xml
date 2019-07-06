@@ -3,15 +3,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/navigation_home"
+        android:icon="@drawable/round_home"
+        android:title="@string/title_home" />
+
+    <item
         android:id="@+id/navigation_search"
         android:icon="@drawable/round_search"
-        android:title="@string/title_search"
-        app:showAsAction="ifRoom" />
+        android:title="@string/title_search" />
 
     <item
         android:id="@+id/navigation_favourites"
         android:icon="@drawable/round_favourite_border"
-        android:title="@string/title_favourites"
-        app:showAsAction="ifRoom" />
+        android:title="@string/title_favourites" />
 
 </menu>

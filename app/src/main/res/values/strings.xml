@@ -1,18 +1,15 @@
 <resources>
     <string name="app_name">HelloBus Bologna</string>
-    <string name="navigation_drawer_open">Open navigation drawer</string>
-    <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="busStopNameText">Cerca qui</string>
     <string name="busCodeText">Autobus:</string>
     <string name="busHourTextDefault">Partenza:</string>
     <string name="busHourText">Adesso</string>
-    <string name="menu_info">Info</string>
-    <string name="menu_favourites">Preferiti</string>
-    <string name="menu_share">Condividi</string>
     <string name="alertDialog_title">Nessuna connessione</string>
     <string name="alertDialog_message">Controllare la connessione di rete e riprovare</string>
     <string name="alertDialog_yes">Riprova</string>
     <string name="alertDialog_no">Chiudi</string>
+    <string name="alertDialog_open">Continua&#8230;</string>
+    <string name="title_home">Home</string>
     <string name="title_search">Cerca</string>
     <string name="title_favourites">Preferiti</string>
     <string name="favourite_added">Aggiunto ai preferiti!</string>
