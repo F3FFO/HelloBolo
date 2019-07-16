@@ -6,6 +6,6 @@
     android:fontFamily="sans-serif"
     android:singleLine="true"
     android:textAlignment="inherit"
-    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
     android:textColor="@color/colorGreyMaterial"
     android:textIsSelectable="false" />
