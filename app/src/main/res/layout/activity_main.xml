@@ -7,7 +7,7 @@
     android:fitsSystemWindows="true"
     tools:context=".MainActivity">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -34,76 +34,79 @@
                 app:search_shape="rounded"
                 app:search_text_color="@color/colorGreyMaterial"
                 app:search_theme="light"
-                app:search_version="toolbar" />
+                app:search_version="toolbar"
+                app:search_version_margins="toolbar" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/busCodeText"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:fontFamily="sans-serif"
-                android:text="@string/busCodeText"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textColor="@color/colorGreyMaterial"
-                android:textIsSelectable="false"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:orientation="horizontal"
                 android:visibility="gone"
-                app:layout_constraintBottom_toTopOf="@id/textViewHourDefault"
-                app:layout_constraintEnd_toStartOf="@id/spinnerBusCode"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/searchViewBusStopName" />
+                app:layout_constraintTop_toBottomOf="@id/searchViewBusStopName">
 
-            <androidx.appcompat.widget.AppCompatSpinner
-                android:id="@+id/spinnerBusCode"
-                style="@android:style/Widget.Material.Light.Spinner"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:background="@android:color/transparent"
-                android:spinnerMode="dialog"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/busCodeText"
-                app:layout_constraintStart_toEndOf="@id/busCodeText"
-                app:layout_constraintTop_toTopOf="@id/busCodeText"
-                app:popupTheme="@style/Theme.MaterialComponents.Light" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/busCodeText"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textColor="@color/colorGreyMaterial"
+                    android:textIsSelectable="false" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinnerBusCode"
+                    style="@android:style/Widget.Material.Light.Spinner"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:background="@android:color/transparent"
+                    android:spinnerMode="dialog"
+                    app:popupTheme="@style/Theme.MaterialComponents.Light" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/textViewHourDefault"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="32dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp"
-                android:fontFamily="sans-serif"
-                android:text="@string/busHourTextDefault"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textColor="@color/colorGreyMaterial"
-                android:textIsSelectable="false"
+                android:layout_marginEnd="16dp"
+                android:orientation="horizontal"
                 android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/textViewBusHour"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/busCodeText" />
+                app:layout_constraintBottom_toBottomOf="@id/busCodeText"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@id/busCodeText">
 
-            <androidx.appcompat.widget.AppCompatTextView
-                android:id="@+id/textViewBusHour"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:fontFamily="sans-serif"
-                android:text="@string/busHourText"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textColor="@color/colorGreyMaterial"
-                android:textIsSelectable="false"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="@id/textViewHourDefault"
-                app:layout_constraintStart_toEndOf="@id/textViewHourDefault"
-                app:layout_constraintTop_toTopOf="@id/textViewHourDefault" />
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/busHourTextDefault"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textColor="@color/colorGreyMaterial"
+                    android:textIsSelectable="false" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/textViewBusHour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="4dp"
+                    android:fontFamily="sans-serif"
+                    android:text="@string/busHourText"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
+                    android:textColor="@color/colorGreyMaterial"
+                    android:textIsSelectable="false" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </RelativeLayout>
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
