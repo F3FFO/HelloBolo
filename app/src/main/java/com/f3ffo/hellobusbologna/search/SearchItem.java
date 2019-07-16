@@ -3,37 +3,27 @@ package com.f3ffo.hellobusbologna.search;
 public class SearchItem {
 
     private int imageFavourite;
-    private String busStopCode, busStopName, busStopAddress;
+    private String busStopCode, busStopName, busStopAddress, latitude, longitude;
 
-    public SearchItem(String busStopCode, String busStopName, String busStopAddress, int imageFavourite) {
+    public SearchItem(String busStopCode, String busStopName, String busStopAddress, int imageFavourite, String latitude, String longitude) {
         this.busStopCode = busStopCode;
         this.busStopName = busStopName;
         this.busStopAddress = busStopAddress;
         this.imageFavourite = imageFavourite;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public String getBusStopCode() {
         return busStopCode;
     }
 
-    public void setBusStopCode(String busStopCode) {
-        this.busStopCode = busStopCode;
-    }
-
     public String getBusStopName() {
         return busStopName;
     }
 
-    public void setBusStopName(String busStopName) {
-        this.busStopName = busStopName;
-    }
-
     public String getBusStopAddress() {
         return busStopAddress;
-    }
-
-    public void setBusStopAddress(String busStopAddress) {
-        this.busStopAddress = busStopAddress;
     }
 
     public int getImageFavourite() {
@@ -42,5 +32,13 @@ public class SearchItem {
 
     public void setImageFavourite(int imageFavourite) {
         this.imageFavourite = imageFavourite;
+    }
+
+    public String getLatitude() {
+        return latitude;
+    }
+
+    public String getLongitude() {
+        return longitude;
     }
 }

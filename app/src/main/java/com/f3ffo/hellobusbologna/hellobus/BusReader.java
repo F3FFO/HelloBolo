@@ -36,7 +36,12 @@ public class BusReader {
                                 String stopCode = token.nextToken();
                                 String stopName = token.nextToken();
                                 String stopAddress = StringUtils.lowerCase(token.nextToken());
-                                busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress)));
+                                token.nextToken();
+                                token.nextToken();
+                                token.nextToken();
+                                String latitude = token.nextToken();
+                                String longitude = token.nextToken();
+                                busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress), latitude, longitude));
                             }
                         }
                         br.close();
@@ -53,7 +58,7 @@ public class BusReader {
         File[] listFiles = context.getFilesDir().listFiles();
         File file = null;
         for (File listFile : listFiles) {
-            if (listFile.getName().contains("cut_")) {
+            if (listFile.getName().contains("cut_") && listFile.getName().contains(".csv")) {
                 file = listFile;
             }
         }
@@ -67,7 +72,7 @@ public class BusReader {
             prop.load(context.openFileInput("favourites.properties"));
             for (int i = 0; i < propertiesFile.length; i++) {
                 if (!prop.getProperty("busStopCode.Fav." + i).equals("")) {
-                    propertiesFile[i] = prop.getProperty("busStopCode.Fav." + i).substring(0, prop.getProperty("busStopCode.Fav." + i).indexOf(","));
+                    propertiesFile[i] = prop.getProperty("busStopCode.Fav." + i).substring(0, prop.getProperty("busStopCode.Fav." + i).indexOf(";"));
                 } else {
                     propertiesFile[i] = "";
                 }
@@ -86,7 +91,7 @@ public class BusReader {
             if (!stopsTemp.contains(busStopCode)) {
                 stopsTemp.add(busStopCode);
                 try {
-                    FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + "," + busClass.get(i).getBusStopName() + "," + busClass.get(i).getBusStopAddress() + "\n"), StandardCharsets.UTF_8, true);
+                    FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + ";" + busClass.get(i).getBusStopName() + ";" + busClass.get(i).getBusStopAddress() + ";" + busClass.get(i).getLatitude() + ";" + busClass.get(i).getLongitude() + "\n"), StandardCharsets.UTF_8, true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -100,10 +105,12 @@ public class BusReader {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName()), StandardCharsets.UTF_8));
             String line;
             while ((line = bufferedReader.readLine()) != null) {
-                StringTokenizer token = new StringTokenizer(line, ",");
+                StringTokenizer token = new StringTokenizer(line, ";");
                 String busStopCode = token.nextToken();
                 String busStopName = token.nextToken();
                 String busStopAddress = token.nextToken();
+                String latitude = token.nextToken();
+                String longitude = token.nextToken();
                 boolean isElementAdded = false;
                 for (String s : propertiesFile) {
                     if (s.equals(busStopCode)) {
@@ -111,9 +118,9 @@ public class BusReader {
                     }
                 }
                 if (!isElementAdded) {
-                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border));
+                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border, latitude, longitude));
                 } else {
-                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star));
+                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star, latitude, longitude));
                 }
             }
         } catch (IOException e) {

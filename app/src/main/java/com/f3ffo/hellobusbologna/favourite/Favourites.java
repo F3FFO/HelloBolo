@@ -24,11 +24,13 @@ public class Favourites {
             for (int i = 0; i < prop.size(); i++) {
                 String line = prop.getProperty("busStopCode.Fav." + i);
                 if (!line.equals("")) {
-                    StringTokenizer token = new StringTokenizer(line, ",");
+                    StringTokenizer token = new StringTokenizer(line, ";");
                     String busStopCode = token.nextToken();
                     String busStopName = token.nextToken();
                     String busStopAddress = token.nextToken();
-                    favouritesList.add(new FavouritesItem(busStopCode, busStopName, busStopAddress));
+                    String latitude = token.nextToken();
+                    String longitude = token.nextToken();
+                    favouritesList.add(new FavouritesItem(busStopCode, busStopName, busStopAddress, latitude, longitude));
                 }
             }
         } catch (IOException e) {
@@ -36,7 +38,7 @@ public class Favourites {
         }
     }
 
-    public FavouritesItem addFavourite(Context context, String busStopCode, String busStopName, String busStopAddress) {
+    public FavouritesItem addFavourite(Context context, String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
         FavouritesItem item = null;
         try {
             prop.load(context.openFileInput(this.fileName));
@@ -44,9 +46,9 @@ public class Favourites {
             for (int i = 0; i < 10 && !isAdded; i++) {
                 if (prop.getProperty("busStopCode.Fav." + i).equals("")) {
                     isAdded = true;
-                    prop.setProperty("busStopCode.Fav." + i, busStopCode + "," + busStopName + "," + busStopAddress);
+                    prop.setProperty("busStopCode.Fav." + i, busStopCode + ";" + busStopName + ";" + busStopAddress + ";" + latitude + ";" + longitude);
                     prop.store(context.openFileOutput(this.fileName, Context.MODE_PRIVATE), "User favourite");
-                    item = new FavouritesItem(busStopCode, busStopName, busStopAddress);
+                    item = new FavouritesItem(busStopCode, busStopName, busStopAddress, latitude, longitude);
                 }
             }
         } catch (IOException e) {
