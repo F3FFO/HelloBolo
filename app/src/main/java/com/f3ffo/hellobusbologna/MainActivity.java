@@ -1,6 +1,9 @@
 package com.f3ffo.hellobusbologna;
 
-import android.app.TimePickerDialog;
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.location.Address;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -8,15 +11,16 @@ import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.AppCompatTextView;
+import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.fragment.app.DialogFragment;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -37,26 +41,37 @@ import com.f3ffo.hellobusbologna.rss.ArticleAdapter;
 import com.f3ffo.hellobusbologna.rss.ArticleItem;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
-import com.f3ffo.hellobusbologna.timePicker.TimePickerFragment;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+import com.here.android.mpa.common.GeoCoordinate;
+import com.here.android.mpa.common.OnEngineInitListener;
+import com.here.android.mpa.mapping.Map;
+import com.here.android.mpa.mapping.MapMarker;
+import com.here.android.mpa.mapping.SupportMapFragment;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
 import com.prof.rssparser.Article;
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, TimePickerDialog.OnTimeSetListener, SwipeRefreshLayout.OnRefreshListener {
+public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, SwipeRefreshLayout.OnRefreshListener, TimePickerDialog.OnTimeSetListener {
+
+    private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
+    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE };
 
     private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
-    private AppCompatTextView busCodeText, textViewHourDefault, textViewBusHour;
+    private LinearLayoutCompat busCodeText, textViewHourDefault;
+    private AppCompatTextView textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
     private ProgressBar progressBarRss, progressBarOutput;
@@ -68,6 +83,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private SearchAdapter adapterBusStation;
     private FavouritesAdapter adapterFavourites;
     private ArrayAdapter<String> spinnerArrayAdapter;
+    private Calendar now;
     private List<OutputItem> outputItemList;
     private List<FavouritesItem> fav = new ArrayList<>();
     private List<SearchItem> stops = new ArrayList<>();
@@ -76,10 +92,42 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private Favourites fv = new Favourites();
     private ArticleItem articleItem;
 
+    protected void checkPermissions() {
+        final List<String> missingPermissions = new ArrayList<>();
+        for (final String permission : REQUIRED_SDK_PERMISSIONS) {
+            final int result = ContextCompat.checkSelfPermission(this, permission);
+            if (result != PackageManager.PERMISSION_GRANTED) {
+                missingPermissions.add(permission);
+            }
+        }
+        if (!missingPermissions.isEmpty()) {
+            final String[] permissions = missingPermissions.toArray(new String[missingPermissions.size()]);
+            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
+        } else {
+            final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
+            Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
+            onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS, grantResults);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
+            for (int index = permissions.length - 1; index >= 0; --index) {
+                if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(this, "Autorizzazioni '" + permissions[index] + "' non concesse, uscita", Toast.LENGTH_LONG).show();
+                    finish();
+                    return;
+                }
+            }
+        }
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        checkPermissions();
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         constraintLayoutRss = findViewById(R.id.constraintLayoutRss);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
@@ -99,6 +147,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         progressBarRss = findViewById(R.id.progressBarRss);
         recyclerViewRss = findViewById(R.id.recyclerViewRss);
         swipeRefreshLayoutRss = findViewById(R.id.swipeRefreshLayoutRss);
+        now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
         outputItemList = new ArrayList<>();
         swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayoutOutput.setEnabled(false);
@@ -115,6 +164,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         recyclerViewRss.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         recyclerViewRss.setItemAnimator(new DefaultItemAnimator());
         recyclerViewRss.setHasFixedSize(true);
+        if (now.get(Calendar.MINUTE) < 10) {
+            textViewBusHour.setText(now.get(Calendar.HOUR_OF_DAY) + ":0" + now.get(Calendar.MINUTE));
+        } else {
+            textViewBusHour.setText(now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE));
+        }
         articleItem.getArticleList().observe(MainActivity.this, (List<Article> articles) -> {
             if (articles != null) {
                 articleAdapter = new ArticleAdapter(articles, MainActivity.this);
@@ -173,6 +227,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
             searchViewBusStopName.setText(stops.get(position).getBusStopName());
             searchViewBusStopName.close();
+            loadMap(Double.parseDouble(stops.get(position).getLatitude().replace(",", ".")), Double.parseDouble(stops.get(position).getLongitude().replace(",", ".")));
             setElementAppBar(true);
             setDisplayChild(1);
             fabBus.show();
@@ -180,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
             if (refreshElement(position)) {
-                FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress());
+                FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress(), stops.get(position).getLatitude(), stops.get(position).getLongitude());
                 if (item != null) {
                     fav.add(item);
                     adapterBusStation.notifyItemChanged(position);
@@ -205,8 +260,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             }
         });
         textViewBusHour.setOnClickListener((View v) -> {
-            DialogFragment timePicker = new TimePickerFragment();
-            timePicker.show(getSupportFragmentManager(), "Ora");
+            TimePickerDialog timePicker = TimePickerDialog.newInstance(MainActivity.this
+                    , now.get(Calendar.HOUR_OF_DAY)
+                    , now.get(Calendar.MINUTE)
+                    , true
+            );
+            timePicker.setVersion(TimePickerDialog.Version.VERSION_2);
+            timePicker.setOkText(R.string.time_picker_ok);
+            timePicker.setCancelText(R.string.time_picker_cancel);
+            timePicker.show(getSupportFragmentManager(), "TimePicker");
         });
         spinnerBusCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -250,6 +312,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             setDisplayChild(1);
             fabBus.show();
             searchViewBusStopName.setText(fav.get(position).getBusStopName());
+            loadMap(Double.parseDouble(fav.get(position).getLatitude().replace(",", ".")), Double.parseDouble(fav.get(position).getLongitude().replace(",", ".")));
         });
         adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
             if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
@@ -305,14 +368,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     private void setElementAppBar(boolean isVisible) {
         if (isVisible) {
-            spinnerBusCode.setVisibility(View.VISIBLE);
             textViewHourDefault.setVisibility(View.VISIBLE);
-            textViewBusHour.setVisibility(View.VISIBLE);
             busCodeText.setVisibility(View.VISIBLE);
         } else {
-            spinnerBusCode.setVisibility(View.GONE);
             textViewHourDefault.setVisibility(View.GONE);
-            textViewBusHour.setVisibility(View.GONE);
             busCodeText.setVisibility(View.GONE);
         }
     }
@@ -370,7 +429,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     }
 
     @Override
-    public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
+    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
         if (minute < 10) {
             textViewBusHour.setText(hourOfDay + ":0" + minute);
             busHour = hourOfDay + "0" + minute;
@@ -420,8 +479,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         if ("".equals(output.get(0).getError())) {
+            OutputAdapter adapterOutput = new OutputAdapter(MainActivity.this, outputItemList);
             if ("".equals(busHour)) {
-                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
                 String diffTime;
                 for (int i = 1; i < output.size(); i++) {
                     StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
@@ -439,24 +498,37 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                         diffTime = diffHour + "h " + diffMin + "min";
                     }
                     outputItemList.add(new OutputItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
-                    OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputItemList);
-                    recyclerViewBusOutput.setAdapter(adapter);
+                    recyclerViewBusOutput.setAdapter(adapterOutput);
                 }
             } else {
                 for (int i = 1; i < output.size(); i++) {
                     outputItemList.add(new OutputItem(output.get(i).getBusNumber(), output.get(i).getBusHourComplete(), "", output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
-                    OutputAdapter adapter = new OutputAdapter(MainActivity.this, outputItemList);
-                    recyclerViewBusOutput.setAdapter(adapter);
+                    recyclerViewBusOutput.setAdapter(adapterOutput);
                 }
             }
+            adapterOutput.notifyDataSetChanged();
         } else {
             outputItemList.add(new OutputItem(output.get(0).getError()));
-            OutputErrorAdapter adapter = new OutputErrorAdapter(MainActivity.this, outputItemList);
-            recyclerViewBusOutput.setAdapter(adapter);
+            OutputErrorAdapter adapterOutputError = new OutputErrorAdapter(MainActivity.this, outputItemList);
+            recyclerViewBusOutput.setAdapter(adapterOutputError);
+            adapterOutputError.notifyDataSetChanged();
         }
         swipeRefreshLayoutOutput.setRefreshing(false);
         progressBarOutput.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+    }
+
+    private void loadMap(double latitude, double longitude) {
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
+        mapFragment.init((OnEngineInitListener.Error error) -> {
+            if (error == OnEngineInitListener.Error.NONE) {
+                Map map = mapFragment.getMap();
+                map.setCenter(new GeoCoordinate(latitude, longitude, 0.0), Map.Animation.NONE);
+                map.setZoomLevel(map.getMaxZoomLevel() / 1.3);
+                MapMarker myMapMarker = new MapMarker(new GeoCoordinate(latitude, longitude));
+                map.addMapObject(myMapMarker);
+            }
+        });
     }
 
     private void checkBus(String busStop, String busLine, String busHour) {

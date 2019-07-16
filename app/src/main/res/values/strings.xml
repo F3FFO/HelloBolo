@@ -2,7 +2,7 @@
     <string name="app_name">HelloBus Bologna</string>
     <string name="busStopNameText">Cerca qui</string>
     <string name="busCodeText">Autobus:</string>
-    <string name="busHourTextDefault">Partenza:</string>
+    <string name="busHourTextDefault">Ora:</string>
     <string name="busHourText">Adesso</string>
     <string name="alertDialog_title">Nessuna connessione</string>
     <string name="alertDialog_message">Controllare la connessione di rete e riprovare</string>
@@ -13,6 +13,8 @@
     <string name="title_search">Cerca</string>
     <string name="title_favourites">Preferiti</string>
     <string name="favourite_added">Aggiunto ai preferiti!</string>
-    <string name="favourite_removed">Rimosso ai preferiti!</string>
+    <string name="favourite_removed">Rimosso dai preferiti!</string>
     <string name="favourite_not_added">Hai già 10 preferiti!</string>
+    <string name="time_picker_ok">Imposta</string>
+    <string name="time_picker_cancel">Annulla</string>
 </resources>
