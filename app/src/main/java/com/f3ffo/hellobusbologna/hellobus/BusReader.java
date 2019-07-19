@@ -25,7 +25,7 @@ public class BusReader {
         File[] listFiles = context.getFilesDir().listFiles();
         if (listFiles != null) {
             for (File listFile : listFiles) {
-                if (listFile.getName().contains("lineefermate_")) {
+                if (listFile.getName().contains("lineefermate_") && listFile.getName().contains(".csv")) {
                     try {
                         BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
                         String line;

@@ -13,10 +13,6 @@ public class BusClass {
         this.longitude = longitude;
     }
 
-    public String getbusCode() {
-        return busCode;
-    }
-
     public String getBusCode() {
         return busCode;
     }

@@ -28,6 +28,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:search_background_color="@color/colorPrimary"
                 app:search_hint="@string/busStopNameText"
                 app:search_logo="arrow"
                 app:search_shadow="false"
@@ -68,7 +69,6 @@
                     android:background="@android:color/transparent"
                     android:spinnerMode="dialog"
                     app:popupTheme="@style/Theme.MaterialComponents.Light" />
-
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -101,11 +101,8 @@
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textColor="@color/colorGreyMaterial"
                     android:textIsSelectable="false" />
-
             </androidx.appcompat.widget.LinearLayoutCompat>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -153,7 +150,5 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/include"
             app:menu="@menu/main_menu" />
-
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </androidx.constraintlayout.widget.ConstraintLayout>
