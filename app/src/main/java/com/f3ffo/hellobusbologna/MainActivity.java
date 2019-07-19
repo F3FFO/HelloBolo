@@ -2,8 +2,6 @@ package com.f3ffo.hellobusbologna;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,6 +35,7 @@ import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.output.OutputAdapter;
 import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.output.OutputItem;
+import com.f3ffo.hellobusbologna.output.maps.Maps;
 import com.f3ffo.hellobusbologna.rss.ArticleAdapter;
 import com.f3ffo.hellobusbologna.rss.ArticleItem;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
@@ -45,17 +44,12 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
-import com.here.android.mpa.common.GeoCoordinate;
-import com.here.android.mpa.common.OnEngineInitListener;
-import com.here.android.mpa.mapping.Map;
-import com.here.android.mpa.mapping.MapMarker;
 import com.here.android.mpa.mapping.SupportMapFragment;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
 import com.prof.rssparser.Article;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -67,8 +61,7 @@ import java.util.TimeZone;
 public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, SwipeRefreshLayout.OnRefreshListener, TimePickerDialog.OnTimeSetListener {
 
     private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
-    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[] {Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE };
-
+    private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private LinearLayoutCompat busCodeText, textViewHourDefault;
     private AppCompatTextView textViewBusHour;
@@ -91,6 +84,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private String busStop = "", busLine = "", busHour = "", currentBusStopName = "";
     private Favourites fv = new Favourites();
     private ArticleItem articleItem;
+    private Maps maps = new Maps();
+    private SupportMapFragment supportMapFragment;
 
     protected void checkPermissions() {
         final List<String> missingPermissions = new ArrayList<>();
@@ -128,6 +123,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkPermissions();
+        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         constraintLayoutRss = findViewById(R.id.constraintLayoutRss);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
@@ -222,12 +218,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         });
         adapterBusStation.setOnItemClickListener((int position) -> {
             busStop = stops.get(position).getBusStopCode();
+            maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(stops.get(position).getLatitude().replace(",", ".")), Double.parseDouble(stops.get(position).getLongitude().replace(",", ".")));
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStop));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
             searchViewBusStopName.setText(stops.get(position).getBusStopName());
             searchViewBusStopName.close();
-            loadMap(Double.parseDouble(stops.get(position).getLatitude().replace(",", ".")), Double.parseDouble(stops.get(position).getLongitude().replace(",", ".")));
             setElementAppBar(true);
             setDisplayChild(1);
             fabBus.show();
@@ -312,7 +308,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             setDisplayChild(1);
             fabBus.show();
             searchViewBusStopName.setText(fav.get(position).getBusStopName());
-            loadMap(Double.parseDouble(fav.get(position).getLatitude().replace(",", ".")), Double.parseDouble(fav.get(position).getLongitude().replace(",", ".")));
+            maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(fav.get(position).getLatitude().replace(",", ".")), Double.parseDouble(fav.get(position).getLongitude().replace(",", ".")));
         });
         adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
             if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
@@ -516,19 +512,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         swipeRefreshLayoutOutput.setRefreshing(false);
         progressBarOutput.setVisibility(View.GONE);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-    }
-
-    private void loadMap(double latitude, double longitude) {
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
-        mapFragment.init((OnEngineInitListener.Error error) -> {
-            if (error == OnEngineInitListener.Error.NONE) {
-                Map map = mapFragment.getMap();
-                map.setCenter(new GeoCoordinate(latitude, longitude, 0.0), Map.Animation.NONE);
-                map.setZoomLevel(map.getMaxZoomLevel() / 1.3);
-                MapMarker myMapMarker = new MapMarker(new GeoCoordinate(latitude, longitude));
-                map.addMapObject(myMapMarker);
-            }
-        });
     }
 
     private void checkBus(String busStop, String busLine, String busHour) {
