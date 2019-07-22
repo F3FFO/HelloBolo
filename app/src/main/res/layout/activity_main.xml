@@ -107,11 +107,15 @@
                 android:id="@+id/tabsRss"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorPrimary"
+                android:background="@color/colorPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/busCodeText" />
+                app:layout_constraintTop_toBottomOf="@id/busCodeText"
+                app:tabIndicatorColor="@color/colorAccent"
+                app:tabSelectedTextColor="@color/colorAccent"
+                app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Button"
+                app:tabTextColor="@color/colorGreyMaterial" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.appbar.AppBarLayout>
 
