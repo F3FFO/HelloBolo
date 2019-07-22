@@ -39,12 +39,10 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
             }
         }
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
-            ReadableByteChannel readableByteChannel;
-            FileOutputStream outputStream;
             try {
                 URL url = new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=" + version + "&format=csv");
-                readableByteChannel = Channels.newChannel(url.openStream());
-                outputStream = context.openFileOutput("lineefermate_" + version + ".csv", Context.MODE_PRIVATE);
+                ReadableByteChannel readableByteChannel = Channels.newChannel(url.openStream());
+                FileOutputStream outputStream = context.openFileOutput("lineefermate_" + version + ".csv", Context.MODE_PRIVATE);
                 outputStream.getChannel().transferFrom(readableByteChannel, 0, Long.MAX_VALUE);
                 outputStream.close();
                 readableByteChannel.close();

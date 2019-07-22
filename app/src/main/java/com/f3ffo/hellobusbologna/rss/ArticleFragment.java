@@ -23,7 +23,7 @@ import java.util.List;
 
 public class ArticleFragment extends Fragment {
 
-    private static String ARG_SECTION_NUMBER = "";
+    private static final String ARG_SECTION_NUMBER = "";
     private ArticleViewModel articleViewModel;
     private ProgressBar progressBarRss;
     private SwipeRefreshLayout swipeRefreshLayoutRss;

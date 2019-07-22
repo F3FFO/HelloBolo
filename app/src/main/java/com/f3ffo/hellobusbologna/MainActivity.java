@@ -35,15 +35,13 @@ import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.output.OutputAdapter;
 import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.output.OutputItem;
-import com.f3ffo.hellobusbologna.output.maps.Maps;
-import com.f3ffo.hellobusbologna.rss.ArticlePagerAdapter;
+import com.f3ffo.hellobusbologna.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
-import com.here.android.mpa.mapping.SupportMapFragment;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
@@ -82,8 +80,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ArrayList<BusClass> busClass = new ArrayList<>();
     private String busStop = "", busLine = "", busHour = "", currentBusStopName = "";
     private Favourites fv = new Favourites();
-    private Maps maps = new Maps();
-    private SupportMapFragment supportMapFragment;
+    //private Maps maps = new Maps();
+    //private SupportMapFragment supportMapFragment;
 
     protected void checkPermissions() {
         final List<String> missingPermissions = new ArrayList<>();
@@ -121,7 +119,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         checkPermissions();
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
+        //supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
@@ -154,7 +152,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         } else {
             textViewBusHour.setText(now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE));
         }
-        ArticlePagerAdapter sectionsPagerAdapter = new ArticlePagerAdapter(this, getSupportFragmentManager());
+        ArticleStatePagerAdapter sectionsPagerAdapter = new ArticleStatePagerAdapter(this, getSupportFragmentManager());
         viewPagerRss = findViewById(R.id.viewPagerRss);
         viewPagerRss.setAdapter(sectionsPagerAdapter);
         tabsRss = findViewById(R.id.tabsRss);
@@ -189,7 +187,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         });
         adapterBusStation.setOnItemClickListener((int position) -> {
             busStop = stops.get(position).getBusStopCode();
-            maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(stops.get(position).getLatitude().replace(",", ".")), Double.parseDouble(stops.get(position).getLongitude().replace(",", ".")));
+            //maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(stops.get(position).getLatitude().replace(",", ".")), Double.parseDouble(stops.get(position).getLongitude().replace(",", ".")));
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStop));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
@@ -279,7 +277,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             setDisplayChild(1);
             fabBus.show();
             searchViewBusStopName.setText(fav.get(position).getBusStopName());
-            maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(fav.get(position).getLatitude().replace(",", ".")), Double.parseDouble(fav.get(position).getLongitude().replace(",", ".")));
+            //maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(fav.get(position).getLatitude().replace(",", ".")), Double.parseDouble(fav.get(position).getLongitude().replace(",", ".")));
         });
         adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
             if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
