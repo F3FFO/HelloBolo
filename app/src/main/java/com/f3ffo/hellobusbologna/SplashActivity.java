@@ -7,12 +7,12 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseVersion;
 import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
 import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import java.net.InetAddress;
 
@@ -30,7 +30,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
             finish();
         } else {
-            new AlertDialog.Builder(SplashActivity.this)
+            new MaterialAlertDialogBuilder(SplashActivity.this, R.style.AlertDialogTheme)
                     .setTitle(R.string.alertDialog_title)
                     .setMessage(R.string.alertDialog_message)
                     .setPositiveButton(R.string.alertDialog_yes, (DialogInterface dialog, int which) -> {
@@ -38,7 +38,8 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
                         startActivity(new Intent(SplashActivity.this, SplashActivity.class));
                     })
                     .setNegativeButton(R.string.alertDialog_no, (DialogInterface dialog, int which) -> finish())
-                    .setIcon(android.R.drawable.ic_dialog_alert).show();
+                    .setIcon(android.R.drawable.ic_dialog_alert)
+                    .show();
         }
     }
 
