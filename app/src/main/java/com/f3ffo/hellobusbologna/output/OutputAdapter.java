@@ -43,7 +43,6 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
         if (isHandicap != 0) {
             holder.imageViewHandicap.setImageDrawable(context.getDrawable(isHandicap));
         }
-
     }
 
     @Override
@@ -66,5 +65,4 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
             imageViewHandicap = itemView.findViewById(R.id.imageViewHandicap);
         }
     }
-
 }

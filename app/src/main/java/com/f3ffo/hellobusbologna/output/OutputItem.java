@@ -21,48 +21,24 @@ public class OutputItem {
         return busNumber;
     }
 
-    public void setBusNumber(String busNumber) {
-        this.busNumber = busNumber;
-    }
-
     public String getBusHour() {
         return busHour;
-    }
-
-    public void setBusHour(String busHour) {
-        this.busHour = busHour;
     }
 
     public String getBusHourComplete() {
         return busHourComplete;
     }
 
-    public void setBusHourComplete(String busHourComplete) {
-        this.busHourComplete = busHourComplete;
-    }
-
     public int getSatelliteOrHour() {
         return satelliteOrHour;
-    }
-
-    public void setSatelliteOrHour(int satelliteOrHour) {
-        this.satelliteOrHour = satelliteOrHour;
     }
 
     public int getHandicap() {
         return handicap;
     }
 
-    public void setHandicap(int handicap) {
-        this.handicap = handicap;
-    }
-
     public String getError() {
         return error;
-    }
-
-    public void setError(String error) {
-        this.error = error;
     }
 
 }
