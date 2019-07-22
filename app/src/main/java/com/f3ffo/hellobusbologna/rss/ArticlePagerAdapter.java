@@ -13,7 +13,7 @@ import com.f3ffo.hellobusbologna.R;
 public class ArticlePagerAdapter extends FragmentPagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_rss_1, R.string.tab_rss_2};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_rss_1, R.string.tab_rss_2, R.string.tab_rss_3};
     private final Context mContext;
 
     public ArticlePagerAdapter(Context context, FragmentManager fm) {
@@ -37,6 +37,6 @@ public class ArticlePagerAdapter extends FragmentPagerAdapter {
     @Override
     public int getCount() {
         // Show 2 total pages.
-        return 2;
+        return 3;
     }
 }

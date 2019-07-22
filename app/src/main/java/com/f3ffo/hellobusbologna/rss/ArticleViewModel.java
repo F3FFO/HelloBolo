@@ -19,6 +19,8 @@ public class ArticleViewModel extends ViewModel {
     private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
     private LiveData<String> url = Transformations.map(mIndex, (Integer input) -> {
         if (input == 1) {
+            return "https://www.tper.it/rss.xml";
+        } else if (input == 2) {
             return "https://www.tper.it/tutte-le-news/rss.xml";
         } else {
             return "https://www.tper.it/taxonomy/term/33/all/rss.xml";
