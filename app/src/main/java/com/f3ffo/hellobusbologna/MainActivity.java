@@ -3,6 +3,7 @@ package com.f3ffo.hellobusbologna;
 import android.Manifest;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -19,11 +20,10 @@ import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.lifecycle.ViewModelProviders;
-import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.viewpager.widget.ViewPager;
 
 import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseUrl;
 import com.f3ffo.hellobusbologna.favourite.Favourites;
@@ -36,18 +36,16 @@ import com.f3ffo.hellobusbologna.output.OutputAdapter;
 import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.output.OutputItem;
 import com.f3ffo.hellobusbologna.output.maps.Maps;
-import com.f3ffo.hellobusbologna.rss.ArticleAdapter;
-import com.f3ffo.hellobusbologna.rss.ArticleItem;
+import com.f3ffo.hellobusbologna.rss.ArticlePagerAdapter;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.tabs.TabLayout;
 import com.here.android.mpa.mapping.SupportMapFragment;
 import com.lapism.searchview.Search;
 import com.lapism.searchview.widget.SearchView;
-import com.prof.rssparser.Article;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.ArrayList;
@@ -62,17 +60,18 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
     private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
-    private ConstraintLayout constraintLayoutRss, constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
+    private boolean doubleBackToExitPressedOnce = false;
+    private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
+    private ViewPager viewPagerRss;
+    private TabLayout tabsRss;
     private LinearLayoutCompat busCodeText, textViewHourDefault;
     private AppCompatTextView textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
-    private ProgressBar progressBarRss, progressBarOutput;
-    private SwipeRefreshLayout swipeRefreshLayoutRss, swipeRefreshLayoutOutput;
+    private ProgressBar progressBarOutput;
+    private SwipeRefreshLayout swipeRefreshLayoutOutput;
     private SearchView searchViewBusStopName;
-    private RecyclerView recyclerViewRss;
     private BottomNavigationView bottomNavView;
-    private ArticleAdapter articleAdapter;
     private SearchAdapter adapterBusStation;
     private FavouritesAdapter adapterFavourites;
     private ArrayAdapter<String> spinnerArrayAdapter;
@@ -83,7 +82,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ArrayList<BusClass> busClass = new ArrayList<>();
     private String busStop = "", busLine = "", busHour = "", currentBusStopName = "";
     private Favourites fv = new Favourites();
-    private ArticleItem articleItem;
     private Maps maps = new Maps();
     private SupportMapFragment supportMapFragment;
 
@@ -125,7 +123,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         checkPermissions();
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        constraintLayoutRss = findViewById(R.id.constraintLayoutRss);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
@@ -140,9 +137,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         swipeRefreshLayoutOutput = findViewById(R.id.swipeRefreshLayoutOutput);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
         progressBarOutput = findViewById(R.id.progressBarOutput);
-        progressBarRss = findViewById(R.id.progressBarRss);
-        recyclerViewRss = findViewById(R.id.recyclerViewRss);
-        swipeRefreshLayoutRss = findViewById(R.id.swipeRefreshLayoutRss);
         now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
         outputItemList = new ArrayList<>();
         swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
@@ -155,39 +149,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
-        articleItem = ViewModelProviders.of(MainActivity.this).get(ArticleItem.class);
-        articleItem.fetchFeed();
-        recyclerViewRss.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        recyclerViewRss.setItemAnimator(new DefaultItemAnimator());
-        recyclerViewRss.setHasFixedSize(true);
         if (now.get(Calendar.MINUTE) < 10) {
             textViewBusHour.setText(now.get(Calendar.HOUR_OF_DAY) + ":0" + now.get(Calendar.MINUTE));
         } else {
             textViewBusHour.setText(now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE));
         }
-        articleItem.getArticleList().observe(MainActivity.this, (List<Article> articles) -> {
-            if (articles != null) {
-                articleAdapter = new ArticleAdapter(articles, MainActivity.this);
-                recyclerViewRss.setAdapter(articleAdapter);
-                articleAdapter.notifyDataSetChanged();
-                progressBarRss.setVisibility(View.GONE);
-                swipeRefreshLayoutRss.setRefreshing(false);
-            }
-        });
-        articleItem.getSnackBar().observe(MainActivity.this, (String s) -> {
-            if (s != null) {
-                Snackbar.make(constraintLayoutRss, s, Snackbar.LENGTH_LONG).show();
-                articleItem.onSnackBarShowed();
-            }
-        });
-        swipeRefreshLayoutRss.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
-        swipeRefreshLayoutRss.canChildScrollUp();
-        swipeRefreshLayoutRss.setOnRefreshListener(() -> {
-            articleAdapter.getArticleList().clear();
-            articleAdapter.notifyDataSetChanged();
-            swipeRefreshLayoutRss.setRefreshing(true);
-            articleItem.fetchFeed();
-        });
+        ArticlePagerAdapter sectionsPagerAdapter = new ArticlePagerAdapter(this, getSupportFragmentManager());
+        viewPagerRss = findViewById(R.id.viewPagerRss);
+        viewPagerRss.setAdapter(sectionsPagerAdapter);
+        tabsRss = findViewById(R.id.tabsRss);
+        tabsRss.setupWithViewPager(viewPagerRss);
         searchViewBusStopName.setOnOpenCloseListener(new Search.OnOpenCloseListener() {
 
             @Override
@@ -333,7 +304,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 setDisplayChild(0);
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
-                articleItem.fetchFeed();
                 return true;
             case R.id.navigation_search:
                 setElementAppBar(false);
@@ -374,22 +344,26 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     private void setDisplayChild(int displayChild) {
         if (displayChild == 0) {
-            constraintLayoutRss.setVisibility(View.VISIBLE);
+            viewPagerRss.setVisibility(View.VISIBLE);
+            tabsRss.setVisibility(View.VISIBLE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 1) {
-            constraintLayoutRss.setVisibility(View.GONE);
+            viewPagerRss.setVisibility(View.GONE);
+            tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.VISIBLE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 2) {
-            constraintLayoutRss.setVisibility(View.GONE);
+            viewPagerRss.setVisibility(View.GONE);
+            tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.VISIBLE);
             constraintLayoutFavourites.setVisibility(View.GONE);
         } else if (displayChild == 3) {
-            constraintLayoutRss.setVisibility(View.GONE);
+            viewPagerRss.setVisibility(View.GONE);
+            tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.VISIBLE);
@@ -439,16 +413,24 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     @Override
     public void onBackPressed() {
-        if (searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
+        if (constraintLayoutOutput.getVisibility() == View.VISIBLE && searchViewBusStopName.isOpen() && !busStop.isEmpty()) {
             if (searchViewBusStopName.getText().toString().isEmpty()) {
                 searchViewBusStopName.setText(this.currentBusStopName);
             }
             setElementAppBar(true);
             setDisplayChild(1);
-        } else if (searchViewBusStopName.isOpen() && busStop.isEmpty()) {
+        } else if (constraintLayoutOutput.getVisibility() == View.VISIBLE && searchViewBusStopName.isOpen() && busStop.isEmpty()) {
             setElementAppBar(false);
             searchViewBusStopName.setText("");
             setDisplayChild(1);
+        } else if (viewPagerRss.getVisibility() == View.VISIBLE && tabsRss.getVisibility() == View.VISIBLE) {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+            doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, "Premere di nuovo per uscire", Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
         } else {
             super.onBackPressed();
         }

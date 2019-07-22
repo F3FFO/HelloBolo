@@ -2,6 +2,7 @@ package com.f3ffo.hellobusbologna.rss;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
+import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
 import com.prof.rssparser.Article;
@@ -11,11 +12,22 @@ import com.prof.rssparser.Parser;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ArticleItem extends ViewModel {
+public class ArticleViewModel extends ViewModel {
 
     private MutableLiveData<List<Article>> articleListLive = null;
-    private String urlString = "https://www.tper.it/tutte-le-news/rss.xml";
     private MutableLiveData<String> snackBar = new MutableLiveData<>();
+    private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
+    private LiveData<String> url = Transformations.map(mIndex, (Integer input) -> {
+        if (input == 1) {
+            return "https://www.tper.it/tutte-le-news/rss.xml";
+        } else {
+            return "https://www.tper.it/taxonomy/term/33/all/rss.xml";
+        }
+    });
+
+    public void setIndex(int index) {
+        mIndex.setValue(index);
+    }
 
     public MutableLiveData<List<Article>> getArticleList() {
         if (articleListLive == null) {
@@ -28,12 +40,8 @@ public class ArticleItem extends ViewModel {
         this.articleListLive.postValue(articleList);
     }
 
-    public String getUrlString() {
-        return urlString;
-    }
-
-    public void setUrlString(String urlString) {
-        this.urlString = urlString;
+    public LiveData<String> getUrl() {
+        return url;
     }
 
     public LiveData<String> getSnackBar() {
@@ -44,7 +52,7 @@ public class ArticleItem extends ViewModel {
         snackBar.setValue(null);
     }
 
-    public void fetchFeed() {
+    public void fetchFeed(String urlString) {
         Parser parser = new Parser();
         parser.onFinish(new OnTaskCompleted() {
 

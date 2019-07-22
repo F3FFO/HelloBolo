@@ -17,4 +17,6 @@
     <string name="favourite_not_added">Hai già 10 preferiti!</string>
     <string name="time_picker_ok">Imposta</string>
     <string name="time_picker_cancel">Annulla</string>
+    <string name="tab_rss_1">Tutte</string>
+    <string name="tab_rss_2">Bologna</string>
 </resources>
