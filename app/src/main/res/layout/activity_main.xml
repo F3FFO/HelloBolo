@@ -20,23 +20,18 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.lapism.searchview.widget.SearchView
+            <com.mancj.materialsearchbar.MaterialSearchBar
                 android:id="@+id/searchViewBusStopName"
-                android:layout_width="match_parent"
+                style="@style/MaterialSearchBar"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="8dp"
                 app:layout_constraintBottom_toTopOf="@id/busCodeText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:search_background_color="@color/colorPrimary"
-                app:search_hint="@string/busStopNameText"
-                app:search_logo="arrow"
-                app:search_shadow="false"
-                app:search_shape="rounded"
-                app:search_text_color="@color/colorGreyMaterial"
-                app:search_theme="light"
-                app:search_version="toolbar"
-                app:search_version_margins="toolbar" />
+                app:mt_hint="@string/busStopNameText"
+                app:mt_speechMode="true" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/busCodeText"
