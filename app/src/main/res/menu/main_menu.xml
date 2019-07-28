@@ -4,11 +4,11 @@
     <item
         android:id="@+id/navigation_home"
         android:icon="@drawable/round_home"
-        android:title="@string/title_home" />
+        android:title="@string/nav_menu_home" />
 
     <item
         android:id="@+id/navigation_favourites"
         android:icon="@drawable/round_favourite_border"
-        android:title="@string/title_favourites" />
+        android:title="@string/nav_menu_favourites" />
 
 </menu>
