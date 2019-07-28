@@ -31,7 +31,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 app:mt_hint="@string/busStopNameText"
-                app:mt_speechMode="true" />
+                app:mt_speechMode="false" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/busCodeText"
