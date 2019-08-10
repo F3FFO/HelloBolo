@@ -9,13 +9,13 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.textview.MaterialTextView;
 import com.prof.rssparser.Article;
 
 import java.text.ParseException;
@@ -23,7 +23,6 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
@@ -68,13 +67,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         }
         viewHolder.textViewArticleCategory.setText(categories.toString());
         viewHolder.itemView.setOnClickListener(view -> {
-            AppCompatTextView title = new AppCompatTextView(context);
+            MaterialTextView title = new MaterialTextView(context);
             title.setText(articles.get(viewHolder.getAdapterPosition()).getTitle());
             title.setTextColor(ContextCompat.getColor(context, R.color.colorGreyMaterial));
             title.setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline6);
             title.setPadding(64, 64, 64, 0);
             title.setTextIsSelectable(false);
-            AppCompatTextView description = new AppCompatTextView(context);
+            MaterialTextView description = new MaterialTextView(context);
             description.setText(HtmlCompat.fromHtml(articles.get(viewHolder.getAdapterPosition()).getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
             description.setTextAppearance(R.style.TextAppearance_MaterialComponents_Body1);
             description.setPadding(64, 32, 64, 0);
@@ -98,7 +97,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     class ArticleViewHolder extends RecyclerView.ViewHolder {
 
-        AppCompatTextView textViewArticleDate, textViewArticleTitle, textViewArticleCategory;
+        MaterialTextView textViewArticleDate, textViewArticleTitle, textViewArticleCategory;
 
         ArticleViewHolder(View itemView) {
             super(itemView);

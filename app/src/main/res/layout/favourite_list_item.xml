@@ -33,7 +33,7 @@
             app:layout_constraintStart_toEndOf="@id/imageButtonFavourite"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewBusStopNameFavourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -43,7 +43,7 @@
                 android:textColor="@color/colorGreyMaterial"
                 android:textIsSelectable="false" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewBusStopAddressFavourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -53,7 +53,7 @@
                 android:textColor="@color/colorGrey"
                 android:textIsSelectable="false" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewBusStopCodeFavourite"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

@@ -32,7 +32,7 @@
             app:layout_constraintStart_toEndOf="@id/imageViewSearch"
             app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewBusStopNameSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -41,7 +41,7 @@
                 android:textColor="@color/colorGreyMaterial"
                 android:textIsSelectable="false" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewBusStopAddressSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -50,7 +50,7 @@
                 android:textColor="@color/colorGrey"
                 android:textIsSelectable="false" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewBusStopCodeSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

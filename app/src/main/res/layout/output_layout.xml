@@ -32,7 +32,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewBusHourOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -45,7 +45,7 @@
                 app:layout_constraintStart_toEndOf="@id/buttonBusNumberOutput"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatTextView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/textViewBusHourCompleteOutput"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -58,7 +58,7 @@
                 app:layout_constraintStart_toStartOf="@id/textViewBusHourOutput"
                 app:layout_constraintTop_toBottomOf="@id/textViewBusHourOutput" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/imageViewSatOrTable"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -66,7 +66,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/imageViewHandicap"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

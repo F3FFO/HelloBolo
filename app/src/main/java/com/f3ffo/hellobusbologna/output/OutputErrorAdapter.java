@@ -7,10 +7,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class OutputErrorAdapter extends RecyclerView.Adapter<OutputErrorAdapter.
 
     static class OutputErrorViewHolder extends RecyclerView.ViewHolder {
 
-        AppCompatTextView textViewErrorOutput;
+        MaterialTextView textViewErrorOutput;
         AppCompatImageView imageViewErrorOutput;
 
         OutputErrorViewHolder(@NonNull View itemView) {

@@ -6,10 +6,10 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
 
@@ -61,7 +61,7 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.Fa
 
     static class FavouritesAdapterHolder extends RecyclerView.ViewHolder {
 
-        AppCompatTextView textViewBusStopCodeFavourite, textViewBusStopNameFavourite, textViewBusStopAddressFavourite;
+        MaterialTextView textViewBusStopCodeFavourite, textViewBusStopNameFavourite, textViewBusStopAddressFavourite;
         AppCompatImageButton imageButtonFavouriteSearch;
 
         FavouritesAdapterHolder(@NonNull View itemView, final OnItemClickListener listener, final OnFavouriteButtonClickListener listener2) {

@@ -8,10 +8,10 @@ import android.widget.Filterable;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
+import com.google.android.material.textview.MaterialTextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -102,7 +102,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
 
     static class SearchAdapterHolder extends RecyclerView.ViewHolder {
 
-        AppCompatTextView textViewBusStopCodeSearch, textViewBusStopNameSearch, textViewBusStopAddressSearch;
+        MaterialTextView textViewBusStopCodeSearch, textViewBusStopNameSearch, textViewBusStopAddressSearch;
         AppCompatImageButton imageButtonFavouriteSearch;
 
         SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener, final OnFavouriteButtonClickListener listener2) {
