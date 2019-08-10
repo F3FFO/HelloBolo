@@ -1,23 +1,25 @@
 package com.f3ffo.hellobusbologna;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ProgressBar;
+import android.widget.TimePicker;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
-import androidx.appcompat.widget.AppCompatTextView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -43,10 +45,11 @@ import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
+import com.google.android.material.textview.MaterialTextView;
 import com.mancj.materialsearchbar.MaterialSearchBar;
-import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -56,7 +59,7 @@ import java.util.Locale;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
-public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, SwipeRefreshLayout.OnRefreshListener, TimePickerDialog.OnTimeSetListener {
+public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, SwipeRefreshLayout.OnRefreshListener {
 
     private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
     private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
@@ -65,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ViewPager viewPagerRss;
     private TabLayout tabsRss;
     private LinearLayoutCompat busCodeText, textViewHourDefault;
-    private AppCompatTextView textViewBusHour;
+    private MaterialTextView textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
     private ProgressBar progressBarOutput;
@@ -91,7 +94,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         setContentView(R.layout.activity_main);
         checkPermissions();
         //supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
-        //getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
@@ -120,13 +123,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
         now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
-        setTime();
         ArticleStatePagerAdapter sectionsPagerAdapter = new ArticleStatePagerAdapter(this, getSupportFragmentManager());
         viewPagerRss.setAdapter(sectionsPagerAdapter);
         tabsRss.setupWithViewPager(viewPagerRss);
         CardView card = findViewById(R.id.mt_container);
         card.setBackground(getDrawable(R.drawable.material_search_bar_background));
-        AppCompatTextView placeHolder = findViewById(R.id.mt_placeholder);
+        MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
         placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1);
         searchViewBusStopName.setCardViewElevation(4);
         searchViewBusStopName.inflateMenu(R.menu.search_menu);
@@ -167,7 +169,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 if (!outputItemList.isEmpty()) {
                     outputItemList.clear();
                 }
-                setTime();
                 busStopCode = stops.get(position).getBusStopCode();
                 currentBusStopName = stops.get(position).getBusStopName();
                 //maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(stops.get(position).getLatitude().replace(",", ".")), Double.parseDouble(stops.get(position).getLongitude().replace(",", ".")));
@@ -214,15 +215,25 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             }
         });
         textViewBusHour.setOnClickListener((View v) -> {
-            TimePickerDialog timePicker = TimePickerDialog.newInstance(MainActivity.this
-                    , now.get(Calendar.HOUR_OF_DAY)
-                    , now.get(Calendar.MINUTE)
-                    , true
-            );
-            timePicker.setVersion(TimePickerDialog.Version.VERSION_2);
-            timePicker.setOkText(R.string.time_picker_ok);
-            timePicker.setCancelText(R.string.time_picker_cancel);
-            timePicker.show(getSupportFragmentManager(), "TimePicker");
+            v = LayoutInflater.from(MainActivity.this).inflate(R.layout.time_picker, null);
+            TimePicker timePicker = v.findViewById(R.id.timePicker);
+            timePicker.setIs24HourView(true);
+            new MaterialAlertDialogBuilder(MainActivity.this, R.style.TimePickerTheme)
+                    .setView(v)
+                    .setPositiveButton(R.string.time_picker_ok, (DialogInterface dialog, int which) -> {
+                        setTime(timePicker.getHour(), timePicker.getMinute());
+                        dialog.dismiss();
+                    })
+                    .setNeutralButton(R.string.time_picker_cancel, (DialogInterface dialog, int which) -> dialog.dismiss())
+                    .show();
+            MaterialTextView textViewResetHour = v.findViewById(R.id.textViewResetHour);
+            textViewResetHour.setOnClickListener((View view) -> {
+                int hour = now.get(Calendar.HOUR_OF_DAY);
+                int minute = now.get(Calendar.MINUTE);
+                timePicker.setHour(hour);
+                timePicker.setMinute(minute);
+                setTime(hour, minute);
+            });
         });
         spinnerBusCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
 
@@ -411,22 +422,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
-    private void setTime() {
-        if (now.get(Calendar.MINUTE) < 10) {
-            textViewBusHour.setText(now.get(Calendar.HOUR_OF_DAY) + ":0" + now.get(Calendar.MINUTE));
-        } else {
-            textViewBusHour.setText(now.get(Calendar.HOUR_OF_DAY) + ":" + now.get(Calendar.MINUTE));
-        }
-    }
-
-    @Override
-    public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
+    private void setTime(int hour, int minute) {
         if (minute < 10) {
-            textViewBusHour.setText(hourOfDay + ":0" + minute);
-            busHour = hourOfDay + "0" + minute;
+            textViewBusHour.setText(hour + ":0" + minute);
+            busHour = hour + "0" + minute;
         } else {
-            textViewBusHour.setText(hourOfDay + ":" + minute);
-            busHour = hourOfDay + "" + minute;
+            textViewBusHour.setText(hour + ":" + minute);
+            busHour = hour + "" + minute;
         }
         outputItemList.clear();
         fabBus.show();

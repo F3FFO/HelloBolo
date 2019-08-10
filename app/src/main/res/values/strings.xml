@@ -23,6 +23,7 @@
 
     <string name="time_picker_ok">Imposta</string>
     <string name="time_picker_cancel">Annulla</string>
+    <string name="time_picker_reset">Ripristina ora attuale</string>
 
     <string name="tab_rss_1">Prima pagina</string>
     <string name="tab_rss_2">Tutte</string>

@@ -55,4 +55,21 @@
         <item name="android:textColor">@color/colorGreyMaterial</item>
     </style>
 
+    <style name="TimePickerTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+        <item name="buttonBarPositiveButtonStyle">@style/TimePicker.Button.Positive</item>
+        <item name="buttonBarNeutralButtonStyle">@style/TimePicker.Button.Neutral</item>
+    </style>
+
+    <style name="TimePicker.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="rippleColor">@color/colorAccent</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="TimePicker.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
+        <item name="backgroundTint">@color/transparent</item>
+        <item name="rippleColor">@color/colorGreyMaterial</item>
+        <item name="android:textColor">@color/colorGreyMaterial</item>
+    </style>
+
 </resources>
