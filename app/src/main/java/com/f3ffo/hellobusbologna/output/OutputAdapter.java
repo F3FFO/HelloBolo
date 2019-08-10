@@ -4,13 +4,13 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.f3ffo.hellobusbologna.R;
+import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;
@@ -53,7 +53,7 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
     static class OutputViewHolder extends RecyclerView.ViewHolder {
 
         MaterialTextView textViewBusHourOutput, textViewBusHourCompleteOutput;
-        Button buttonBusNumberOutput;
+        MaterialButton buttonBusNumberOutput;
         AppCompatImageView imageViewSatOrTable, imageViewHandicap;
 
         OutputViewHolder(@NonNull View itemView) {

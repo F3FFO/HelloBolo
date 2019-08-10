@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private SearchAdapter adapterBusStation;
     private FavouritesAdapter adapterFavourites;
     private ArrayAdapter<String> spinnerArrayAdapter;
-    private Calendar now;
+
     private List<OutputItem> outputItemList;
     private List<FavouritesItem> fav = new ArrayList<>();
     private List<SearchItem> stops = new ArrayList<>();
@@ -122,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
-        now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
         ArticleStatePagerAdapter sectionsPagerAdapter = new ArticleStatePagerAdapter(this, getSupportFragmentManager());
         viewPagerRss.setAdapter(sectionsPagerAdapter);
         tabsRss.setupWithViewPager(viewPagerRss);
@@ -218,21 +217,24 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             v = LayoutInflater.from(MainActivity.this).inflate(R.layout.time_picker, null);
             TimePicker timePicker = v.findViewById(R.id.timePicker);
             timePicker.setIs24HourView(true);
+            boolean[] isNow = {true};
+            timePicker.setOnTimeChangedListener((TimePicker timePicker2, int i, int i1) -> isNow[0] = false);
             new MaterialAlertDialogBuilder(MainActivity.this, R.style.TimePickerTheme)
                     .setView(v)
                     .setPositiveButton(R.string.time_picker_ok, (DialogInterface dialog, int which) -> {
-                        setTime(timePicker.getHour(), timePicker.getMinute());
+                        setTime(timePicker.getHour(), timePicker.getMinute(), isNow[0]);
                         dialog.dismiss();
                     })
                     .setNeutralButton(R.string.time_picker_cancel, (DialogInterface dialog, int which) -> dialog.dismiss())
                     .show();
             MaterialTextView textViewResetHour = v.findViewById(R.id.textViewResetHour);
             textViewResetHour.setOnClickListener((View view) -> {
+                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
                 int hour = now.get(Calendar.HOUR_OF_DAY);
                 int minute = now.get(Calendar.MINUTE);
                 timePicker.setHour(hour);
                 timePicker.setMinute(minute);
-                setTime(hour, minute);
+                isNow[0] = true;
             });
         });
         spinnerBusCode.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -422,13 +424,18 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
-    private void setTime(int hour, int minute) {
-        if (minute < 10) {
-            textViewBusHour.setText(hour + ":0" + minute);
-            busHour = hour + "0" + minute;
+    private void setTime(int hour, int minute, boolean isNow) {
+        if (!isNow) {
+            if (minute < 10) {
+                textViewBusHour.setText(hour + ":0" + minute);
+                busHour = hour + "0" + minute;
+            } else {
+                textViewBusHour.setText(hour + ":" + minute);
+                busHour = hour + "" + minute;
+            }
         } else {
-            textViewBusHour.setText(hour + ":" + minute);
-            busHour = hour + "" + minute;
+            textViewBusHour.setText(R.string.busHourText);
+            busHour = "";
         }
         outputItemList.clear();
         fabBus.show();
@@ -483,6 +490,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             OutputAdapter adapterOutput = new OutputAdapter(MainActivity.this, outputItemList);
             if ("".equals(busHour)) {
                 String diffTime;
+                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
                 for (int i = 1; i < output.size(); i++) {
                     StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
                     int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
