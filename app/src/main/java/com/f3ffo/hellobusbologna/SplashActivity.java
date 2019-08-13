@@ -14,7 +14,10 @@ import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
 import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.net.InetAddress;
+import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.net.Socket;
+import java.net.SocketAddress;
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 
@@ -52,9 +55,12 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
 
     private boolean isInternetAvailable() {
         try {
-            InetAddress address = InetAddress.getByName("www.google.com");
-            return !address.equals("");
-        } catch (Exception e) {
+            Socket sock = new Socket();
+            SocketAddress sockAddress = new InetSocketAddress("8.8.8.8", 53);
+            sock.connect(sockAddress, 1500);
+            sock.close();
+            return true;
+        } catch (IOException e) {
             e.printStackTrace();
             return false;
         }
