@@ -319,7 +319,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
             for (int index = permissions.length - 1; index >= 0; --index) {
                 if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, "Autorizzazioni '" + permissions[index] + "' non concesse, uscita", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this, R.string.permissions, Toast.LENGTH_LONG).show();
                     finish();
                     return;
                 }
@@ -427,10 +427,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private void setTime(int hour, int minute, boolean isNow) {
         if (!isNow) {
             if (minute < 10) {
-                textViewBusHour.setText(hour + ":0" + minute);
+                textViewBusHour.setText(getString(R.string.busHourText2, hour, ("0" + minute)));
+                //textViewBusHour.setText(hour + ":0" + minute);
                 busHour = hour + "0" + minute;
             } else {
-                textViewBusHour.setText(hour + ":" + minute);
+                textViewBusHour.setText(getString(R.string.busHourText2, hour, ("" + minute)));
+                //textViewBusHour.setText(hour + ":" + minute);
                 busHour = hour + "" + minute;
             }
         } else {
@@ -459,7 +461,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 return;
             }
             doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, "Premere di nuovo per uscire", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, R.string.exit, Toast.LENGTH_SHORT).show();
             new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
         } else {
             super.onBackPressed();
@@ -469,7 +471,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     @Override
     public void onRefresh() {
         checkBus(busStopCode, busLine, busHour);
-        Toast.makeText(MainActivity.this, "Aggiornato!", Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, R.string.update_output, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -496,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
                     int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
                     if (diffHour == 0 || diffHour < 0) {
-                        if (diffMin < 4) {
+                        if (diffMin < 2) {
                             diffTime = "In arrivo";
                         } else {
                             diffTime = diffMin + "min";

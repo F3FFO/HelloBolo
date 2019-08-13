@@ -1,30 +1,28 @@
 <resources>
     <string name="app_name">HelloBus Bologna</string>
+    <string name="exit">Premere di nuovo per uscire</string>
+    <string name="permissions">Autorizzazioni non concesse, uscita</string>
+    <string name="update_output">Aggiornato</string>
     <string name="busStopNameText">Cerca qui</string>
     <string name="busCodeText">Autobus:</string>
     <string name="busHourTextDefault">Ora:</string>
     <string name="busHourText">Adesso</string>
-
+    <string name="busHourText2">%1$d:%2$s</string>
     <string name="alertDialog_title">Nessuna connessione</string>
     <string name="alertDialog_message">Controllare la connessione di rete e riprovare</string>
     <string name="alertDialog_yes">Riprova</string>
     <string name="alertDialog_no">Chiudi</string>
     <string name="alertDialog_open">Continua&#8230;</string>
-
     <string name="nav_menu_home">Home</string>
     <string name="nav_menu_favourites">Preferiti</string>
-
     <string name="search_menu_settings">Impostazioni</string>
     <string name="search_menu_info">Info</string>
-
     <string name="favourite_added">Aggiunto ai preferiti!</string>
     <string name="favourite_removed">Rimosso dai preferiti!</string>
     <string name="favourite_not_added">Hai già 10 preferiti!</string>
-
     <string name="time_picker_ok">Imposta</string>
     <string name="time_picker_cancel">Annulla</string>
     <string name="time_picker_reset">Ripristina ora attuale</string>
-
     <string name="tab_rss_1">Prima pagina</string>
     <string name="tab_rss_2">Tutte</string>
     <string name="tab_rss_3">Bologna</string>
