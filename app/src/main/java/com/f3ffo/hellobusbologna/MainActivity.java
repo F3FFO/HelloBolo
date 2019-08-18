@@ -21,7 +21,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.LinearLayoutCompat;
-import androidx.cardview.widget.CardView;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -67,7 +66,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private ViewPager viewPagerRss;
     private TabLayout tabsRss;
-    private LinearLayoutCompat busCodeText, textViewHourDefault;
+    private LinearLayoutCompat busCodeText, textViewHourDefault, linearLayoutSettings;
     private MaterialTextView textViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
@@ -78,7 +77,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private SearchAdapter adapterBusStation;
     private FavouritesAdapter adapterFavourites;
     private ArrayAdapter<String> spinnerArrayAdapter;
-
     private List<OutputItem> outputItemList;
     private List<FavouritesItem> fav = new ArrayList<>();
     private List<SearchItem> stops = new ArrayList<>();
@@ -98,6 +96,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
+        linearLayoutSettings = findViewById(R.id.linearLayoutSettings);
         bottomNavView = findViewById(R.id.bottomNavView);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         textViewBusHour = findViewById(R.id.textViewBusHour);
@@ -125,12 +124,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         ArticleStatePagerAdapter sectionsPagerAdapter = new ArticleStatePagerAdapter(this, getSupportFragmentManager());
         viewPagerRss.setAdapter(sectionsPagerAdapter);
         tabsRss.setupWithViewPager(viewPagerRss);
-        CardView card = findViewById(R.id.mt_container);
-        card.setBackground(getDrawable(R.drawable.material_search_bar_background));
+        //CardView card = findViewById(R.id.mt_container);
+        //card.setBackground(getDrawable(R.drawable.searchbar_background));
         MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
         placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1);
-        searchViewBusStopName.setCardViewElevation(4);
-        searchViewBusStopName.inflateMenu(R.menu.search_menu);
         searchViewBusStopName.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
@@ -167,6 +164,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             if (!currentBusStopName.equals(stops.get(position).getBusStopName())) {
                 if (!outputItemList.isEmpty()) {
                     outputItemList.clear();
+                    //TODO update adapter output
                 }
                 busStopCode = stops.get(position).getBusStopCode();
                 currentBusStopName = stops.get(position).getBusStopName();
@@ -305,7 +303,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             }
         }
         if (!missingPermissions.isEmpty()) {
-            final String[] permissions = missingPermissions.toArray(new String[missingPermissions.size()]);
+            String[] permissions = missingPermissions.toArray(new String[missingPermissions.size()]);
             ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
         } else {
             final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
@@ -331,13 +329,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 setElementAppBar(false);
+                searchViewBusStopName.setVisibility(View.VISIBLE);
                 setDisplayChild(0);
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
             case R.id.navigation_favourites:
                 setElementAppBar(false);
+                searchViewBusStopName.setVisibility(View.VISIBLE);
                 setDisplayChild(3);
+                bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
+                return true;
+            case R.id.navigation_settings:
+                setElementAppBar(false);
+                searchViewBusStopName.setVisibility(View.GONE);
+                setDisplayChild(4);
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
         }
@@ -375,24 +381,35 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
+            linearLayoutSettings.setVisibility(View.GONE);
         } else if (displayChild == 1) {
             viewPagerRss.setVisibility(View.GONE);
             tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.VISIBLE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
+            linearLayoutSettings.setVisibility(View.GONE);
         } else if (displayChild == 2) {
             viewPagerRss.setVisibility(View.GONE);
             tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.VISIBLE);
             constraintLayoutFavourites.setVisibility(View.GONE);
+            linearLayoutSettings.setVisibility(View.GONE);
         } else if (displayChild == 3) {
             viewPagerRss.setVisibility(View.GONE);
             tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.VISIBLE);
+            linearLayoutSettings.setVisibility(View.GONE);
+        } else if (displayChild == 4) {
+            viewPagerRss.setVisibility(View.GONE);
+            tabsRss.setVisibility(View.GONE);
+            constraintLayoutOutput.setVisibility(View.GONE);
+            constraintLayoutSearch.setVisibility(View.GONE);
+            constraintLayoutFavourites.setVisibility(View.GONE);
+            linearLayoutSettings.setVisibility(View.VISIBLE);
         }
     }
 
@@ -415,11 +432,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     }
 
     private boolean refreshElement(int position) {
-        if (stops.get(position).getImageFavourite() == R.drawable.round_favourite_border) {
-            stops.get(position).setImageFavourite(R.drawable.ic_star);
+        if (stops.get(position).getImageFavourite() == R.drawable.star_border) {
+            stops.get(position).setImageFavourite(R.drawable.star);
             return true;
         } else {
-            stops.get(position).setImageFavourite(R.drawable.round_favourite_border);
+            stops.get(position).setImageFavourite(R.drawable.star_border);
             return false;
         }
     }
