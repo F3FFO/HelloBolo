@@ -19,7 +19,7 @@
             app:layout_constraintEnd_toStartOf="@id/linearLayoutSearchItem"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/round_search" />
+            app:srcCompat="@drawable/search" />
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/linearLayoutSearchItem"

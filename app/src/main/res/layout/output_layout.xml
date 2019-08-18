@@ -26,7 +26,7 @@
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textColor="@color/colorGreyMaterial"
                 android:textIsSelectable="false"
-                app:icon="@drawable/round_directions_bus"
+                app:icon="@drawable/bus"
                 app:iconTint="@color/colorGreyMaterial"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

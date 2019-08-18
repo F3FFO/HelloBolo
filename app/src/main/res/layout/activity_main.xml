@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    android:fitsSystemWindows="false"
     tools:context=".MainActivity">
 
     <com.google.android.material.appbar.AppBarLayout
@@ -25,13 +25,11 @@
                 style="@style/MaterialSearchBar"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_margin="8dp"
                 app:layout_constraintBottom_toTopOf="@id/busCodeText"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:mt_hint="@string/busStopNameText"
-                app:mt_speechMode="false" />
+                app:mt_hint="@string/busStopNameText" />
 
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:id="@+id/busCodeText"
@@ -141,7 +139,7 @@
             android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@id/bottomNavView"
             app:layout_constraintEnd_toEndOf="parent"
-            app:srcCompat="@drawable/round_directions_bus"
+            app:srcCompat="@drawable/bus"
             app:tint="@color/colorWhite" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
@@ -151,8 +149,8 @@
             android:layout_height="wrap_content"
             android:background="?android:attr/windowBackground"
             app:elevation="0dp"
-            app:itemIconTint="@drawable/bottom_nav_color"
-            app:itemTextColor="@drawable/bottom_nav_color"
+            app:itemIconTint="@drawable/bottom_navbar_color"
+            app:itemTextColor="@drawable/bottom_navbar_color"
             app:labelVisibilityMode="unlabeled"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
