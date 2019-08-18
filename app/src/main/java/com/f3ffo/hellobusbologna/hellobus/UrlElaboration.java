@@ -71,13 +71,13 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
                                 String util = token.nextToken();
                                 int isHandicap = 0;
                                 if (util.contains("CON PEDANA")) {
-                                    isHandicap = R.drawable.ic_handicap_green;
+                                    isHandicap = R.drawable.output_handicap_green;
                                 } else if (util.contains("SENZA PEDANA")) {
-                                    isHandicap = R.drawable.ic_handicap_red;
+                                    isHandicap = R.drawable.output_handicap_red;
                                 }
                                 StringTokenizer token2 = new StringTokenizer(util, " ");
                                 String busNumber = token2.nextToken();
-                                int isSatellite = R.drawable.round_time;
+                                int isSatellite = R.drawable.output_time_bus;
                                 if (token2.nextToken().equals("DaSatellite")) {
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }
@@ -90,13 +90,13 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
                                 String util = token.nextToken();
                                 int isHandicap = 0;
                                 if (util.contains("CON PEDANA")) {
-                                    isHandicap = R.drawable.ic_handicap_green;
+                                    isHandicap = R.drawable.output_handicap_green;
                                 } else if (util.contains("SENZA PEDANA")) {
-                                    isHandicap = R.drawable.ic_handicap_red;
+                                    isHandicap = R.drawable.output_handicap_red;
                                 }
                                 StringTokenizer token2 = new StringTokenizer(util, " ");
                                 String busNumber = token2.nextToken();
-                                int isSatellite = R.drawable.round_time;
+                                int isSatellite = R.drawable.output_time_bus;
                                 if (token2.nextToken().equals("DaSatellite")) {
                                     isSatellite = R.drawable.ic_output_satellite;
                                 }

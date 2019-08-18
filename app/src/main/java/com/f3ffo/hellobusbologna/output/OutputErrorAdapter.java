@@ -35,7 +35,7 @@ public class OutputErrorAdapter extends RecyclerView.Adapter<OutputErrorAdapter.
     public void onBindViewHolder(@NonNull OutputErrorViewHolder holder, int position) {
         OutputItem outputItem = outputItemList.get(position);
         holder.textViewErrorOutput.setText(outputItem.getError());
-        holder.imageViewErrorOutput.setImageDrawable(context.getDrawable(R.drawable.round_error));
+        holder.imageViewErrorOutput.setImageDrawable(context.getDrawable(R.drawable.output_error));
     }
 
     @Override

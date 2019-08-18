@@ -118,9 +118,9 @@ public class BusReader {
                     }
                 }
                 if (!isElementAdded) {
-                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.round_favourite_border, latitude, longitude));
+                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.star_border, latitude, longitude));
                 } else {
-                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.ic_star, latitude, longitude));
+                    stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.star, latitude, longitude));
                 }
             }
         } catch (IOException e) {
