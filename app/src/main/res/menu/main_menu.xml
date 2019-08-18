@@ -3,12 +3,16 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/round_home"
+        android:icon="@drawable/bottom_navbar_home"
         android:title="@string/nav_menu_home" />
 
     <item
         android:id="@+id/navigation_favourites"
-        android:icon="@drawable/round_favourite_border"
+        android:icon="@drawable/bottom_navbar_star"
         android:title="@string/nav_menu_favourites" />
 
+    <item
+        android:id="@+id/navigation_settings"
+        android:icon="@drawable/bottom_navbar_settings"
+        android:title="@string/nav_menu_settings" />
 </menu>
