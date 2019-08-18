@@ -15,8 +15,7 @@
     <string name="alertDialog_open">Continua&#8230;</string>
     <string name="nav_menu_home">Home</string>
     <string name="nav_menu_favourites">Preferiti</string>
-    <string name="search_menu_settings">Impostazioni</string>
-    <string name="search_menu_info">Info</string>
+    <string name="nav_menu_settings">Impostazioni</string>
     <string name="favourite_added">Aggiunto ai preferiti!</string>
     <string name="favourite_removed">Rimosso dai preferiti!</string>
     <string name="favourite_not_added">Hai già 10 preferiti!</string>
