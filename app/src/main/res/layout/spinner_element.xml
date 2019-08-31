@@ -5,10 +5,10 @@
     android:layout_height="45dp"
     android:ellipsize="marquee"
     android:fontFamily="sans-serif"
-    android:foregroundTint="@color/colorPrimary"
+    android:foregroundTint="?attr/colorPrimary"
+    android:background="?attr/colorPrimary"
     android:gravity="center"
     android:singleLine="true"
     android:textAlignment="center"
     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
-    android:textColor="@color/colorGreyMaterial"
     android:textIsSelectable="false" />

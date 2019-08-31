@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -69,7 +68,6 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         viewHolder.itemView.setOnClickListener(view -> {
             MaterialTextView title = new MaterialTextView(context);
             title.setText(articles.get(viewHolder.getAdapterPosition()).getTitle());
-            title.setTextColor(ContextCompat.getColor(context, R.color.colorGreyMaterial));
             title.setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline6);
             title.setPadding(64, 64, 64, 0);
             title.setTextIsSelectable(false);

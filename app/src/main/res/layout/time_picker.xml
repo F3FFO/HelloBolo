@@ -20,6 +20,6 @@
         android:fontFamily="sans-serif"
         android:text="@string/time_picker_reset"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
-        android:textColor="@color/colorAccent"
+        android:textColor="?attr/colorAccent"
         android:textIsSelectable="false" />
 </androidx.appcompat.widget.LinearLayoutCompat>

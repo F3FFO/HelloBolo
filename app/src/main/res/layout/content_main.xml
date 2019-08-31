@@ -11,12 +11,14 @@
         android:id="@+id/viewPagerRss"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/colorPrimary"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutOutput"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/colorPrimary"
         android:visibility="gone">
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -47,8 +49,6 @@
             style="@android:style/Widget.Material.ProgressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:indeterminateTint="@color/colorAccent"
             android:visibility="gone"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -60,6 +60,7 @@
         android:id="@+id/constraintLayoutSearch"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/colorPrimary"
         android:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -76,6 +77,7 @@
         android:id="@+id/constraintLayoutFavourites"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="?attr/colorPrimary"
         android:visibility="gone">
 
         <androidx.recyclerview.widget.RecyclerView
@@ -87,20 +89,4 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.appcompat.widget.LinearLayoutCompat
-        android:id="@+id/linearLayoutSettings"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone">
-
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Tema scuro" />
-
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
 </RelativeLayout>

@@ -2,6 +2,7 @@ package com.f3ffo.hellobusbologna;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -39,6 +40,7 @@ import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.output.OutputAdapter;
 import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.output.OutputItem;
+import com.f3ffo.hellobusbologna.preference.PreferenceActivity;
 import com.f3ffo.hellobusbologna.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
@@ -66,8 +68,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private ViewPager viewPagerRss;
     private TabLayout tabsRss;
-    private LinearLayoutCompat busCodeText, textViewHourDefault, linearLayoutSettings;
-    private MaterialTextView textViewBusHour;
+    private LinearLayoutCompat linearLayoutBusCode, linearLayoutHour;
+    private MaterialTextView materialTextViewBusHour, materialTextViewAppName;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
     private ProgressBar progressBarOutput;
@@ -76,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private BottomNavigationView bottomNavView;
     private SearchAdapter adapterBusStation;
     private FavouritesAdapter adapterFavourites;
+    private OutputAdapter adapterOutput;
     private ArrayAdapter<String> spinnerArrayAdapter;
     private List<OutputItem> outputItemList;
     private List<FavouritesItem> fav = new ArrayList<>();
@@ -90,18 +93,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        setSupportActionBar(findViewById(R.id.materialToolbar));
         checkPermissions();
         //supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
-        linearLayoutSettings = findViewById(R.id.linearLayoutSettings);
+        linearLayoutHour = findViewById(R.id.linearLayoutHour);
+        linearLayoutBusCode = findViewById(R.id.linearLayoutBusCode);
         bottomNavView = findViewById(R.id.bottomNavView);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
-        textViewBusHour = findViewById(R.id.textViewBusHour);
-        textViewHourDefault = findViewById(R.id.textViewHourDefault);
-        busCodeText = findViewById(R.id.busCodeText);
+        materialTextViewBusHour = findViewById(R.id.materialTextViewBusHour);
+        materialTextViewAppName = findViewById(R.id.materialTextViewPreference);
         fabBus = findViewById(R.id.fabBus);
         swipeRefreshLayoutOutput = findViewById(R.id.swipeRefreshLayoutOutput);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
@@ -132,9 +136,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             @Override
             public void onSearchStateChanged(boolean enabled) {
                 if (enabled) {
+                    materialTextViewAppName.setVisibility(View.GONE);
                     setElementAppBar(false);
                     fabBus.hide();
                     setDisplayChild(2);
+                } else {
+                    if (constraintLayoutOutput.getVisibility() == View.GONE && currentBusStopName.equals("")) {
+                        materialTextViewAppName.setVisibility(View.VISIBLE);
+                        setDisplayChild(0);
+                    }
                 }
             }
 
@@ -162,9 +172,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         });
         adapterBusStation.setOnItemClickListener((int position) -> {
             if (!currentBusStopName.equals(stops.get(position).getBusStopName())) {
-                if (!outputItemList.isEmpty()) {
+                if (adapterOutput != null && !outputItemList.isEmpty()) {
                     outputItemList.clear();
-                    //TODO update adapter output
+                    adapterOutput.notifyDataSetChanged();
                 }
                 busStopCode = stops.get(position).getBusStopCode();
                 currentBusStopName = stops.get(position).getBusStopName();
@@ -211,7 +221,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 }
             }
         });
-        textViewBusHour.setOnClickListener((View v) -> {
+        materialTextViewBusHour.setOnClickListener((View v) -> {
             v = LayoutInflater.from(MainActivity.this).inflate(R.layout.time_picker, null);
             TimePicker timePicker = v.findViewById(R.id.timePicker);
             timePicker.setIs24HourView(true);
@@ -329,22 +339,26 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 setElementAppBar(false);
-                searchViewBusStopName.setVisibility(View.VISIBLE);
+                materialTextViewAppName.setVisibility(View.VISIBLE);
                 setDisplayChild(0);
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
             case R.id.navigation_favourites:
                 setElementAppBar(false);
-                searchViewBusStopName.setVisibility(View.VISIBLE);
+                materialTextViewAppName.setVisibility(View.VISIBLE);
                 setDisplayChild(3);
+                fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
             case R.id.navigation_settings:
-                setElementAppBar(false);
-                searchViewBusStopName.setVisibility(View.GONE);
-                setDisplayChild(4);
+                //setElementAppBar(false);
+                //materialTextViewAppName.setVisibility(View.VISIBLE);
+                //setDisplayChild(4);
+                //fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
+                Intent intentPreference = new Intent(MainActivity.this, PreferenceActivity.class);
+                startActivity(intentPreference);
                 return true;
         }
         return false;
@@ -365,11 +379,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     private void setElementAppBar(boolean isVisible) {
         if (isVisible) {
-            textViewHourDefault.setVisibility(View.VISIBLE);
-            busCodeText.setVisibility(View.VISIBLE);
+            linearLayoutHour.setVisibility(View.VISIBLE);
+            linearLayoutBusCode.setVisibility(View.VISIBLE);
         } else {
-            textViewHourDefault.setVisibility(View.GONE);
-            busCodeText.setVisibility(View.GONE);
+            linearLayoutHour.setVisibility(View.GONE);
+            linearLayoutBusCode.setVisibility(View.GONE);
         }
     }
 
@@ -381,35 +395,32 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
-            linearLayoutSettings.setVisibility(View.GONE);
         } else if (displayChild == 1) {
             viewPagerRss.setVisibility(View.GONE);
             tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.VISIBLE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
-            linearLayoutSettings.setVisibility(View.GONE);
         } else if (displayChild == 2) {
             viewPagerRss.setVisibility(View.GONE);
             tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.VISIBLE);
             constraintLayoutFavourites.setVisibility(View.GONE);
-            linearLayoutSettings.setVisibility(View.GONE);
         } else if (displayChild == 3) {
+            searchViewBusStopName.setPlaceHolder("");
             viewPagerRss.setVisibility(View.GONE);
             tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.VISIBLE);
-            linearLayoutSettings.setVisibility(View.GONE);
         } else if (displayChild == 4) {
+            searchViewBusStopName.setPlaceHolder("");
             viewPagerRss.setVisibility(View.GONE);
             tabsRss.setVisibility(View.GONE);
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.GONE);
-            linearLayoutSettings.setVisibility(View.VISIBLE);
         }
     }
 
@@ -444,16 +455,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private void setTime(int hour, int minute, boolean isNow) {
         if (!isNow) {
             if (minute < 10) {
-                textViewBusHour.setText(getString(R.string.busHourText2, hour, ("0" + minute)));
-                //textViewBusHour.setText(hour + ":0" + minute);
+                materialTextViewBusHour.setText(getString(R.string.busHourText2, hour, ("0" + minute)));
                 busHour = hour + "0" + minute;
             } else {
-                textViewBusHour.setText(getString(R.string.busHourText2, hour, ("" + minute)));
-                //textViewBusHour.setText(hour + ":" + minute);
+                materialTextViewBusHour.setText(getString(R.string.busHourText2, hour, ("" + minute)));
                 busHour = hour + "" + minute;
             }
         } else {
-            textViewBusHour.setText(R.string.busHourText);
+            materialTextViewBusHour.setText(R.string.busHourText);
             busHour = "";
         }
         outputItemList.clear();
@@ -506,7 +515,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         if ("".equals(output.get(0).getError())) {
-            OutputAdapter adapterOutput = new OutputAdapter(MainActivity.this, outputItemList);
+            adapterOutput = new OutputAdapter(MainActivity.this, outputItemList);
             if ("".equals(busHour)) {
                 String diffTime;
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);

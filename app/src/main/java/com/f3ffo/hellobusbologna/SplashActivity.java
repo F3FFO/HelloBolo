@@ -33,7 +33,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
             finish();
         } else {
-            new MaterialAlertDialogBuilder(SplashActivity.this, R.style.AlertDialogTheme)
+            new MaterialAlertDialogBuilder(SplashActivity.this)
                     .setTitle(R.string.alertDialog_title)
                     .setMessage(R.string.alertDialog_message)
                     .setPositiveButton(R.string.alertDialog_yes, (DialogInterface dialog, int which) -> {
