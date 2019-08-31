@@ -1,73 +1,76 @@
 <resources>
+    <!-- Light/Day Mode theme -->
 
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-    </style>
-
-    <style name="Theme.MaterialComponents.Light.NoActionBar">
+    <!-- Dark/Night Mode theme -->
+    <style name="DarkTheme" parent="Theme.MaterialComponents">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorSecondary">@color/colorAccent</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorPrimary">@color/colorPrimaryNight</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
+        <item name="colorSecondary">@color/colorSecondaryNight</item>
+        <item name="colorAccent">@color/colorAccentNight</item>
+        <item name="colorError">@color/colorErrorNight</item>
+        <item name="android:textColor">@color/colorTextNight</item>
+        <item name="android:statusBarColor">@color/colorPrimaryDay</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <!-- Amoled Mode theme -->
 
     <style name="MaterialSearchBar" parent="MaterialSearchBarLight">
-        <item name="mt_searchBarColor">@color/colorPrimary</item>
-        <item name="mt_navIconTint">@color/colorIcon</item>
-        <item name="mt_searchIconTint">@color/colorIcon</item>
-        <item name="mt_clearIconTint">@color/colorIcon</item>
-        <item name="mt_menuIconTint">@color/colorIcon</item>
-        <item name="mt_backIconTint">@color/colorIcon</item>
-        <item name="mt_textCursorTint">@color/colorAccent</item>
-        <item name="mt_textColor">@color/colorGreyMaterial</item>
-        <item name="mt_hintColor">@color/searchBarHintColor</item>
-        <item name="mt_highlightedTextColor">@color/colorAccent</item>
+        <item name="mt_searchBarColor">?attr/colorPrimary</item>
+        <item name="mt_navIconTint">?android:attr/textColor</item>
+        <item name="mt_searchIconTint">?android:attr/textColor</item>
+        <item name="mt_clearIconTint">?android:attr/textColor</item>
+        <item name="mt_menuIconTint">?android:attr/textColor</item>
+        <item name="mt_backIconTint">?android:attr/textColor</item>
+        <item name="mt_textCursorTint">?attr/colorAccent</item>
+        <item name="mt_textColor">?android:attr/textColor</item>
+        <item name="mt_hintColor">@color/colorGrey</item>
+        <item name="mt_highlightedTextColor">?attr/colorAccent</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+    <style name="SplashTheme" parent="Theme.MaterialComponents">
+        <item name="colorPrimary">?attr/colorPrimary</item>
+        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>
         <item name="android:windowBackground">@drawable/splash_theme</item>
     </style>
 
-    <style name="AlertDialogTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:background">?attr/colorSecondary</item>
         <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>
         <item name="buttonBarNegativeButtonStyle">@style/Alert.Button.Neutral</item>
         <item name="buttonBarNeutralButtonStyle">@style/Alert.Button.Neutral</item>
     </style>
 
     <style name="Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="backgroundTint">@color/transparent</item>
-        <item name="rippleColor">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorGreyMaterial</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="rippleColor">?android:attr/textColor</item>
+        <item name="android:textColor">?android:attr/textColor</item>
     </style>
 
     <style name="Alert.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="backgroundTint">@color/transparent</item>
-        <item name="rippleColor">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorGreyMaterial</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="rippleColor">?android:attr/textColor</item>
+        <item name="android:textColor">?android:attr/textColor</item>
     </style>
 
-    <style name="TimePickerTheme" parent="Theme.MaterialComponents.Light.Dialog.Alert">
+    <style name="TimePickerTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
+        <item name="android:background">?attr/colorSecondary</item>
         <item name="buttonBarPositiveButtonStyle">@style/TimePicker.Button.Positive</item>
         <item name="buttonBarNeutralButtonStyle">@style/TimePicker.Button.Neutral</item>
     </style>
 
     <style name="TimePicker.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="backgroundTint">@color/transparent</item>
-        <item name="rippleColor">@color/colorAccent</item>
-        <item name="android:textColor">@color/colorAccent</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="rippleColor">?attr/colorAccent</item>
+        <item name="android:textColor">?attr/colorAccent</item>
     </style>
 
     <style name="TimePicker.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
-        <item name="backgroundTint">@color/transparent</item>
-        <item name="rippleColor">@color/colorGreyMaterial</item>
-        <item name="android:textColor">@color/colorGreyMaterial</item>
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="rippleColor">?android:attr/textColor</item>
+        <item name="android:textColor">?android:attr/textColor</item>
     </style>
 
 </resources>

@@ -1,17 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Light/Day Mode theme -->
 
-    <style name="Theme.MaterialComponents.Light.NoActionBar">
+    <!-- Dark/Night Mode theme -->
+    <style name="DarkTheme" parent="Theme.MaterialComponents">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorSecondary">@color/colorAccent</item>
-        <item name="android:navigationBarColor">@color/colorPrimary</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
-        <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="colorPrimary">@color/colorPrimaryNight</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
+        <item name="colorAccent">@color/colorAccentNight</item>
+        <item name="colorSecondary">@color/colorSecondaryNight</item>
+        <item name="colorError">@color/colorErrorNight</item>
+        <item name="android:textColor">@color/colorTextNight</item>
+        <item name="android:navigationBarColor">@color/colorSecondaryNight</item>
+        <item name="android:statusBarColor">@color/colorPrimaryNight</item>
+        <item name="android:windowLightNavigationBar">false</item>
+        <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <!-- Amoled Mode theme -->
 
 </resources>
