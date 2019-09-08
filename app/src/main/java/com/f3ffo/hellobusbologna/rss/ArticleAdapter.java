@@ -68,13 +68,13 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         viewHolder.itemView.setOnClickListener(view -> {
             MaterialTextView title = new MaterialTextView(context);
             title.setText(articles.get(viewHolder.getAdapterPosition()).getTitle());
-            title.setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline6);
-            title.setPadding(64, 64, 64, 0);
+            title.setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline6_Custom);
+            title.setPadding(64, 32, 64, 0);
             title.setTextIsSelectable(false);
             MaterialTextView description = new MaterialTextView(context);
-            description.setText(HtmlCompat.fromHtml(articles.get(viewHolder.getAdapterPosition()).getDescription(), HtmlCompat.FROM_HTML_MODE_LEGACY));
-            description.setTextAppearance(R.style.TextAppearance_MaterialComponents_Body1);
-            description.setPadding(64, 32, 64, 0);
+            description.setText(HtmlCompat.fromHtml(Objects.requireNonNull(articles.get(viewHolder.getAdapterPosition()).getDescription()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+            description.setTextAppearance(R.style.TextAppearance_MaterialComponents_Body1_Custom);
+            description.setPadding(64, 64, 64, 0);
             description.setTextIsSelectable(false);
             new MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
                     .setCustomTitle(title)

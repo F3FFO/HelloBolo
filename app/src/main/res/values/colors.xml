@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Light/Day Mode theme -->
     <color name="colorPrimaryDay">#FFFFFFFF</color>
+    <color name="colorPrimaryDarkDay">#FFCCCCCC</color>
+    <color name="colorAccentDay">#FF1A73E9</color>
+    <color name="colorErrorDay">#FFB00020</color>
+    <color name="colorTextDay">#FF202125</color>
     <!--<color name="colorIconDay">#FF5F6267</color>-->
-    <!-- Dark/Night Mode theme -->
+    <!-- Dark/Night - Amoled Mode theme -->
     <color name="colorPrimaryNight">#FF202125</color>
     <color name="colorPrimaryDarkNight">#FF000000</color>
     <color name="colorSecondaryNight">#FF313236</color>

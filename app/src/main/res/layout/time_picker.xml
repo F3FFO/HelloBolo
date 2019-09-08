@@ -12,12 +12,13 @@
 
     <com.google.android.material.textview.MaterialTextView
         android:id="@+id/textViewResetHour"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="24dp"
         android:fontFamily="sans-serif"
+        android:gravity="center"
         android:text="@string/time_picker_reset"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Body2"
         android:textColor="?attr/colorAccent"

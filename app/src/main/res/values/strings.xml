@@ -12,7 +12,7 @@
     <string name="alertDialog_message">Controllare la connessione di rete e riprovare</string>
     <string name="alertDialog_yes">Riprova</string>
     <string name="alertDialog_no">Chiudi</string>
-    <string name="alertDialog_open">Continua&#8230;</string>
+    <string name="alertDialog_open">Leggi</string>
     <string name="nav_menu_home">Home</string>
     <string name="nav_menu_favourites">Preferiti</string>
     <string name="nav_menu_settings">Impostazioni</string>
