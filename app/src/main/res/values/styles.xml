@@ -1,8 +1,6 @@
 <resources>
     <!-- Light/Day Mode theme -->
-    <style name="LightTheme" parent="Theme.MaterialComponents">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="LightTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryDay</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDay</item>
         <item name="colorSecondary">@color/colorPrimaryDay</item>
@@ -14,9 +12,7 @@
     </style>
 
     <!-- Dark/Night Mode theme -->
-    <style name="DarkTheme" parent="Theme.MaterialComponents">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="DarkTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryNight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
         <item name="colorSecondary">@color/colorSecondaryNight</item>
@@ -28,9 +24,7 @@
     </style>
 
     <!-- Amoled Mode theme -->
-    <style name="AmoledTheme" parent="Theme.MaterialComponents">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="AmoledTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryDarkNight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
         <item name="colorSecondary">@color/colorPrimaryDarkNight</item>
@@ -41,24 +35,21 @@
         <item name="android:windowLightStatusBar">false</item>
     </style>
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">?attr/colorPrimary</item>
-        <item name="colorPrimaryDark">?attr/colorPrimaryDark</item>
+    <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_theme</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
     <style name="MaterialSearchBar" parent="MaterialSearchBarLight">
         <item name="mt_searchBarColor">?attr/colorPrimary</item>
-        <item name="mt_dividerColor">?android:attr/textColor</item>
         <item name="mt_navIconTint">?android:attr/textColor</item>
         <item name="mt_searchIconTint">?android:attr/textColor</item>
         <item name="mt_clearIconTint">?android:attr/textColor</item>
-        <item name="mt_menuIconTint">?android:attr/textColor</item>
         <item name="mt_backIconTint">?android:attr/textColor</item>
         <item name="mt_textCursorTint">?attr/colorAccent</item>
         <item name="mt_textColor">?android:attr/textColor</item>
         <item name="mt_hintColor">@color/colorGrey</item>
-        <item name="mt_placeholderColor">?android:attr/textColor</item>
         <item name="mt_highlightedTextColor">?attr/colorAccent</item>
     </style>
 

@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Light/Day Mode theme -->
-    <style name="LightTheme" parent="Theme.MaterialComponents">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="LightTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryDay</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDay</item>
         <item name="colorAccent">@color/colorAccentDay</item>
@@ -17,9 +15,7 @@
     </style>
 
     <!-- Dark/Night Mode theme -->
-    <style name="DarkTheme" parent="Theme.MaterialComponents">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="DarkTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryNight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
         <item name="colorAccent">@color/colorAccentNight</item>
@@ -33,9 +29,7 @@
     </style>
 
     <!-- Amoled Mode theme -->
-    <style name="AmoledTheme" parent="Theme.MaterialComponents">
-        <item name="windowActionBar">false</item>
-        <item name="windowNoTitle">true</item>
+    <style name="AmoledTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryDarkNight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
         <item name="colorAccent">@color/colorAccentNight</item>
