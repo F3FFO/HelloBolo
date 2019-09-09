@@ -105,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         bottomNavView = findViewById(R.id.bottomNavView);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         materialTextViewBusHour = findViewById(R.id.materialTextViewBusHour);
-        materialTextViewAppName = findViewById(R.id.materialTextViewPreference);
+        materialTextViewAppName = findViewById(R.id.materialTextViewAppName);
         fabBus = findViewById(R.id.fabBus);
         swipeRefreshLayoutOutput = findViewById(R.id.swipeRefreshLayoutOutput);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
@@ -128,10 +128,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         ArticleStatePagerAdapter sectionsPagerAdapter = new ArticleStatePagerAdapter(this, getSupportFragmentManager());
         viewPagerRss.setAdapter(sectionsPagerAdapter);
         tabsRss.setupWithViewPager(viewPagerRss);
-        //CardView card = findViewById(R.id.mt_container);
-        //card.setBackground(getDrawable(R.drawable.searchbar_background));
         MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
-        placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1);
+        placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
         searchViewBusStopName.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
@@ -354,7 +352,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             case R.id.navigation_settings:
                 //setElementAppBar(false);
                 //materialTextViewAppName.setVisibility(View.VISIBLE);
-                //setDisplayChild(4);
                 //fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 Intent intentPreference = new Intent(MainActivity.this, PreferenceActivity.class);
@@ -414,13 +411,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             constraintLayoutOutput.setVisibility(View.GONE);
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.VISIBLE);
-        } else if (displayChild == 4) {
-            searchViewBusStopName.setPlaceHolder("");
-            viewPagerRss.setVisibility(View.GONE);
-            tabsRss.setVisibility(View.GONE);
-            constraintLayoutOutput.setVisibility(View.GONE);
-            constraintLayoutSearch.setVisibility(View.GONE);
-            constraintLayoutFavourites.setVisibility(View.GONE);
         }
     }
 
