@@ -26,11 +26,9 @@
     <string name="tab_rss_2">Tutte</string>
     <string name="tab_rss_3">Bologna</string>
     <string name="preference_title">Impostazioni</string>
-    <string name="preference_cat1">Aspetto</string>
+    <string name="preference_cat1">Generali</string>
     <string name="preference_theme">Tema</string>
-    <string-array name="theme">
-        <item>Chiaro</item>
-        <item>Scuro</item>
-        <item>Amoled</item>
-    </string-array>
+    <string name="theme_0">Chiaro</string>
+    <string name="theme_1">Scuro</string>
+    <string name="theme_2">Amoled</string>
 </resources>
