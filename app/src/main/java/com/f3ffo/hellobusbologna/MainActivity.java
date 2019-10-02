@@ -40,7 +40,7 @@ import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.output.OutputAdapter;
 import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.output.OutputItem;
-import com.f3ffo.hellobusbologna.preference.PreferenceActivity;
+import com.f3ffo.hellobusbologna.preference.PreferencesActivity;
 import com.f3ffo.hellobusbologna.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
@@ -61,7 +61,6 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 
 public class MainActivity extends AppCompatActivity implements AsyncResponseUrl, SwipeRefreshLayout.OnRefreshListener {
-
     private final static int REQUEST_CODE_ASK_PERMISSIONS = 1;
     private static final String[] REQUIRED_SDK_PERMISSIONS = new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.WRITE_EXTERNAL_STORAGE};
     private boolean doubleBackToExitPressedOnce = false;
@@ -354,7 +353,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 //materialTextViewAppName.setVisibility(View.VISIBLE);
                 //fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
-                Intent intentPreference = new Intent(MainActivity.this, PreferenceActivity.class);
+                Intent intentPreference = new Intent(MainActivity.this, PreferencesActivity.class);
                 startActivity(intentPreference);
                 return true;
         }

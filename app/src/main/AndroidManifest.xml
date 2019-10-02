@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/DarkTheme">
+        android:theme="@style/AmoledTheme">
         <activity
             android:name=".SplashActivity"
             android:screenOrientation="portrait"
@@ -30,12 +30,12 @@
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DarkTheme" />
+            android:theme="@style/AmoledTheme" />
 
         <activity
-            android:name=".preference.PreferenceActivity"
+            android:name=".preference.PreferencesActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/DarkTheme">
+            android:theme="@style/AmoledTheme">
 
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
