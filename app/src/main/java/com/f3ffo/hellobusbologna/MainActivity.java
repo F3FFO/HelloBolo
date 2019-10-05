@@ -274,15 +274,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             }
         });
         adapterFavourites.setOnItemClickListener((int position) -> {
+            materialTextViewAppName.setVisibility(View.GONE);
+            if (adapterOutput != null && !outputItemList.isEmpty()) {
+                outputItemList.clear();
+                adapterOutput.notifyDataSetChanged();
+            }
             busStopCode = fav.get(position).getBusStopCode();
+            currentBusStopName = fav.get(position).getBusStopName();
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
             spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
             spinnerBusCode.setAdapter(spinnerArrayAdapter);
+            searchViewBusStopName.setPlaceHolder(currentBusStopName);
+            searchViewBusStopName.disableSearch();
             setElementAppBar(true);
             setDisplayChild(1);
             fabBus.show();
-            searchViewBusStopName.setPlaceHolder(fav.get(position).getBusStopName());
-            searchViewBusStopName.disableSearch();
             //maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(fav.get(position).getLatitude().replace(",", ".")), Double.parseDouble(fav.get(position).getLongitude().replace(",", ".")));
         });
         adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
