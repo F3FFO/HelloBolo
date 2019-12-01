@@ -6,14 +6,7 @@ import androidx.preference.PreferenceManager;
 
 import java.util.Map;
 
-public class Preferences {
-
-    public static void sync(PreferenceManager preferenceManager) {
-        Map<String, ?> map = preferenceManager.getSharedPreferences().getAll();
-        for (String key : map.keySet()) {
-            sync(preferenceManager, key);
-        }
-    }
+/*public class Preferences {
 
     private static void sync(PreferenceManager preferenceManager, String key) {
         Preference pref = preferenceManager.findPreference(key);
@@ -22,4 +15,22 @@ public class Preferences {
             pref.setSummary(listPref.getEntry());
         }
     }
-}
+
+    public static String syncTheme(PreferenceManager preferenceManager, String key) {
+        Preference pref = preferenceManager.findPreference(key);
+        if (pref instanceof ListPreference) {
+            ListPreference listPref = (ListPreference) pref;
+            pref.setSummary(listPref.getEntry());
+            return listPref.getValue();
+        } else {
+            return "0";
+        }
+    }
+
+    public static void sync(PreferenceManager preferenceManager) {
+        Map<String, ?> map = preferenceManager.getSharedPreferences().getAll();
+        for (String key : map.keySet()) {
+            sync(preferenceManager, key);
+        }
+    }
+}*/

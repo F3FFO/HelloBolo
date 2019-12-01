@@ -11,8 +11,8 @@
         android:icon="@drawable/bottom_navbar_star"
         android:title="@string/nav_menu_favourites" />
 
-    <item
+    <!--<item
         android:id="@+id/navigation_settings"
         android:icon="@drawable/bottom_navbar_settings"
-        android:title="@string/nav_menu_settings" />
+        android:title="@string/nav_menu_settings" />-->
 </menu>
