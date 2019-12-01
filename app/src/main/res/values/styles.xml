@@ -9,6 +9,7 @@
         <item name="android:textColor">@color/colorTextDay</item>
         <item name="android:statusBarColor">@color/colorPrimaryDay</item>
         <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
     </style>
 
     <!-- Dark/Night Mode theme -->
@@ -21,10 +22,16 @@
         <item name="android:textColor">@color/colorTextNight</item>
         <item name="android:statusBarColor">@color/colorPrimaryDay</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
+    </style>
+
+    <style name="WindowAnimationTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
     <!-- Amoled Mode theme -->
-    <style name="AmoledTheme" parent="Theme.MaterialComponents.NoActionBar">
+    <!--<style name="AmoledTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryDarkNight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
         <item name="colorSecondary">@color/colorPrimaryDarkNight</item>
@@ -33,7 +40,7 @@
         <item name="android:textColor">@color/colorTextNight</item>
         <item name="android:statusBarColor">@color/colorPrimaryDay</item>
         <item name="android:windowLightStatusBar">false</item>
-    </style>
+    </style>-->
 
     <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_theme</item>

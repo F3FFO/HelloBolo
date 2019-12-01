@@ -69,11 +69,11 @@
 
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/spinnerBusCode"
+                    style="@android:style/Widget.Material.Spinner"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
-                    android:background="@android:color/transparent" />
-                <!--android:spinnerMode="dialog"-->
+                    android:spinnerMode="dialog" />
             </androidx.appcompat.widget.LinearLayoutCompat>
 
             <androidx.appcompat.widget.LinearLayoutCompat
@@ -157,7 +157,7 @@
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavView"
             style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:background="?attr/colorSecondary"
             app:elevation="0dp"
