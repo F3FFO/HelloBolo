@@ -2,8 +2,8 @@ package com.f3ffo.hellobusbologna;
 
 import android.Manifest;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -40,7 +41,6 @@ import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.output.OutputAdapter;
 import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.output.OutputItem;
-import com.f3ffo.hellobusbologna.preference.PreferencesActivity;
 import com.f3ffo.hellobusbologna.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
@@ -91,6 +91,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        int nightModeFlags = MainActivity.this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+            setTheme(R.style.DarkTheme);
+        } else {
+            setTheme(R.style.LightTheme);
+        }
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.materialToolbar));
         checkPermissions();
@@ -354,14 +360,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
-            case R.id.navigation_settings:
+            /*case R.id.navigation_settings:
                 //setElementAppBar(false);
                 //materialTextViewAppName.setVisibility(View.VISIBLE);
                 //fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
-                Intent intentPreference = new Intent(MainActivity.this, PreferencesActivity.class);
                 startActivity(intentPreference);
-                return true;
+                return true;*/
         }
         return false;
     };
