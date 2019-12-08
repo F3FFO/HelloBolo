@@ -1,50 +1,48 @@
 package com.f3ffo.hellobusbologna.preference;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 import com.f3ffo.hellobusbologna.R;
 
-/*public class PreferencesActivity extends AppCompatActivity {
+public class PreferencesActivity extends AppCompatActivity {
+
+    private boolean isNightModeEnabled = false;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        if (AppCompatDelegate.getDefaultNightMode() == AppCompatDelegate.MODE_NIGHT_YES) {
-            setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.LightTheme);
-        }
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (mPrefs.getString(getString(R.string.preference_key), "false").equalsIgnoreCase("true")) {
+            setIsNightModeEnabled(true);
+        }
+        if (isNightModeEnabled()) {
+            setTheme(R.style.DarkTheme);
+        }
         setContentView(R.layout.preference_toolbar);
         setSupportActionBar(findViewById(R.id.materialToolbarPreference));
         if (savedInstanceState == null) {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(R.id.frameLayoutPreference, new PreferencesFragment())
-                    .commit();
+            getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutPreference, new PreferencesFragment()).commit();
         }
     }
 
-    public static class PreferencesFragment extends PreferenceFragmentCompat {
+    public boolean isNightModeEnabled() {
+        return isNightModeEnabled;
+    }
 
-        @Override
-        public void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            //String theme = Preferences.syncTheme(getPreferenceManager(), "list_preference_theme");
-            Preferences.sync(getPreferenceManager());
-            /*if (theme.equals("1")) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }*/
-        /*}
+    public void setIsNightModeEnabled(boolean isNightModeEnabled) {
+        this.isNightModeEnabled = isNightModeEnabled;
+    }
+
+    public static class PreferencesFragment extends PreferenceFragmentCompat {
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             setPreferencesFromResource(R.xml.preference, rootKey);
         }
     }
-}*/
+}

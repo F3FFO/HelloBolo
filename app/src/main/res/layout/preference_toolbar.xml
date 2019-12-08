@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <!--<com.google.android.material.appbar.AppBarLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBarLayoutPreference"
         style="@style/Widget.MaterialComponents.AppBarLayout.Primary"
         android:layout_width="match_parent"
@@ -33,5 +33,5 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@+id/appBarLayoutPreference"
-        android:background="?attr/colorPrimary" />-->
+        android:background="?attr/colorPrimary" />
 </RelativeLayout>

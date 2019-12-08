@@ -2,8 +2,9 @@ package com.f3ffo.hellobusbologna;
 
 import android.Manifest;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -20,12 +21,12 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -41,6 +42,7 @@ import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.output.OutputAdapter;
 import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.output.OutputItem;
+import com.f3ffo.hellobusbologna.preference.PreferencesActivity;
 import com.f3ffo.hellobusbologna.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
@@ -85,17 +87,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ArrayList<BusClass> busClass = new ArrayList<>();
     private String busStopCode = "", busLine = "", busHour = "", currentBusStopName = "";
     private Favourites fv = new Favourites();
+    private PreferencesActivity pA = new PreferencesActivity();
     //private Maps maps = new Maps();
     //private SupportMapFragment supportMapFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int nightModeFlags = MainActivity.this.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        if (nightModeFlags == Configuration.UI_MODE_NIGHT_YES) {
+        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        if (mPrefs.getString(getString(R.string.preference_key), "false").equalsIgnoreCase("true")) {
+            pA.setIsNightModeEnabled(true);
+        }
+        if (pA.isNightModeEnabled()) {
             setTheme(R.style.DarkTheme);
-        } else {
-            setTheme(R.style.LightTheme);
         }
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.materialToolbar));
@@ -122,7 +126,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         outputItemList = new ArrayList<>();
         swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayoutOutput.setEnabled(false);
-        swipeRefreshLayoutOutput.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
+        //swipeRefreshLayoutOutput.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
         BusReader br = new BusReader();
         busClass.addAll(br.extractFromFile(MainActivity.this));
         stops.addAll(br.stopsViewer(MainActivity.this, busClass));
@@ -252,12 +256,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spinnerArrayAdapter != null) {
-                    if (!spinnerArrayAdapter.getItem(position).equals(busStopCode)) {
-                        swipeRefreshLayoutOutput.setEnabled(false);
-                        outputItemList.clear();
-                        fabBus.show();
-                    }
+                if (spinnerArrayAdapter != null && !spinnerArrayAdapter.getItem(position).equals(busStopCode)) {
+                    swipeRefreshLayoutOutput.setEnabled(false);
+                    outputItemList.clear();
+                    fabBus.show();
                 }
             }
 
@@ -360,13 +362,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
-            /*case R.id.navigation_settings:
+            case R.id.navigation_settings:
                 //setElementAppBar(false);
                 //materialTextViewAppName.setVisibility(View.VISIBLE);
                 //fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
-                startActivity(intentPreference);
-                return true;*/
+                startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
+                return true;
         }
         return false;
     };

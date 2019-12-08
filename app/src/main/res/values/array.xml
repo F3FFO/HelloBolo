@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<string-array name="theme_entries">
+    <string-array name="theme_entries">
         <item>@string/theme_0</item>
         <item>@string/theme_1</item>
-        <item>@string/theme_2</item>
     </string-array>
     <string-array name="theme_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-    </string-array>-->
+        <item>false</item>
+        <item>true</item>
+    </string-array>
 </resources>

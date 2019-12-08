@@ -31,18 +31,14 @@
             android:name=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/LightTheme" />
-
-        <!--<activity
+        <activity
             android:name=".preference.PreferencesActivity"
+            android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/LightTheme">
-
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value=".MainActivity" />
+            android:theme="@style/LightTheme" >
         </activity>
 
-        <meta-data
+        <!--<meta-data
             android:name="com.here.android.maps.appid"
             android:value="MllFJ82wucETAkSXdDC0" />
         <meta-data
