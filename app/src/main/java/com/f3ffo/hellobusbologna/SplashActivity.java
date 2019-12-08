@@ -14,11 +14,6 @@ import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
 import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.Socket;
-import java.net.SocketAddress;
-
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 
     @Override
@@ -50,20 +45,6 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
         ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-        //return activeNetworkInfo != null && activeNetworkInfo.isConnected() && isInternetAvailable();
-    }
-
-    private boolean isInternetAvailable() {
-        try {
-            Socket sock = new Socket();
-            SocketAddress sockAddress = new InetSocketAddress("8.8.8.8", 53);
-            sock.connect(sockAddress, 1500);
-            sock.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
     }
 
     @Override
