@@ -1,33 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Light/Day Mode theme -->
-    <style name="LightTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimaryDay</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDay</item>
-        <item name="colorSecondary">@color/colorPrimaryDay</item>
-        <item name="colorAccent">@color/colorAccentDay</item>
-        <item name="colorError">@color/colorErrorDay</item>
-        <item name="android:textColor">@color/colorTextDay</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDay</item>
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-    </style>
-
-    <!-- Dark/Night Mode theme -->
-    <style name="DarkTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimaryNight</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
-        <item name="colorSecondary">@color/colorSecondaryNight</item>
-        <item name="colorAccent">@color/colorAccentNight</item>
-        <item name="colorError">@color/colorErrorNight</item>
-        <item name="android:textColor">@color/colorTextNight</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDay</item>
-        <item name="android:windowLightStatusBar">false</item>
-        <item name="android:windowAnimationStyle">@style/WindowAnimationTransition</item>
-    </style>
-
-    <style name="WindowAnimationTransition">
-        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
-        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
+    <style name="AppTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorSecondary">@color/colorPrimary</item>
+        <item name="colorError">@color/colorError</item>
+        <item name="android:textColor">@color/colorText</item>
+        <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
 
     <!-- Amoled Mode theme -->
@@ -42,7 +23,7 @@
         <item name="android:windowLightStatusBar">false</item>
     </style>-->
 
-    <style name="SplashTheme" parent="Theme.MaterialComponents.NoActionBar">
+    <style name="SplashTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_theme</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -68,8 +49,9 @@
         <item name="android:textColor">?android:attr/textColor</item>
     </style>
 
-    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
-        <item name="android:background">?attr/colorSecondary</item>
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:colorBackground">?attr/colorPrimary</item>
         <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>
         <item name="buttonBarNegativeButtonStyle">@style/Alert.Button.Neutral</item>
         <item name="buttonBarNeutralButtonStyle">@style/Alert.Button.Neutral</item>
@@ -88,7 +70,7 @@
     </style>
 
     <style name="TimePickerTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
-        <item name="android:background">?attr/colorSecondary</item>
+        <item name="android:background">?attr/colorPrimary</item>
         <item name="buttonBarPositiveButtonStyle">@style/TimePicker.Button.Positive</item>
         <item name="buttonBarNeutralButtonStyle">@style/TimePicker.Button.Neutral</item>
     </style>

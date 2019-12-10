@@ -5,6 +5,8 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -87,7 +90,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ArrayList<BusClass> busClass = new ArrayList<>();
     private String busStopCode = "", busLine = "", busHour = "", currentBusStopName = "";
     private Favourites fv = new Favourites();
-    private PreferencesActivity pA = new PreferencesActivity();
     //private Maps maps = new Maps();
     //private SupportMapFragment supportMapFragment;
 
@@ -95,11 +97,29 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (mPrefs.getString(getString(R.string.preference_key), "false").equalsIgnoreCase("true")) {
-            pA.setIsNightModeEnabled(true);
+        if (mPrefs.getString(getString(R.string.preference_key_theme), "").equals("true")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
+        } else if (mPrefs.getString(getString(R.string.preference_key_theme), "").equals("false")) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        } else {
+            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
         }
-        if (pA.isNightModeEnabled()) {
-            setTheme(R.style.DarkTheme);
+        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        switch (currentNightMode) {
+            case Configuration.UI_MODE_NIGHT_NO:
+                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
+                    getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+                }
+                break;
+            case Configuration.UI_MODE_NIGHT_YES:
+                if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.O) {
+                    getWindow().getDecorView().setSystemUiVisibility(0);
+                }
+                break;
         }
         setContentView(R.layout.activity_main);
         setSupportActionBar(findViewById(R.id.materialToolbar));
@@ -363,9 +383,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
             case R.id.navigation_settings:
-                //setElementAppBar(false);
-                //materialTextViewAppName.setVisibility(View.VISIBLE);
-                //fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
                 return true;
