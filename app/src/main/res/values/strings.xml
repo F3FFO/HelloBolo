@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">HelloBus Bologna</string>
+    <string name="app_name">Hello Bolo</string>
     <string name="exit">Premere di nuovo per uscire</string>
     <string name="permissions">Autorizzazioni non concesse, uscita</string>
     <string name="update_output">Aggiornato</string>
