@@ -27,7 +27,7 @@
                 android:textColor="?android:attr/textColor"
                 android:textIsSelectable="false"
                 app:icon="@drawable/bus"
-                app:iconTint="?android:attr/textColor"
+                app:iconTint="?attr/colorControlNormal"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />

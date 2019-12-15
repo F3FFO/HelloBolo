@@ -6,6 +6,7 @@
     <color name="colorAccent">#FF5899EF</color>
     <color name="colorError">#FFCF6679</color>
     <color name="colorText">#FFFFFFFF</color>
+    <color name="colorIcon">#FFFFFFFF</color>
     <!--<color name="colorIconNight">#FFBDC0C5</color>-->
     <color name="colorWhite">#FFFFFFFF</color>
     <color name="colorGreen">#FF2FD32F</color>
