@@ -17,30 +17,57 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/materialToolbar"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            style="@style/Widget.MaterialComponents.Toolbar"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
             <com.google.android.material.textview.MaterialTextView
                 android:id="@+id/materialTextViewAppName"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="8dp"
                 android:fontFamily="sans-serif"
+                android:gravity="center"
                 android:text="@string/app_name"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textIsSelectable="false"
-                android:visibility="visible" />
+                android:visibility="visible"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/searchViewBusStopName"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.mancj.materialsearchbar.MaterialSearchBar
                 android:id="@+id/searchViewBusStopName"
                 style="@style/MaterialSearchBar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginEnd="16dp"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
                 android:visibility="visible"
-                app:mt_hint="@string/busStopNameText" />
-        </com.google.android.material.appbar.MaterialToolbar>
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/searchBarGps"
+                app:layout_constraintStart_toEndOf="@id/materialTextViewAppName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:mt_backIconTint="?attr/colorControlNormal"
+                app:mt_clearIconTint="?attr/colorControlNormal"
+                app:mt_hint="@string/busStopNameText"
+                app:mt_searchIconTint="?attr/colorControlNormal"
+                app:mt_textCursorTint="?attr/colorAccent" />
+
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/searchBarGps"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginEnd="8dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/searchViewBusStopName"
+                app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@drawable/gps_fixed" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
