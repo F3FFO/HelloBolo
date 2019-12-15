@@ -1,14 +1,17 @@
 package com.f3ffo.hellobusbologna;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -23,13 +26,11 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -45,10 +46,16 @@ import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
 import com.f3ffo.hellobusbologna.output.OutputAdapter;
 import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
 import com.f3ffo.hellobusbologna.output.OutputItem;
+import com.f3ffo.hellobusbologna.preference.Preference;
 import com.f3ffo.hellobusbologna.preference.PreferencesActivity;
 import com.f3ffo.hellobusbologna.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobusbologna.search.SearchAdapter;
 import com.f3ffo.hellobusbologna.search.SearchItem;
+import com.google.android.gms.location.FusedLocationProviderClient;
+import com.google.android.gms.location.LocationCallback;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationResult;
+import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -74,6 +81,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private TabLayout tabsRss;
     private LinearLayoutCompat linearLayoutBusCode, linearLayoutHour;
     private MaterialTextView materialTextViewBusHour, materialTextViewAppName;
+    private View searchBarGps;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
     private ProgressBar progressBarOutput;
@@ -92,24 +100,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private Favourites fv = new Favourites();
     //private Maps maps = new Maps();
     //private SupportMapFragment supportMapFragment;
+    private FusedLocationProviderClient mFusedLocationClient;
+    private double latitude, longitude;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        if (mPrefs.getString(getString(R.string.preference_key_theme), "").equals("true")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else if (mPrefs.getString(getString(R.string.preference_key_theme), "").equals("false")) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-        } else {
-            if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM);
-            } else {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            }
-        }
-        int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
-        switch (currentNightMode) {
+        new Preference().getPreferenceTheme(MainActivity.this);
+        switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
             case Configuration.UI_MODE_NIGHT_NO:
                 if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
                     getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
@@ -122,10 +120,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 break;
         }
         setContentView(R.layout.activity_main);
-        setSupportActionBar(findViewById(R.id.materialToolbar));
         checkPermissions();
         //supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
@@ -135,6 +133,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         materialTextViewBusHour = findViewById(R.id.materialTextViewBusHour);
         materialTextViewAppName = findViewById(R.id.materialTextViewAppName);
+        searchBarGps = findViewById(R.id.searchBarGps);
         fabBus = findViewById(R.id.fabBus);
         swipeRefreshLayoutOutput = findViewById(R.id.swipeRefreshLayoutOutput);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
@@ -159,17 +158,23 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         tabsRss.setupWithViewPager(viewPagerRss);
         MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
         placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
+        searchBarGps.setOnClickListener((View view) -> {
+            getLastLocation();
+            //TODO find method that do difference between latitude and longitude
+        });
         searchViewBusStopName.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
                 if (enabled) {
                     materialTextViewAppName.setVisibility(View.GONE);
+                    searchBarGps.setVisibility(View.VISIBLE);
                     setElementAppBar(false);
                     fabBus.hide();
                     setDisplayChild(2);
                 } else {
                     if (constraintLayoutOutput.getVisibility() == View.GONE && currentBusStopName.equals("")) {
                         materialTextViewAppName.setVisibility(View.VISIBLE);
+                        searchBarGps.setVisibility(View.GONE);
                         setDisplayChild(0);
                     }
                 }
@@ -363,6 +368,44 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     return;
                 }
             }
+        }
+    }
+
+    private boolean isLocationEnabled() {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
+    }
+
+    private LocationCallback mLocationCallback = new LocationCallback() {
+        @Override
+        public void onLocationResult(LocationResult locationResult) {
+            Location mLastLocation = locationResult.getLastLocation();
+            latitude = mLastLocation.getLatitude();
+            longitude = mLastLocation.getLongitude();
+        }
+    };
+
+    private void requestNewLocationData() {
+        LocationRequest mLocationRequest = new LocationRequest();
+        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        mLocationRequest.setInterval(0);
+        mLocationRequest.setFastestInterval(0);
+        mLocationRequest.setNumUpdates(1);
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
+        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
+    }
+
+    private void getLastLocation() {
+        if (isLocationEnabled()) {
+            mFusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
+                Location location = task.getResult();
+                if (location == null) {
+                    requestNewLocationData();
+                } else {
+                    latitude = location.getLatitude();
+                    longitude = location.getLongitude();
+                }
+            });
         }
     }
 
