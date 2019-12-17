@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.preference;
+package com.f3ffo.busbolo.preference;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -7,7 +7,7 @@ import android.os.Build;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.preference.PreferenceManager;
 
-import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.busbolo.R;
 
 public class Preference {
 

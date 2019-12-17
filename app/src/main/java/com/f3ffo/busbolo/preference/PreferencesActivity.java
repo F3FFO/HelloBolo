@@ -1,14 +1,17 @@
-package com.f3ffo.hellobusbologna.preference;
+package com.f3ffo.busbolo.preference;
 
+import android.content.Intent;
 import android.content.res.Configuration;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.busbolo.R;
 
 public class PreferencesActivity extends AppCompatActivity {
 
@@ -28,11 +31,21 @@ public class PreferencesActivity extends AppCompatActivity {
                 }
                 break;
         }
-        setContentView(R.layout.preference_toolbar);
+        setContentView(R.layout.preference_main);
         setSupportActionBar(findViewById(R.id.materialToolbarPreference));
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutPreference, new PreferencesFragment()).commit();
         }
+        AppCompatImageButton imageButtonPreferenceDonation = findViewById(R.id.imageButtonPreferenceDonation);
+        AppCompatImageButton imageButtonPreferenceContribute = findViewById(R.id.imageButtonPreferenceContribute);
+        imageButtonPreferenceDonation.setOnClickListener((View view) -> {
+            Uri uri = Uri.parse("https://www.paypal.me/f3ff0");
+            PreferencesActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+        });
+        imageButtonPreferenceContribute.setOnClickListener((View view) -> {
+            Uri uri = Uri.parse("https://github.com/F3FFO/HelloBolo");
+            PreferencesActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+        });
     }
 
     public static class PreferencesFragment extends PreferenceFragmentCompat {
