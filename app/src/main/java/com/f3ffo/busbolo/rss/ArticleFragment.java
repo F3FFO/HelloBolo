@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.rss;
+package com.f3ffo.busbolo.rss;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -9,13 +9,13 @@ import android.widget.ProgressBar;
 import androidx.annotation.NonNull;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.busbolo.R;
 import com.google.android.material.snackbar.Snackbar;
 import com.prof.rssparser.Article;
 
@@ -42,7 +42,7 @@ public class ArticleFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        articleViewModel = ViewModelProviders.of(this).get(ArticleViewModel.class);
+        articleViewModel = new ViewModelProvider(ArticleFragment.this).get(ArticleViewModel.class);
         int index = 1;
         if (getArguments() != null) {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
@@ -57,12 +57,12 @@ public class ArticleFragment extends Fragment {
         progressBarRss = root.findViewById(R.id.progressBarRss);
         recyclerViewRss = root.findViewById(R.id.recyclerViewRss);
         swipeRefreshLayoutRss = root.findViewById(R.id.swipeRefreshLayoutRss);
-        articleViewModel = ViewModelProviders.of(this).get(ArticleViewModel.class);
-        articleViewModel.getUrl().observe(this, (String s) -> articleViewModel.fetchFeed(s));
+        articleViewModel = new ViewModelProvider(ArticleFragment.this).get(ArticleViewModel.class);
+        articleViewModel.getUrl().observe(ArticleFragment.this.getViewLifecycleOwner(), (String s) -> articleViewModel.fetchFeed(s));
         recyclerViewRss.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerViewRss.setItemAnimator(new DefaultItemAnimator());
         recyclerViewRss.setHasFixedSize(true);
-        articleViewModel.getArticleList().observe(this, (List<Article> articles) -> {
+        articleViewModel.getArticleList().observe(ArticleFragment.this.getViewLifecycleOwner(), (List<Article> articles) -> {
             if (articles != null) {
                 articleAdapter = new ArticleAdapter(articles, root.getContext());
                 recyclerViewRss.setAdapter(articleAdapter);
@@ -71,7 +71,7 @@ public class ArticleFragment extends Fragment {
                 swipeRefreshLayoutRss.setRefreshing(false);
             }
         });
-        articleViewModel.getSnackBar().observe(this, (String s) -> {
+        articleViewModel.getSnackBar().observe(ArticleFragment.this.getViewLifecycleOwner(), (String s) -> {
             if (s != null) {
                 Snackbar.make(constraintLayoutRss, s, Snackbar.LENGTH_LONG).show();
                 articleViewModel.onSnackBarShowed();
@@ -83,7 +83,7 @@ public class ArticleFragment extends Fragment {
             articleAdapter.getArticleList().clear();
             articleAdapter.notifyDataSetChanged();
             swipeRefreshLayoutRss.setRefreshing(true);
-            articleViewModel.getUrl().observe(this, (String s) -> articleViewModel.fetchFeed(s));
+            articleViewModel.getUrl().observe(ArticleFragment.this.getViewLifecycleOwner(), (String s) -> articleViewModel.fetchFeed(s));
         });
         return root;
     }
