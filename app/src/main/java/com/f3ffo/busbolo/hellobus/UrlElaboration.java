@@ -1,10 +1,10 @@
-package com.f3ffo.hellobusbologna.hellobus;
+package com.f3ffo.busbolo.hellobus;
 
 import android.os.AsyncTask;
 
-import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseUrl;
-import com.f3ffo.hellobusbologna.output.OutputItem;
+import com.f3ffo.busbolo.R;
+import com.f3ffo.busbolo.asyncInterface.AsyncResponseUrl;
+import com.f3ffo.busbolo.output.OutputItem;
 
 import java.io.BufferedReader;
 import java.io.IOException;

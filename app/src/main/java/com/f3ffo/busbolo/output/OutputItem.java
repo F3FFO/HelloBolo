@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.output;
+package com.f3ffo.busbolo.output;
 
 public class OutputItem {
 

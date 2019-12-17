@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.f3ffo.hellobusbologna">
+    package="com.f3ffo.busbolo">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -38,13 +38,6 @@
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait"
             android:theme="@style/AppTheme" />
-
-        <!--<meta-data
-            android:name="com.here.android.maps.appid"
-            android:value="MllFJ82wucETAkSXdDC0" />
-        <meta-data
-            android:name="com.here.android.maps.apptoken"
-            android:value="9aPws0lQvAvaQcvy1qnZYg" />-->
     </application>
 
 </manifest>

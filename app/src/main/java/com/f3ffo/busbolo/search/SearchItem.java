@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.search;
+package com.f3ffo.busbolo.search;
 
 public class SearchItem {
 

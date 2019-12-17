@@ -1,10 +1,10 @@
-package com.f3ffo.hellobusbologna.hellobus;
+package com.f3ffo.busbolo.hellobus;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseVersion;
+import com.f3ffo.busbolo.asyncInterface.AsyncResponseVersion;
 
 import org.apache.commons.io.FileUtils;
 

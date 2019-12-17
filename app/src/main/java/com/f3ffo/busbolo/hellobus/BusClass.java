@@ -1,15 +1,20 @@
-package com.f3ffo.hellobusbologna.favourite;
+package com.f3ffo.busbolo.hellobus;
 
-public class FavouritesItem {
+public class BusClass {
 
-    private String busStopCode, busStopName, busStopAddress, latitude, longitude;
+    private String busCode, busStopCode, busStopName, busStopAddress, latitude, longitude;
 
-    public FavouritesItem(String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
+    public BusClass(String busCode, String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
+        this.busCode = busCode;
         this.busStopCode = busStopCode;
         this.busStopName = busStopName;
         this.busStopAddress = busStopAddress;
         this.latitude = latitude;
         this.longitude = longitude;
+    }
+
+    public String getBusCode() {
+        return busCode;
     }
 
     public String getBusStopCode() {

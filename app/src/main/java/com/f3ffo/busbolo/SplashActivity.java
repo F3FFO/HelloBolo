@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.busbolo;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -9,9 +9,9 @@ import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseVersion;
-import com.f3ffo.hellobusbologna.hellobus.CheckVersion;
-import com.f3ffo.hellobusbologna.hellobus.DownloadCsv;
+import com.f3ffo.busbolo.asyncInterface.AsyncResponseVersion;
+import com.f3ffo.busbolo.hellobus.CheckVersion;
+import com.f3ffo.busbolo.hellobus.DownloadCsv;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {

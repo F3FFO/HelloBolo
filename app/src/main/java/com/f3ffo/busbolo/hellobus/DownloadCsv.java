@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.hellobus;
+package com.f3ffo.busbolo.hellobus;
 
 import android.annotation.SuppressLint;
 import android.content.Context;

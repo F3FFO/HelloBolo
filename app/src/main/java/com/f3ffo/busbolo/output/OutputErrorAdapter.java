@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.output;
+package com.f3ffo.busbolo.output;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -9,7 +9,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatImageView;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.busbolo.R;
 import com.google.android.material.textview.MaterialTextView;
 
 import java.util.List;

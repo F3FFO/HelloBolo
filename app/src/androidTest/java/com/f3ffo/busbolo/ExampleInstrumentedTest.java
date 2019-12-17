@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.busbolo;
 
 import android.content.Context;
 

@@ -1,9 +1,9 @@
-package com.f3ffo.hellobusbologna.hellobus;
+package com.f3ffo.busbolo.hellobus;
 
 import android.content.Context;
 
-import com.f3ffo.hellobusbologna.R;
-import com.f3ffo.hellobusbologna.search.SearchItem;
+import com.f3ffo.busbolo.R;
+import com.f3ffo.busbolo.search.SearchItem;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;

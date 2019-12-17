@@ -1,6 +1,6 @@
-package com.f3ffo.hellobusbologna.asyncInterface;
+package com.f3ffo.busbolo.asyncInterface;
 
-import com.f3ffo.hellobusbologna.output.OutputItem;
+import com.f3ffo.busbolo.output.OutputItem;
 
 import java.util.List;
 
