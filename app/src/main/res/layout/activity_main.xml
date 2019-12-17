@@ -56,11 +56,13 @@
                 app:mt_searchIconTint="?attr/colorControlNormal"
                 app:mt_textCursorTint="?attr/colorAccent" />
 
-            <androidx.appcompat.widget.AppCompatImageView
+            <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/searchBarGps"
+                style="@android:style/Widget.Material.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
-                android:layout_marginEnd="8dp"
+                android:backgroundTint="?attr/colorPrimary"
+                android:padding="16dp"
                 android:visibility="gone"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
