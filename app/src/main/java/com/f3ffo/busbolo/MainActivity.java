@@ -1,17 +1,13 @@
-package com.f3ffo.hellobusbologna;
+package com.f3ffo.busbolo;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.location.Location;
-import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
@@ -36,26 +32,22 @@ import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import androidx.viewpager.widget.ViewPager;
 
-import com.f3ffo.hellobusbologna.asyncInterface.AsyncResponseUrl;
-import com.f3ffo.hellobusbologna.favourite.Favourites;
-import com.f3ffo.hellobusbologna.favourite.FavouritesAdapter;
-import com.f3ffo.hellobusbologna.favourite.FavouritesItem;
-import com.f3ffo.hellobusbologna.hellobus.BusClass;
-import com.f3ffo.hellobusbologna.hellobus.BusReader;
-import com.f3ffo.hellobusbologna.hellobus.UrlElaboration;
-import com.f3ffo.hellobusbologna.output.OutputAdapter;
-import com.f3ffo.hellobusbologna.output.OutputErrorAdapter;
-import com.f3ffo.hellobusbologna.output.OutputItem;
-import com.f3ffo.hellobusbologna.preference.Preference;
-import com.f3ffo.hellobusbologna.preference.PreferencesActivity;
-import com.f3ffo.hellobusbologna.rss.ArticleStatePagerAdapter;
-import com.f3ffo.hellobusbologna.search.SearchAdapter;
-import com.f3ffo.hellobusbologna.search.SearchItem;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
+import com.f3ffo.busbolo.asyncInterface.AsyncResponseUrl;
+import com.f3ffo.busbolo.favourite.Favourites;
+import com.f3ffo.busbolo.favourite.FavouritesAdapter;
+import com.f3ffo.busbolo.favourite.FavouritesItem;
+import com.f3ffo.busbolo.hellobus.BusClass;
+import com.f3ffo.busbolo.hellobus.BusReader;
+import com.f3ffo.busbolo.hellobus.UrlElaboration;
+import com.f3ffo.busbolo.output.OutputAdapter;
+import com.f3ffo.busbolo.output.OutputErrorAdapter;
+import com.f3ffo.busbolo.output.OutputItem;
+import com.f3ffo.busbolo.position.Gps;
+import com.f3ffo.busbolo.preference.Preference;
+import com.f3ffo.busbolo.preference.PreferencesActivity;
+import com.f3ffo.busbolo.rss.ArticleStatePagerAdapter;
+import com.f3ffo.busbolo.search.SearchAdapter;
+import com.f3ffo.busbolo.search.SearchItem;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -98,9 +90,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ArrayList<BusClass> busClass = new ArrayList<>();
     private String busStopCode = "", busLine = "", busHour = "", currentBusStopName = "";
     private Favourites fv = new Favourites();
-    //private Maps maps = new Maps();
-    //private SupportMapFragment supportMapFragment;
-    private FusedLocationProviderClient mFusedLocationClient;
     private double latitude, longitude;
 
     @Override
@@ -121,9 +110,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
         setContentView(R.layout.activity_main);
         checkPermissions();
-        //supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.mapfragment);
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
         constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
         constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
@@ -145,7 +132,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         outputItemList = new ArrayList<>();
         swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayoutOutput.setEnabled(false);
-        //swipeRefreshLayoutOutput.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
         BusReader br = new BusReader();
         busClass.addAll(br.extractFromFile(MainActivity.this));
         stops.addAll(br.stopsViewer(MainActivity.this, busClass));
@@ -153,13 +139,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
-        ArticleStatePagerAdapter sectionsPagerAdapter = new ArticleStatePagerAdapter(this, getSupportFragmentManager());
-        viewPagerRss.setAdapter(sectionsPagerAdapter);
+        viewPagerRss.setAdapter(new ArticleStatePagerAdapter(this, getSupportFragmentManager()));
         tabsRss.setupWithViewPager(viewPagerRss);
         MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
         placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
         searchBarGps.setOnClickListener((View view) -> {
-            getLastLocation();
+            Gps gps = new Gps(MainActivity.this);
+            gps.getLastLocation();
+            latitude = gps.getLatitude();
+            longitude = gps.getLongitude();
             //TODO find method that do difference between latitude and longitude
         });
         searchViewBusStopName.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
@@ -210,7 +198,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 }
                 busStopCode = stops.get(position).getBusStopCode();
                 currentBusStopName = stops.get(position).getBusStopName();
-                //maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(stops.get(position).getLatitude().replace(",", ".")), Double.parseDouble(stops.get(position).getLongitude().replace(",", ".")));
                 spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
                 spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
                 spinnerBusCode.setAdapter(spinnerArrayAdapter);
@@ -253,22 +240,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 }
             }
         });
-        materialTextViewBusHour.setOnClickListener((View v) -> {
-            v = LayoutInflater.from(MainActivity.this).inflate(R.layout.time_picker, null);
-            TimePicker timePicker = v.findViewById(R.id.timePicker);
+        materialTextViewBusHour.setOnClickListener((View view) -> {
+            view = LayoutInflater.from(MainActivity.this).inflate(R.layout.time_picker, null);
+            TimePicker timePicker = view.findViewById(R.id.timePicker);
             timePicker.setIs24HourView(true);
             boolean[] isNow = {true};
             timePicker.setOnTimeChangedListener((TimePicker timePicker2, int i, int i1) -> isNow[0] = false);
             new MaterialAlertDialogBuilder(MainActivity.this, R.style.TimePickerTheme)
-                    .setView(v)
+                    .setView(view)
                     .setPositiveButton(R.string.time_picker_ok, (DialogInterface dialog, int which) -> {
                         setTime(timePicker.getHour(), timePicker.getMinute(), isNow[0]);
                         dialog.dismiss();
                     })
                     .setNeutralButton(R.string.time_picker_cancel, (DialogInterface dialog, int which) -> dialog.dismiss())
                     .show();
-            MaterialTextView textViewResetHour = v.findViewById(R.id.textViewResetHour);
-            textViewResetHour.setOnClickListener((View view) -> {
+            MaterialTextView textViewResetHour = view.findViewById(R.id.textViewResetHour);
+            textViewResetHour.setOnClickListener((View secondView) -> {
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
                 int hour = now.get(Calendar.HOUR_OF_DAY);
                 int minute = now.get(Calendar.MINUTE);
@@ -322,7 +309,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             setElementAppBar(true);
             setDisplayChild(1);
             fabBus.show();
-            //maps.loadMap(MainActivity.this, supportMapFragment, Double.parseDouble(fav.get(position).getLatitude().replace(",", ".")), Double.parseDouble(fav.get(position).getLongitude().replace(",", ".")));
         });
         adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
             if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
@@ -371,49 +357,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
-    private boolean isLocationEnabled() {
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) || locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-            latitude = mLastLocation.getLatitude();
-            longitude = mLastLocation.getLongitude();
-        }
-    };
-
-    private void requestNewLocationData() {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(0);
-        mLocationRequest.setFastestInterval(0);
-        mLocationRequest.setNumUpdates(1);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(mLocationRequest, mLocationCallback, Looper.myLooper());
-    }
-
-    private void getLastLocation() {
-        if (isLocationEnabled()) {
-            mFusedLocationClient.getLastLocation().addOnCompleteListener(task -> {
-                Location location = task.getResult();
-                if (location == null) {
-                    requestNewLocationData();
-                } else {
-                    latitude = location.getLatitude();
-                    longitude = location.getLongitude();
-                }
-            });
-        }
-    }
-
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 setElementAppBar(false);
                 materialTextViewAppName.setVisibility(View.VISIBLE);
+                searchBarGps.setVisibility(View.GONE);
                 setDisplayChild(0);
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
@@ -421,6 +370,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             case R.id.navigation_favourites:
                 setElementAppBar(false);
                 materialTextViewAppName.setVisibility(View.VISIBLE);
+                searchBarGps.setVisibility(View.GONE);
                 setDisplayChild(3);
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
