@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.rss;
+package com.f3ffo.busbolo.rss;
 
 import android.content.Context;
 
@@ -8,7 +8,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
 
-import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.busbolo.R;
 
 public class ArticleStatePagerAdapter extends FragmentStatePagerAdapter {
 

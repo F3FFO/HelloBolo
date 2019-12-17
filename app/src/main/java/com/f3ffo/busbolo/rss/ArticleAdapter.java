@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.rss;
+package com.f3ffo.busbolo.rss;
 
 import android.content.Context;
 import android.content.DialogInterface;
@@ -12,7 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.f3ffo.hellobusbologna.R;
+import com.f3ffo.busbolo.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 import com.prof.rssparser.Article;

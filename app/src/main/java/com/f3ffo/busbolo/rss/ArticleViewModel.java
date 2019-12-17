@@ -1,4 +1,4 @@
-package com.f3ffo.hellobusbologna.rss;
+package com.f3ffo.busbolo.rss;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
