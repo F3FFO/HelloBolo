@@ -28,4 +28,5 @@
         <item name="android:windowLightNavigationBar">false</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>-->
+
 </resources>
