@@ -29,9 +29,11 @@ public class BusReader {
                     try {
                         BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
                         String line;
+                        boolean doubleComma = false;
                         while ((line = br.readLine()) != null) {
                             if (line.contains(";;")) {
                                 line = line.replace(";;", ";");
+                                doubleComma = true;
                             }
                             if (!line.startsWith("codice_linea")) {
                                 StringTokenizer token = new StringTokenizer(line, ";");
@@ -40,10 +42,24 @@ public class BusReader {
                                 String stopName = token.nextToken();
                                 String stopAddress = StringUtils.lowerCase(token.nextToken());
                                 token.nextToken();
-                                token.nextToken();
+                                if (doubleComma) {
+                                    doubleComma = false;
+                                } else {
+                                    token.nextToken();
+                                }
                                 token.nextToken();
                                 String latitude = token.nextToken();
+                                if (latitude.length() < 9) {
+                                    for (int i = 0; i < (9 - latitude.length()); i++) {
+                                        latitude += "0";
+                                    }
+                                }
                                 String longitude = token.nextToken();
+                                if (longitude.length() < 9) {
+                                    for (int i = 0; i < (9 - longitude.length()); i++) {
+                                        longitude += "0";
+                                    }
+                                }
                                 busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress), latitude, longitude));
                             }
                         }
