@@ -80,22 +80,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private SwipeRefreshLayout swipeRefreshLayoutOutput;
     private MaterialSearchBar searchViewBusStopName;
     private BottomNavigationView bottomNavView;
-    private SearchAdapter adapterBusStation;
+    private RecyclerView recyclerViewBusStation, recyclerViewBusGps;
+    private SearchAdapter adapterBusStation, adapterBusGps;
     private FavouritesAdapter adapterFavourites;
     private OutputAdapter adapterOutput;
     private ArrayAdapter<String> spinnerArrayAdapter;
     private List<OutputItem> outputItemList;
     private List<FavouritesItem> fav = new ArrayList<>();
-    private List<SearchItem> stops = new ArrayList<>();
+    private List<SearchItem> stops = new ArrayList<>(), stopsGps = new ArrayList<>();
     private ArrayList<BusClass> busClass = new ArrayList<>();
     private String busStopCode = "", busLine = "", busHour = "", currentBusStopName = "";
     private Favourites fv = new Favourites();
-    private double latitude, longitude;
+    private BusReader br = new BusReader();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        new Preference().getPreferenceTheme(MainActivity.this);
         switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
             case Configuration.UI_MODE_NIGHT_NO:
                 if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
@@ -128,27 +128,91 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         viewPagerRss = findViewById(R.id.viewPagerRss);
         tabsRss = findViewById(R.id.tabsRss);
+        recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
+        recyclerViewBusGps = findViewById(R.id.recyclerViewBusGps);
         bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
         outputItemList = new ArrayList<>();
         swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayoutOutput.setEnabled(false);
-        BusReader br = new BusReader();
         busClass.addAll(br.extractFromFile(MainActivity.this));
         stops.addAll(br.stopsViewer(MainActivity.this, busClass));
-        buildRecyclerViewSearch();
+        buildRecyclerViewSearch(stops, false);
         fv.readFile(MainActivity.this);
         fav.addAll(fv.getFavouritesList());
         buildRecyclerViewFavourites();
-        viewPagerRss.setAdapter(new ArticleStatePagerAdapter(this, getSupportFragmentManager()));
+        viewPagerRss.setAdapter(new ArticleStatePagerAdapter(MainActivity.this, getSupportFragmentManager()));
         tabsRss.setupWithViewPager(viewPagerRss);
         MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
         placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
         searchBarGps.setOnClickListener((View view) -> {
             Gps gps = new Gps(MainActivity.this);
             gps.getLastLocation();
-            latitude = gps.getLatitude();
-            longitude = gps.getLongitude();
-            //TODO find method that do difference between latitude and longitude
+            //System.out.println(gps.getLatitude());
+            //System.out.println(gps.getLongitude());
+            //List<String> busPosition = br.takeTheCorrispondingBusStop(busClass,44.516017,11.279114);
+            List<String> busPosition = br.takeTheCorrispondingBusStop(busClass, 44.516266, 11.278532);
+            stopsGps.clear();
+            if (busPosition.size() > 1) {
+                for (int i = 0; i < stops.size(); i++) {
+                    for (int j = 0; j < busPosition.size(); j++) {
+                        if (stops.get(i).getBusStopCode().equals(busPosition.get(j))) {
+                            stopsGps.add(new SearchItem(stops.get(i).getBusStopCode(), stops.get(i).getBusStopName(), stops.get(i).getBusStopAddress(), stops.get(i).getImageFavourite(), stops.get(i).getLatitude(), stops.get(i).getLongitude()));
+                        }
+                    }
+                }
+                buildRecyclerViewSearch(stopsGps, true);
+                adapterBusGps.setOnItemClickListener((int position) -> itemAdapterMethod(stopsGps, position));
+                adapterBusGps.setOnFavouriteButtonClickListener((int position) -> {
+                    Favourites favourites = new Favourites();
+                    if (refreshElement(position)) {
+                        FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress(), stopsGps.get(position).getLatitude(), stopsGps.get(position).getLongitude());
+                        if (item != null) {
+                            fav.add(item);
+                            adapterBusGps.notifyItemChanged(position);
+                            adapterFavourites.notifyItemInserted(fav.size());
+                            Toast.makeText(MainActivity.this, R.string.favourite_added, Toast.LENGTH_LONG).show();
+                        } else {
+                            Toast.makeText(MainActivity.this, R.string.favourite_not_added, Toast.LENGTH_LONG).show();
+                        }
+                    } else {
+                        if (fv.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
+                            boolean isRemoved = false;
+                            for (int i = 0; i < fav.size() && !isRemoved; i++) {
+                                if (fav.get(i).getBusStopCode().equals(stopsGps.get(position).getBusStopCode())) {
+                                    fav.remove(i);
+                                    adapterBusGps.notifyItemChanged(position);
+                                    adapterFavourites.notifyItemRemoved(i);
+                                    isRemoved = true;
+                                }
+                            }
+                            Toast.makeText(MainActivity.this, R.string.favourite_removed, Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
+            } else if (busPosition.size() == 1) {
+                if (adapterOutput != null && !outputItemList.isEmpty()) {
+                    outputItemList.clear();
+                    adapterOutput.notifyDataSetChanged();
+                }
+                busStopCode = busPosition.get(0);
+                boolean element = false;
+                int i;
+                for (i = 0; i < stops.size() && !element; i++) {
+                    if (stops.get(i).getBusStopCode().equals(busPosition.get(0))) {
+                        element = true;
+                    }
+                }
+                currentBusStopName = stops.get(i).getBusStopName();
+                spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
+                spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
+                spinnerBusCode.setAdapter(spinnerArrayAdapter);
+                searchViewBusStopName.setPlaceHolder(currentBusStopName);
+                searchViewBusStopName.disableSearch();
+                searchBarGps.setVisibility(View.GONE);
+                setElementAppBar(true);
+                setDisplayChild(1);
+                fabBus.show();
+            }
         });
         searchViewBusStopName.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
             @Override
@@ -156,6 +220,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 if (enabled) {
                     materialTextViewAppName.setVisibility(View.GONE);
                     searchBarGps.setVisibility(View.VISIBLE);
+                    setVisibilityRecycler(false);
                     setElementAppBar(false);
                     fabBus.hide();
                     setDisplayChild(2);
@@ -184,6 +249,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
                 adapterBusStation.getFilter().filter(charSequence.toString());
+                //adapterBusGps.getFilter().filter(charSequence.toString());
             }
 
             @Override
@@ -191,27 +257,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             }
         });
         adapterBusStation.setOnItemClickListener((int position) -> {
-            if (!currentBusStopName.equals(stops.get(position).getBusStopName())) {
-                if (adapterOutput != null && !outputItemList.isEmpty()) {
-                    outputItemList.clear();
-                    adapterOutput.notifyDataSetChanged();
-                }
-                busStopCode = stops.get(position).getBusStopCode();
-                currentBusStopName = stops.get(position).getBusStopName();
-                spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
-                spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
-                spinnerBusCode.setAdapter(spinnerArrayAdapter);
-                searchViewBusStopName.setPlaceHolder(currentBusStopName);
-                searchViewBusStopName.disableSearch();
-                setElementAppBar(true);
-                setDisplayChild(1);
-                fabBus.show();
-            } else {
-                searchViewBusStopName.disableSearch();
-                setElementAppBar(true);
-                setDisplayChild(1);
-                fabBus.show();
-            }
+            itemAdapterMethod(stops, position);
         });
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
@@ -328,17 +374,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     private void checkPermissions() {
         final List<String> missingPermissions = new ArrayList<>();
-        for (final String permission : REQUIRED_SDK_PERMISSIONS) {
-            final int result = ContextCompat.checkSelfPermission(this, permission);
+        for (String permission : REQUIRED_SDK_PERMISSIONS) {
+            int result = ContextCompat.checkSelfPermission(MainActivity.this, permission);
             if (result != PackageManager.PERMISSION_GRANTED) {
                 missingPermissions.add(permission);
             }
         }
         if (!missingPermissions.isEmpty()) {
             String[] permissions = missingPermissions.toArray(new String[missingPermissions.size()]);
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
+            ActivityCompat.requestPermissions(MainActivity.this, permissions, REQUEST_CODE_ASK_PERMISSIONS);
         } else {
-            final int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
+            int[] grantResults = new int[REQUIRED_SDK_PERMISSIONS.length];
             Arrays.fill(grantResults, PackageManager.PERMISSION_GRANTED);
             onRequestPermissionsResult(REQUEST_CODE_ASK_PERMISSIONS, REQUIRED_SDK_PERMISSIONS, grantResults);
         }
@@ -349,7 +395,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
             for (int index = permissions.length - 1; index >= 0; --index) {
                 if (grantResults[index] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(this, R.string.permissions, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.permissions, Toast.LENGTH_LONG).show();
                     finish();
                     return;
                 }
@@ -361,6 +407,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         switch (item.getItemId()) {
             case R.id.navigation_home:
                 setElementAppBar(false);
+                setVisibilityRecycler(false);
+                searchViewBusStopName.disableSearch();
                 materialTextViewAppName.setVisibility(View.VISIBLE);
                 searchBarGps.setVisibility(View.GONE);
                 setDisplayChild(0);
@@ -369,6 +417,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 return true;
             case R.id.navigation_favourites:
                 setElementAppBar(false);
+                setVisibilityRecycler(false);
+                searchViewBusStopName.disableSearch();
                 materialTextViewAppName.setVisibility(View.VISIBLE);
                 searchBarGps.setVisibility(View.GONE);
                 setDisplayChild(3);
@@ -376,6 +426,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 return true;
             case R.id.navigation_settings:
+                setVisibilityRecycler(false);
+                searchViewBusStopName.disableSearch();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
                 startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
                 return true;
@@ -445,13 +497,56 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         adapterFavourites.notifyDataSetChanged();
     }
 
-    private void buildRecyclerViewSearch() {
-        RecyclerView recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
-        recyclerViewBusStation.setHasFixedSize(true);
-        recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        adapterBusStation = new SearchAdapter(stops);
-        recyclerViewBusStation.setAdapter(adapterBusStation);
-        adapterBusStation.notifyDataSetChanged();
+    private void setVisibilityRecycler(boolean isGps) {
+        if (!isGps) {
+            recyclerViewBusStation.setVisibility(View.VISIBLE);
+            recyclerViewBusGps.setVisibility(View.GONE);
+        } else {
+            recyclerViewBusStation.setVisibility(View.GONE);
+            recyclerViewBusGps.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void buildRecyclerViewSearch(List<SearchItem> stops, boolean isGps) {
+        setVisibilityRecycler(isGps);
+        if (isGps) {
+            recyclerViewBusGps.setHasFixedSize(true);
+            recyclerViewBusGps.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            adapterBusGps = new SearchAdapter(stops);
+            recyclerViewBusGps.setAdapter(adapterBusGps);
+            adapterBusGps.notifyDataSetChanged();
+        } else {
+            recyclerViewBusStation.setHasFixedSize(true);
+            recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            adapterBusStation = new SearchAdapter(stops);
+            recyclerViewBusStation.setAdapter(adapterBusStation);
+            adapterBusStation.notifyDataSetChanged();
+        }
+    }
+
+    private void itemAdapterMethod(List<SearchItem> ListStops, int position) {
+        searchBarGps.setVisibility(View.GONE);
+        if (!currentBusStopName.equals(ListStops.get(position).getBusStopName())) {
+            if (adapterOutput != null && !outputItemList.isEmpty()) {
+                outputItemList.clear();
+                adapterOutput.notifyDataSetChanged();
+            }
+            busStopCode = ListStops.get(position).getBusStopCode();
+            currentBusStopName = ListStops.get(position).getBusStopName();
+            spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
+            spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
+            spinnerBusCode.setAdapter(spinnerArrayAdapter);
+            searchViewBusStopName.setPlaceHolder(currentBusStopName);
+            searchViewBusStopName.disableSearch();
+            setElementAppBar(true);
+            setDisplayChild(1);
+            fabBus.show();
+        } else {
+            searchViewBusStopName.disableSearch();
+            setElementAppBar(true);
+            setDisplayChild(1);
+            fabBus.show();
+        }
     }
 
     private boolean refreshElement(int position) {
