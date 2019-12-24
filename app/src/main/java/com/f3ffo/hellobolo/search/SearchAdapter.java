@@ -111,7 +111,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
             textViewBusStopNameSearch = itemView.findViewById(R.id.textViewBusStopNameSearch);
             textViewBusStopAddressSearch = itemView.findViewById(R.id.textViewBusStopAddressSearch);
             imageButtonFavouriteSearch = itemView.findViewById(R.id.imageButtonFavouriteSearch);
-
             itemView.setOnClickListener((View v) -> {
                 if (listener != null) {
                     int position = getAdapterPosition();
@@ -120,7 +119,6 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
                     }
                 }
             });
-
             imageButtonFavouriteSearch.setOnClickListener((View v) -> {
                 if (listener2 != null) {
                     int position = getAdapterPosition();
