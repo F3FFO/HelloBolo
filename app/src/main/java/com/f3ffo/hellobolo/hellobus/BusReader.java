@@ -14,11 +14,15 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
 public class BusReader {
+
+    private List<Double> arrayLongitude = new ArrayList();
+    private List<Double> arrayLatitude = new ArrayList();
 
     public ArrayList<BusClass> extractFromFile(Context context) {
         ArrayList<BusClass> busClass = new ArrayList<>();
@@ -51,15 +55,19 @@ public class BusReader {
                                 String latitude = token.nextToken();
                                 if (latitude.length() < 9) {
                                     for (int i = 0; i < (9 - latitude.length()); i++) {
-                                        latitude += "0";
+                                        new StringBuilder(latitude).append("0");
                                     }
                                 }
+                                latitude = latitude.replace(",", ".");
+                                arrayLatitude.add(Double.parseDouble(latitude));
                                 String longitude = token.nextToken();
                                 if (longitude.length() < 9) {
                                     for (int i = 0; i < (9 - longitude.length()); i++) {
-                                        longitude += "0";
+                                        new StringBuilder(longitude).append("0");
                                     }
                                 }
+                                longitude = longitude.replace(",", ".");
+                                arrayLongitude.add(Double.parseDouble(longitude));
                                 busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress), latitude, longitude));
                             }
                         }
@@ -105,12 +113,13 @@ public class BusReader {
     private void writeFile(Context context, File file, ArrayList<BusClass> busClass) {
         ArrayList<String> stopsTemp = new ArrayList<>();
         String busStopCode;
+        Collections.sort(busClass, BusClass.sortByLat);
         for (int i = 0; i < busClass.size(); i++) {
             busStopCode = busClass.get(i).getBusStopCode();
             if (!stopsTemp.contains(busStopCode)) {
                 stopsTemp.add(busStopCode);
                 try {
-                    FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + ";" + busClass.get(i).getBusStopName() + ";" + busClass.get(i).getBusStopAddress() + ";" + busClass.get(i).getLatitude() + ";" + busClass.get(i).getLongitude() + "\n"), StandardCharsets.UTF_8, true);
+                    FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + ";" + busClass.get(i).getBusStopName() + ";" + busClass.get(i).getBusStopAddress() + ";" + busClass.get(i).getLatitude().replace(",", ".") + ";" + busClass.get(i).getLongitude().replace(",", ".") + "\n"), StandardCharsets.UTF_8, true);
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -129,7 +138,11 @@ public class BusReader {
                 String busStopName = token.nextToken();
                 String busStopAddress = token.nextToken();
                 String latitude = token.nextToken();
+                latitude = latitude.replace(",", ".");
+                arrayLatitude.add(Double.parseDouble(latitude));
                 String longitude = token.nextToken();
+                longitude = longitude.replace(",", ".");
+                arrayLongitude.add(Double.parseDouble(longitude));
                 boolean isElementAdded = false;
                 for (String s : propertiesFile) {
                     if (s.equals(busStopCode)) {
@@ -159,4 +172,55 @@ public class BusReader {
         }
         return stops;
     }
+
+    /*private void stopsCutLongitude(double searchValue) {
+        arrayLongitude = cutTheCuttedFile(searchValue, arrayLongitude);
+    }*/
+
+    private void stopsCutLatitude(double searchValue) {
+        arrayLatitude = cutTheCuttedFile(searchValue, arrayLatitude);
+    }
+
+    private List<Double> cutTheCuttedFile(double searchValue, List<Double> cut) {
+        List<Double> result = new ArrayList();
+        for (int i = 0; i < cut.size(); i++) {
+            if (cut.get(i) < (searchValue + 0.0008) && cut.get(i) > (searchValue - 0.0008)) {
+                result.add(cut.get(i));
+            }
+        }
+        return result;
+    }
+
+    public List<String> takeTheCorrispondingBusStop(ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
+        stopsCutLatitude(searchValueLatitude);
+        List<String> result = new ArrayList();
+        for (int i = 0; i < busClass.size(); i++) {
+            for (int j = 0; j < arrayLatitude.size(); j++) {
+                if (Double.parseDouble(busClass.get(i).getLatitude()) == arrayLatitude.get(j) && !result.contains(busClass.get(i).getBusStopCode())) {
+                    if (Double.parseDouble(busClass.get(i).getLongitude()) < (searchValueLongitude + 0.0008) && Double.parseDouble(busClass.get(i).getLongitude()) > (searchValueLongitude - 0.0008)) {
+                        result.add(busClass.get(i).getBusStopCode());
+                    }
+                }
+            }
+
+        }
+        return result;
+    }
+
+    /*public List<String> takeTheCorrispondingBusStop2(ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
+        stopsCutLongitude(searchValueLongitude);
+        stopsCutLatitude(searchValueLatitude);
+        List<String> result = new ArrayList();
+        for (int i = 0; i < busClass.size(); i++) {
+            for (int j = 0; j < arrayLatitude.size(); j++) {
+                for (int k = 0; k < arrayLongitude.size(); k++) {
+                    if (Double.parseDouble(busClass.get(i).getLatitude()) == arrayLatitude.get(j) && Double.parseDouble(busClass.get(i).getLongitude()) == arrayLongitude.get(k) && !result.contains(busClass.get(i).getBusStopCode())) {
+                        result.add(busClass.get(i).getBusStopCode());
+                    }
+                }
+            }
+
+        }
+        return result;
+    }*/
 }
