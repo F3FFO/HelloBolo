@@ -12,12 +12,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.f3ffo.hellobolo.asyncInterface.AsyncResponseVersion;
 import com.f3ffo.hellobolo.hellobus.CheckVersion;
 import com.f3ffo.hellobolo.hellobus.DownloadCsv;
+import com.f3ffo.hellobolo.preference.Preference;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        new Preference().getPreferenceTheme(SplashActivity.this);
         super.onCreate(savedInstanceState);
         if (isNetworkAvailable()) {
             try {
