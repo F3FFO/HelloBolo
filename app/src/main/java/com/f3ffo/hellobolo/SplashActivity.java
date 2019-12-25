@@ -1,11 +1,12 @@
 package com.f3ffo.hellobolo;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,7 +14,6 @@ import com.f3ffo.hellobolo.asyncInterface.AsyncResponseVersion;
 import com.f3ffo.hellobolo.hellobus.CheckVersion;
 import com.f3ffo.hellobolo.hellobus.DownloadCsv;
 import com.f3ffo.hellobolo.preference.Preference;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 
@@ -30,16 +30,8 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             startActivity(new Intent(SplashActivity.this, MainActivity.class));
             finish();
         } else {
-            new MaterialAlertDialogBuilder(SplashActivity.this)
-                    .setTitle(R.string.alertDialog_title)
-                    .setMessage(R.string.alertDialog_message)
-                    .setPositiveButton(R.string.alertDialog_yes, (DialogInterface dialog, int which) -> {
-                        finish();
-                        startActivity(new Intent(SplashActivity.this, SplashActivity.class));
-                    })
-                    .setNegativeButton(R.string.alertDialog_no, (DialogInterface dialog, int which) -> finish())
-                    .setIcon(android.R.drawable.ic_dialog_alert)
-                    .show();
+            Toast.makeText(SplashActivity.this, R.string.network, Toast.LENGTH_LONG).show();
+            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
         }
     }
 

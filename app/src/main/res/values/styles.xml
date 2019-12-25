@@ -12,7 +12,6 @@
         <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
 
-    <!-- Amoled Mode theme -->
     <!--<style name="AmoledTheme" parent="Theme.MaterialComponents.NoActionBar">
         <item name="colorPrimary">@color/colorPrimaryDarkNight</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
@@ -50,7 +49,7 @@
         <item name="android:textColor">?android:attr/textColor</item>
     </style>
 
-    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog.Alert">
         <item name="android:background">?attr/colorPrimary</item>
         <item name="android:colorBackground">?attr/colorPrimary</item>
         <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>

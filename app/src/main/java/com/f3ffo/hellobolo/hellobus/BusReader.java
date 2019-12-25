@@ -113,7 +113,6 @@ public class BusReader {
     private void writeFile(Context context, File file, ArrayList<BusClass> busClass) {
         ArrayList<String> stopsTemp = new ArrayList<>();
         String busStopCode;
-        Collections.sort(busClass, BusClass.sortByLat);
         for (int i = 0; i < busClass.size(); i++) {
             busStopCode = busClass.get(i).getBusStopCode();
             if (!stopsTemp.contains(busStopCode)) {
@@ -173,10 +172,6 @@ public class BusReader {
         return stops;
     }
 
-    /*private void stopsCutLongitude(double searchValue) {
-        arrayLongitude = cutTheCuttedFile(searchValue, arrayLongitude);
-    }*/
-
     private void stopsCutLatitude(double searchValue) {
         arrayLatitude = cutTheCuttedFile(searchValue, arrayLatitude);
     }
@@ -184,7 +179,7 @@ public class BusReader {
     private List<Double> cutTheCuttedFile(double searchValue, List<Double> cut) {
         List<Double> result = new ArrayList();
         for (int i = 0; i < cut.size(); i++) {
-            if (cut.get(i) < (searchValue + 0.0008) && cut.get(i) > (searchValue - 0.0008)) {
+            if (cut.get(i) < (searchValue + 0.001) && cut.get(i) > (searchValue - 0.001)) {
                 result.add(cut.get(i));
             }
         }
@@ -197,7 +192,7 @@ public class BusReader {
         for (int i = 0; i < busClass.size(); i++) {
             for (int j = 0; j < arrayLatitude.size(); j++) {
                 if (Double.parseDouble(busClass.get(i).getLatitude()) == arrayLatitude.get(j) && !result.contains(busClass.get(i).getBusStopCode())) {
-                    if (Double.parseDouble(busClass.get(i).getLongitude()) < (searchValueLongitude + 0.0008) && Double.parseDouble(busClass.get(i).getLongitude()) > (searchValueLongitude - 0.0008)) {
+                    if (Double.parseDouble(busClass.get(i).getLongitude()) < (searchValueLongitude + 0.001) && Double.parseDouble(busClass.get(i).getLongitude()) > (searchValueLongitude - 0.001)) {
                         result.add(busClass.get(i).getBusStopCode());
                     }
                 }
@@ -206,21 +201,4 @@ public class BusReader {
         }
         return result;
     }
-
-    /*public List<String> takeTheCorrispondingBusStop2(ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
-        stopsCutLongitude(searchValueLongitude);
-        stopsCutLatitude(searchValueLatitude);
-        List<String> result = new ArrayList();
-        for (int i = 0; i < busClass.size(); i++) {
-            for (int j = 0; j < arrayLatitude.size(); j++) {
-                for (int k = 0; k < arrayLongitude.size(); k++) {
-                    if (Double.parseDouble(busClass.get(i).getLatitude()) == arrayLatitude.get(j) && Double.parseDouble(busClass.get(i).getLongitude()) == arrayLongitude.get(k) && !result.contains(busClass.get(i).getBusStopCode())) {
-                        result.add(busClass.get(i).getBusStopCode());
-                    }
-                }
-            }
-
-        }
-        return result;
-    }*/
 }
