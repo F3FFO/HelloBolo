@@ -1,18 +1,19 @@
 <resources>
     <string name="app_name">HelloBolo</string>
     <string name="exit">Premere di nuovo per uscire</string>
-    <string name="permissions">Autorizzazioni non concesse, uscita</string>
+    <string name="network">Connessione assente!</string>
+    <string name="permissions">Concedi le autorizzazioni necessarie</string>
     <string name="update_output">Aggiornato</string>
     <string name="busStopNameText">Cerca qui</string>
     <string name="busCodeText">Autobus:</string>
     <string name="busHourTextDefault">Ora:</string>
     <string name="busHourText">Adesso</string>
     <string name="busHourText2">%1$d:%2$s</string>
-    <string name="alertDialog_title">Nessuna connessione</string>
-    <string name="alertDialog_message">Controllare la connessione di rete e riprovare</string>
-    <string name="alertDialog_yes">Riprova</string>
     <string name="alertDialog_no">Chiudi</string>
     <string name="alertDialog_open">Leggi</string>
+    <string name="alertDialogGps_message">Abilita GPS</string>
+    <string name="alertDialogGps_no">Chiudi</string>
+    <string name="alertDialogGps_yes">Impostazioni</string>
     <string name="nav_menu_home">Home</string>
     <string name="nav_menu_favourites">Preferiti</string>
     <string name="nav_menu_settings">Impostazioni</string>
@@ -25,8 +26,8 @@
     <string name="tab_rss_1">Prima pagina</string>
     <string name="tab_rss_2">Tutte</string>
     <string name="tab_rss_3">Bologna</string>
+    <string name="gps_error">Gps non trovato</string>
     <string name="preference_title">Impostazioni</string>
-    <string name="preference_cat1">Generali</string>
     <string name="preference_theme">Tema</string>
     <string name="preference_key_theme">NIGHT_MODE</string>
     <string name="theme_0">Automatico</string>
