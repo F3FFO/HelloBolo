@@ -8,25 +8,12 @@
         <item name="colorSecondary">@color/colorPrimary</item>
         <item name="colorError">@color/colorError</item>
         <item name="colorControlNormal">@color/colorIcon</item>
+        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
         <item name="android:windowLightNavigationBar">true</item>
         <item name="android:windowLightStatusBar">true</item>
     </style>
-
-    <!-- Amoled Mode theme -->
-    <!--<style name="AmoledTheme" parent="Theme.MaterialComponents.NoActionBar">
-        <item name="colorPrimary">@color/colorPrimaryDarkNight</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
-        <item name="colorAccent">@color/colorAccentNight</item>
-        <item name="colorSecondary">@color/colorPrimaryDarkNight</item>
-        <item name="colorError">@color/colorErrorNight</item>
-        <item name="android:textColor">@color/colorTextNight</item>
-        <item name="android:navigationBarColor">@color/colorPrimaryDarkNight</item>
-        <item name="android:statusBarColor">@color/colorPrimaryDarkNight</item>
-        <item name="android:windowLightNavigationBar">false</item>
-        <item name="android:windowLightStatusBar">false</item>
-    </style>-->
 
 </resources>
