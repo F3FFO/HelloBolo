@@ -6,6 +6,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -15,6 +16,7 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -45,6 +47,7 @@ import com.f3ffo.hellobolo.hellobus.UrlElaboration;
 import com.f3ffo.hellobolo.output.OutputAdapter;
 import com.f3ffo.hellobolo.output.OutputErrorAdapter;
 import com.f3ffo.hellobolo.output.OutputItem;
+import com.f3ffo.hellobolo.preference.Preference;
 import com.f3ffo.hellobolo.preference.PreferencesActivity;
 import com.f3ffo.hellobolo.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobolo.search.SearchAdapter;
@@ -57,7 +60,6 @@ import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.mancj.materialsearchbar.MaterialSearchBar;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
@@ -99,7 +101,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        Preference preference = new Preference(MainActivity.this);
+        preference.setPreferenceTheme();
         super.onCreate(savedInstanceState);
+        if (preference.setPreferenceLanguage()) {
+            Locale locale = new Locale("en");
+            Locale.setDefault(locale);
+            Configuration config = new Configuration();
+            config.locale = locale;
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        } else {
+            Locale locale = new Locale("it");
+            Locale.setDefault(locale);
+            Configuration config = new Configuration();
+            config.locale = locale;
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        }
         switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
             case Configuration.UI_MODE_NIGHT_NO:
                 if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
@@ -138,6 +155,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         outputItemList = new ArrayList<>();
         swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
         swipeRefreshLayoutOutput.setEnabled(false);
+        swipeRefreshLayoutOutput.setProgressBackgroundColorSchemeResource(R.color.colorPrimary);
+        swipeRefreshLayoutOutput.setColorSchemeResources(R.color.colorAccent);
         busClass.addAll(br.extractFromFile(MainActivity.this));
         stops.addAll(br.stopsViewer(MainActivity.this, busClass));
         buildRecyclerViewSearch(stops, false);
@@ -151,8 +170,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         searchBarGps.setOnClickListener((View view) -> {
             if (getLocation()) {
-                latitude = Double.parseDouble(new DecimalFormat("##.######").format(latitude));
-                longitude = Double.parseDouble(new DecimalFormat("##.######").format(longitude));
+                latitude = ((long) (latitude * 1e6)) / 1e6;
+                longitude = ((long) (longitude * 1e6)) / 1e6;
                 List<String> busPosition = br.takeTheCorrispondingBusStop(busClass, latitude, longitude);
                 stopsGps.clear();
                 if (busPosition.size() > 1) {
@@ -173,9 +192,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                                 fav.add(item);
                                 adapterBusGps.notifyItemChanged(position);
                                 adapterFavourites.notifyItemInserted(fav.size());
-                                Toast.makeText(MainActivity.this, R.string.favourite_added, Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_LONG).show();
                             } else {
-                                Toast.makeText(MainActivity.this, R.string.favourite_not_added, Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_LONG).show();
                             }
                         } else {
                             if (fv.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
@@ -188,7 +207,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                                         isRemoved = true;
                                     }
                                 }
-                                Toast.makeText(MainActivity.this, R.string.favourite_removed, Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
                             }
                         }
                     });
@@ -215,6 +234,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     setElementAppBar(true);
                     setDisplayChild(1);
                     fabBus.show();
+                } else {
+                    Toast.makeText(MainActivity.this, R.string.toast_no_bus_stop_gps, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -259,9 +280,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             public void afterTextChanged(Editable editable) {
             }
         });
-        adapterBusStation.setOnItemClickListener((int position) -> {
-            itemAdapterMethod(stops, position);
-        });
+        adapterBusStation.setOnItemClickListener((int position) -> itemAdapterMethod(stops, position));
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
             if (refreshElement(position)) {
@@ -270,9 +289,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     fav.add(item);
                     adapterBusStation.notifyItemChanged(position);
                     adapterFavourites.notifyItemInserted(fav.size());
-                    Toast.makeText(MainActivity.this, R.string.favourite_added, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_LONG).show();
                 } else {
-                    Toast.makeText(MainActivity.this, R.string.favourite_not_added, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_LONG).show();
                 }
             } else {
                 if (fv.removeFavourite(MainActivity.this, stops.get(position).getBusStopCode())) {
@@ -285,7 +304,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                             isRemoved = true;
                         }
                     }
-                    Toast.makeText(MainActivity.this, R.string.favourite_removed, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -305,7 +324,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     .show();
             MaterialTextView textViewResetHour = view.findViewById(R.id.textViewResetHour);
             textViewResetHour.setOnClickListener((View secondView) -> {
-                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+                Calendar now = Calendar.getInstance(TimeZone.getTimeZone(getString(R.string.time_zone)), Locale.ITALY);
                 int hour = now.get(Calendar.HOUR_OF_DAY);
                 int minute = now.get(Calendar.MINUTE);
                 timePicker.setHour(hour);
@@ -330,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         });
         fabBus.setOnClickListener((View v) -> {
             if (!busStopCode.isEmpty()) {
-                if (spinnerBusCode.getSelectedItem().toString().equals("Tutti gli autobus")) {
+                if (spinnerBusCode.getSelectedItem().toString().equals(getString(R.string.first_element_spinner))) {
                     busLine = "";
                 } else {
                     busLine = spinnerBusCode.getSelectedItem().toString();
@@ -339,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 checkBus(busStopCode, busLine, busHour);
                 swipeRefreshLayoutOutput.setEnabled(true);
             } else {
-                Toast.makeText(MainActivity.this, "Fermata mancante", Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, getString(R.string.toast_no_bus_stop), Toast.LENGTH_LONG).show();
             }
         });
         adapterFavourites.setOnItemClickListener((int position) -> {
@@ -370,7 +389,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                         isRemoved = true;
                     }
                 }
-                Toast.makeText(MainActivity.this, R.string.favourite_removed, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
             }
         });
     }
@@ -396,7 +415,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
             for (int i = permissions.length - 1; i >= 0; --i) {
                 if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(MainActivity.this, R.string.permissions, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_permissions, Toast.LENGTH_LONG).show();
                     startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.fromParts("package", getPackageName(), null)));
                 }
             }
@@ -435,7 +454,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     searchViewBusStopName.disableSearch();
                 }
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
-                startActivity(new Intent(MainActivity.this, PreferencesActivity.class));
+                startActivity(new Intent(MainActivity.this, PreferencesActivity.class).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 return true;
         }
         return false;
@@ -444,9 +463,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private boolean getLocation() {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             new MaterialAlertDialogBuilder(MainActivity.this)
-                    .setMessage(R.string.alertDialogGps_message)
-                    .setPositiveButton(R.string.alertDialogGps_yes, (DialogInterface dialog, int which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                    .setNegativeButton(R.string.alertDialogGps_no, (DialogInterface dialog, int which) -> dialog.cancel())
+                    .setMessage(R.string.alertDialog_gps_message)
+                    .setPositiveButton(R.string.alertDialog_gps_yes, (DialogInterface dialog, int which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                    .setNegativeButton(R.string.alertDialog_gps_no, (DialogInterface dialog, int which) -> dialog.cancel())
                     .show();
             return false;
         } else {
@@ -469,7 +488,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     longitude = LocationPassive.getLongitude();
                     return true;
                 } else {
-                    Toast.makeText(MainActivity.this, R.string.gps_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_gps_error, Toast.LENGTH_LONG).show();
                     return false;
                 }
             }
@@ -479,7 +498,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     private ArrayList<String> busViewer(String busStopCodeIn) {
         ArrayList<String> bus = new ArrayList<>();
-        bus.add(0, "Tutti gli autobus");
+        bus.add(0, getString(R.string.first_element_spinner));
         for (int i = 0; i < busClass.size(); i++) {
             String busStopCode = busClass.get(i).getBusStopCode();
             if (busStopCode.equals(busStopCodeIn)) {
@@ -604,14 +623,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private void setTime(int hour, int minute, boolean isNow) {
         if (!isNow) {
             if (minute < 10) {
-                materialTextViewBusHour.setText(getString(R.string.busHourText2, hour, ("0" + minute)));
+                materialTextViewBusHour.setText(getString(R.string.busHourText, hour, ("0" + minute)));
                 busHour = hour + "0" + minute;
             } else {
-                materialTextViewBusHour.setText(getString(R.string.busHourText2, hour, ("" + minute)));
+                materialTextViewBusHour.setText(getString(R.string.busHourText, hour, ("" + minute)));
                 busHour = hour + "" + minute;
             }
         } else {
-            materialTextViewBusHour.setText(R.string.busHourText);
+            materialTextViewBusHour.setText(R.string.busHourTextNow);
             busHour = "";
         }
         outputItemList.clear();
@@ -646,7 +665,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     @Override
     public void onRefresh() {
         checkBus(busStopCode, busLine, busHour);
-        Toast.makeText(MainActivity.this, R.string.update_output, Toast.LENGTH_SHORT).show();
+        Toast.makeText(MainActivity.this, R.string.toast_update_output, Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -667,21 +686,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             adapterOutput = new OutputAdapter(MainActivity.this, outputItemList);
             if ("".equals(busHour)) {
                 String diffTime;
-                Calendar now = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"), Locale.ITALY);
+                Calendar now = Calendar.getInstance(TimeZone.getTimeZone(getString(R.string.time_zone)), Locale.ITALY);
                 for (int i = 1; i < output.size(); i++) {
                     StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
                     int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
                     int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
                     if (diffHour == 0 || diffHour < 0) {
                         if (diffMin < 2) {
-                            diffTime = "In arrivo";
+                            diffTime = getString(R.string.busHourOutputLive);
                         } else {
-                            diffTime = diffMin + "min";
+                            diffTime = diffMin + getString(R.string.busHourOutputMin);
                         }
                     } else if (diffMin < 0) {
-                        diffTime = 60 + diffMin + "min";
+                        diffTime = 60 + diffMin + getString(R.string.busHourOutputMin);
                     } else {
-                        diffTime = diffHour + "h " + diffMin + "min";
+                        diffTime = diffHour + getString(R.string.busHourOutputHour) + " " + diffMin + getString(R.string.busHourOutputMin);
                     }
                     outputItemList.add(new OutputItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
                     recyclerViewBusOutput.setAdapter(adapterOutput);
