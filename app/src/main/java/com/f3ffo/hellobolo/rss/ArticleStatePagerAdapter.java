@@ -13,7 +13,7 @@ import com.f3ffo.hellobolo.R;
 public class ArticleStatePagerAdapter extends FragmentStatePagerAdapter {
 
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_rss_1, R.string.tab_rss_2, R.string.tab_rss_3};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_rss_0, R.string.tab_rss_1, R.string.tab_rss_2};
     private final Context context;
 
     public ArticleStatePagerAdapter(Context context, FragmentManager fragmentManager) {
