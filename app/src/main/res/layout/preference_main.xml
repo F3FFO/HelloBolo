@@ -21,7 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:fontFamily="sans-serif"
-                android:text="@string/preference_title"
+                android:text="@string/preference"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textIsSelectable="false" />
         </com.google.android.material.appbar.MaterialToolbar>

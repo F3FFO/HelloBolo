@@ -52,7 +52,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:mt_backIconTint="?attr/colorControlNormal"
                 app:mt_clearIconTint="?attr/colorControlNormal"
-                app:mt_hint="@string/busStopNameText"
+                app:mt_hint="@string/searchBar_hint"
                 app:mt_searchIconTint="?attr/colorControlNormal"
                 app:mt_textCursorTint="?attr/colorAccent" />
 
@@ -92,7 +92,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="sans-serif"
-                    android:text="@string/busCodeText"
+                    android:text="@string/busStopText"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textIsSelectable="false" />
 
@@ -130,7 +130,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="4dp"
                     android:fontFamily="sans-serif"
-                    android:text="@string/busHourText"
+                    android:text="@string/busHourTextNow"
                     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                     android:textIsSelectable="false" />
             </androidx.appcompat.widget.LinearLayoutCompat>
