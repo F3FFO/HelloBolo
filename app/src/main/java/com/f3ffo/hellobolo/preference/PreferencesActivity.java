@@ -13,7 +13,9 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.f3ffo.hellobolo.MainActivity;
 import com.f3ffo.hellobolo.R;
+import com.google.android.material.appbar.MaterialToolbar;
 
 import org.apache.commons.io.FileUtils;
 
@@ -42,7 +44,9 @@ public class PreferencesActivity extends AppCompatActivity {
                 break;
         }
         setContentView(R.layout.preference_main);
-        setSupportActionBar(findViewById(R.id.materialToolbarPreference));
+        MaterialToolbar materialToolbar = findViewById(R.id.materialToolbarPreference);
+        setSupportActionBar(materialToolbar);
+        materialToolbar.setNavigationOnClickListener((View v) -> super.onBackPressed());
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutPreference, new PreferencesFragment()).commit();
         }
@@ -59,8 +63,9 @@ public class PreferencesActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
-        super.onBackPressed();
+    protected void onPause() {
+        super.onPause();
+        finish();
     }
 
     public static class PreferencesFragment extends PreferenceFragmentCompat {
@@ -70,9 +75,8 @@ public class PreferencesActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.preference);
             ListPreference listPreference = findPreference(getString(R.string.preference_key_theme));
             listPreference.setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> {
-                //getActivity().recreate();
-                //getActivity().startActivity(new Intent(getContext(), PreferencesActivity.class).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
-                Toast.makeText(getContext(), getString(R.string.toast_theme), Toast.LENGTH_LONG).show();
+                startActivity(new Intent(getContext(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                getActivity().finish();
                 return true;
             });
             androidx.preference.Preference clearMemory = getPreferenceManager().findPreference(getString(R.string.preference_key_clear_memory));
