@@ -77,7 +77,8 @@ public class ArticleFragment extends Fragment {
                 articleViewModel.onSnackBarShowed();
             }
         });
-        swipeRefreshLayoutRss.setColorSchemeResources(R.color.colorAccent, R.color.colorPrimaryDark);
+        swipeRefreshLayoutRss.setProgressBackgroundColorSchemeResource(R.color.colorPrimary);
+        swipeRefreshLayoutRss.setColorSchemeResources(R.color.colorAccent);
         swipeRefreshLayoutRss.canChildScrollUp();
         swipeRefreshLayoutRss.setOnRefreshListener(() -> {
             articleAdapter.getArticleList().clear();
