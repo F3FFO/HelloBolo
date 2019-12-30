@@ -11,12 +11,19 @@ import com.f3ffo.hellobolo.R;
 
 public class Preference {
 
-    public void getPreferenceTheme(Context context) {
-        SharedPreferences mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
-        SharedPreferences.Editor editor = mPrefs.edit();
-        if (mPrefs.getString(context.getString(R.string.preference_key_theme), "").equals("true")) {
+    private SharedPreferences sharedPreference;
+    private Context context;
+
+    public Preference(Context context) {
+        this.context = context;
+        this.sharedPreference = PreferenceManager.getDefaultSharedPreferences(context);
+    }
+
+    public String setPreferenceTheme() {
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        if (sharedPreference.getString(context.getString(R.string.preference_key_theme), "").equals("true")) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-        } else if (mPrefs.getString(context.getString(R.string.preference_key_theme), "").equals("false")) {
+        } else if (sharedPreference.getString(context.getString(R.string.preference_key_theme), "").equals("false")) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
         } else {
             if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
@@ -31,5 +38,17 @@ public class Preference {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         }
+        return null;
+    }
+
+    public void setPreferenceGps(float value) {
+        SharedPreferences.Editor editor = sharedPreference.edit();
+        editor.putString(context.getString(R.string.preference_key_gps), Float.toString(value));
+        editor.apply();
+        editor.commit();
+    }
+
+    public boolean setPreferenceLanguage() {
+        return sharedPreference.getString(context.getString(R.string.preference_key_language), "it").equals("en");
     }
 }
