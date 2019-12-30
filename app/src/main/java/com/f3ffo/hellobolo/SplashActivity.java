@@ -6,6 +6,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.view.WindowManager;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -13,14 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.f3ffo.hellobolo.asyncInterface.AsyncResponseVersion;
 import com.f3ffo.hellobolo.hellobus.CheckVersion;
 import com.f3ffo.hellobolo.hellobus.DownloadCsv;
-import com.f3ffo.hellobolo.preference.Preference;
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        new Preference().getPreferenceTheme(SplashActivity.this);
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (isNetworkAvailable()) {
             try {
                 new CheckVersion(SplashActivity.this, SplashActivity.this).execute().get();
@@ -31,7 +31,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             finish();
         } else {
             Toast.makeText(SplashActivity.this, R.string.network, Toast.LENGTH_LONG).show();
-            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
         }
     }
 
