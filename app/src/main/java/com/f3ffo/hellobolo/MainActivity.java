@@ -6,7 +6,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -16,7 +15,6 @@ import android.os.Handler;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -59,6 +57,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textview.MaterialTextView;
 import com.mancj.materialsearchbar.MaterialSearchBar;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -186,7 +186,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     adapterBusGps.setOnItemClickListener((int position) -> itemAdapterMethod(stopsGps, position));
                     adapterBusGps.setOnFavouriteButtonClickListener((int position) -> {
                         Favourites favourites = new Favourites();
-                        if (refreshElement(position)) {
+                        if (updateStarFavourite(position)) {
                             FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress(), stopsGps.get(position).getLatitude(), stopsGps.get(position).getLongitude());
                             if (item != null) {
                                 fav.add(item);
@@ -283,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         adapterBusStation.setOnItemClickListener((int position) -> itemAdapterMethod(stops, position));
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
-            if (refreshElement(position)) {
+            if (updateStarFavourite(position)) {
                 FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress(), stops.get(position).getLatitude(), stops.get(position).getLongitude());
                 if (item != null) {
                     fav.add(item);
@@ -382,7 +382,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
                 boolean isRemoved = false;
                 for (int i = 0; i < stops.size() && !isRemoved; i++) {
-                    if (fav.get(position).getBusStopCode().equals(stops.get(i).getBusStopCode()) && !refreshElement(i)) {
+                    if (fav.get(position).getBusStopCode().equals(stops.get(i).getBusStopCode()) && !updateStarFavourite(i)) {
                         adapterFavourites.notifyItemRemoved(position);
                         fav.remove(position);
                         adapterBusStation.notifyItemChanged(i);
@@ -392,6 +392,53 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (constraintLayoutFavourites.getVisibility() == View.VISIBLE) {
+            bottomNavView.setSelectedItemId(R.id.navigation_favourites);
+        } else if (viewPagerRss.getVisibility() == View.VISIBLE) {
+            bottomNavView.setSelectedItemId(R.id.navigation_home);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        if (constraintLayoutSearch.getVisibility() == View.VISIBLE && currentBusStopCode.equals("")) {
+            setElementAppBar(false);
+            setDisplayChild(0);
+            fabBus.hide();
+        } else if (constraintLayoutSearch.getVisibility() == View.VISIBLE && !currentBusStopCode.equals("")) {
+            setElementAppBar(true);
+            setDisplayChild(1);
+            fabBus.show();
+        } else if (viewPagerRss.getVisibility() == View.INVISIBLE && currentBusStopCode.equals("")) {
+            searchViewBusStopName.setPlaceHolder("");
+        } else if (viewPagerRss.getVisibility() == View.VISIBLE && tabsRss.getVisibility() == View.VISIBLE) {
+            if (doubleBackToExitPressedOnce) {
+                super.onBackPressed();
+                return;
+            }
+            doubleBackToExitPressedOnce = true;
+            Toast.makeText(this, R.string.exit, Toast.LENGTH_SHORT).show();
+            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
+            for (int i = permissions.length - 1; i >= 0; --i) {
+                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(MainActivity.this, R.string.toast_permissions, Toast.LENGTH_LONG).show();
+                    startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.fromParts("package", getPackageName(), null)));
+                }
+            }
+        }
     }
 
     private void checkPermissions() {
@@ -410,15 +457,53 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        if (requestCode == REQUEST_CODE_ASK_PERMISSIONS) {
-            for (int i = permissions.length - 1; i >= 0; --i) {
-                if (grantResults[i] != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(MainActivity.this, R.string.toast_permissions, Toast.LENGTH_LONG).show();
-                    startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.fromParts("package", getPackageName(), null)));
-                }
-            }
+    private void setDisplayChild(int displayChild) {
+        if (displayChild == 0) {
+            searchViewBusStopName.setPlaceHolder("");
+            viewPagerRss.setVisibility(View.VISIBLE);
+            tabsRss.setVisibility(View.VISIBLE);
+            constraintLayoutOutput.setVisibility(View.GONE);
+            constraintLayoutSearch.setVisibility(View.GONE);
+            constraintLayoutFavourites.setVisibility(View.GONE);
+        } else if (displayChild == 1) {
+            viewPagerRss.setVisibility(View.GONE);
+            tabsRss.setVisibility(View.GONE);
+            constraintLayoutOutput.setVisibility(View.VISIBLE);
+            constraintLayoutSearch.setVisibility(View.GONE);
+            constraintLayoutFavourites.setVisibility(View.GONE);
+        } else if (displayChild == 2) {
+            viewPagerRss.setVisibility(View.GONE);
+            tabsRss.setVisibility(View.GONE);
+            constraintLayoutOutput.setVisibility(View.GONE);
+            constraintLayoutSearch.setVisibility(View.VISIBLE);
+            constraintLayoutFavourites.setVisibility(View.GONE);
+        } else if (displayChild == 3) {
+            searchViewBusStopName.setPlaceHolder("");
+            viewPagerRss.setVisibility(View.GONE);
+            tabsRss.setVisibility(View.GONE);
+            constraintLayoutOutput.setVisibility(View.GONE);
+            constraintLayoutSearch.setVisibility(View.GONE);
+            constraintLayoutFavourites.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private void setElementAppBar(boolean isVisible) {
+        if (isVisible) {
+            linearLayoutHour.setVisibility(View.VISIBLE);
+            linearLayoutBusCode.setVisibility(View.VISIBLE);
+        } else {
+            linearLayoutHour.setVisibility(View.GONE);
+            linearLayoutBusCode.setVisibility(View.GONE);
+        }
+    }
+
+    private void setVisibilityRecycler(boolean isGps) {
+        if (!isGps) {
+            recyclerViewBusStation.setVisibility(View.VISIBLE);
+            recyclerViewBusGps.setVisibility(View.GONE);
+        } else {
+            recyclerViewBusStation.setVisibility(View.GONE);
+            recyclerViewBusGps.setVisibility(View.VISIBLE);
         }
     }
 
@@ -459,6 +544,32 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
         return false;
     };
+
+    private void buildRecyclerViewSearch(List<SearchItem> stops, boolean isGps) {
+        setVisibilityRecycler(isGps);
+        if (isGps) {
+            recyclerViewBusGps.setHasFixedSize(true);
+            recyclerViewBusGps.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            adapterBusGps = new SearchAdapter(stops);
+            recyclerViewBusGps.setAdapter(adapterBusGps);
+            adapterBusGps.notifyDataSetChanged();
+        } else {
+            recyclerViewBusStation.setHasFixedSize(true);
+            recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+            adapterBusStation = new SearchAdapter(stops);
+            recyclerViewBusStation.setAdapter(adapterBusStation);
+            adapterBusStation.notifyDataSetChanged();
+        }
+    }
+
+    private void buildRecyclerViewFavourites() {
+        RecyclerView recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
+        recyclerViewFavourites.setHasFixedSize(true);
+        recyclerViewFavourites.setLayoutManager(new LinearLayoutManager(MainActivity.this));
+        adapterFavourites = new FavouritesAdapter(fav);
+        recyclerViewFavourites.setAdapter(adapterFavourites);
+        adapterFavourites.notifyDataSetChanged();
+    }
 
     private boolean getLocation() {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
@@ -509,83 +620,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         return bus;
     }
 
-    private void setElementAppBar(boolean isVisible) {
-        if (isVisible) {
-            linearLayoutHour.setVisibility(View.VISIBLE);
-            linearLayoutBusCode.setVisibility(View.VISIBLE);
-        } else {
-            linearLayoutHour.setVisibility(View.GONE);
-            linearLayoutBusCode.setVisibility(View.GONE);
-        }
-    }
-
-    private void setDisplayChild(int displayChild) {
-        if (displayChild == 0) {
-            searchViewBusStopName.setPlaceHolder("");
-            viewPagerRss.setVisibility(View.VISIBLE);
-            tabsRss.setVisibility(View.VISIBLE);
-            constraintLayoutOutput.setVisibility(View.GONE);
-            constraintLayoutSearch.setVisibility(View.GONE);
-            constraintLayoutFavourites.setVisibility(View.GONE);
-        } else if (displayChild == 1) {
-            viewPagerRss.setVisibility(View.GONE);
-            tabsRss.setVisibility(View.GONE);
-            constraintLayoutOutput.setVisibility(View.VISIBLE);
-            constraintLayoutSearch.setVisibility(View.GONE);
-            constraintLayoutFavourites.setVisibility(View.GONE);
-        } else if (displayChild == 2) {
-            viewPagerRss.setVisibility(View.GONE);
-            tabsRss.setVisibility(View.GONE);
-            constraintLayoutOutput.setVisibility(View.GONE);
-            constraintLayoutSearch.setVisibility(View.VISIBLE);
-            constraintLayoutFavourites.setVisibility(View.GONE);
-        } else if (displayChild == 3) {
-            searchViewBusStopName.setPlaceHolder("");
-            viewPagerRss.setVisibility(View.GONE);
-            tabsRss.setVisibility(View.GONE);
-            constraintLayoutOutput.setVisibility(View.GONE);
-            constraintLayoutSearch.setVisibility(View.GONE);
-            constraintLayoutFavourites.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void buildRecyclerViewFavourites() {
-        RecyclerView recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
-        recyclerViewFavourites.setHasFixedSize(true);
-        recyclerViewFavourites.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        adapterFavourites = new FavouritesAdapter(fav);
-        recyclerViewFavourites.setAdapter(adapterFavourites);
-        adapterFavourites.notifyDataSetChanged();
-    }
-
-    private void setVisibilityRecycler(boolean isGps) {
-        if (!isGps) {
-            recyclerViewBusStation.setVisibility(View.VISIBLE);
-            recyclerViewBusGps.setVisibility(View.GONE);
-        } else {
-            recyclerViewBusStation.setVisibility(View.GONE);
-            recyclerViewBusGps.setVisibility(View.VISIBLE);
-        }
-    }
-
-    private void buildRecyclerViewSearch(List<SearchItem> stops, boolean isGps) {
-        setVisibilityRecycler(isGps);
-        if (isGps) {
-            recyclerViewBusGps.setHasFixedSize(true);
-            recyclerViewBusGps.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-            adapterBusGps = new SearchAdapter(stops);
-            recyclerViewBusGps.setAdapter(adapterBusGps);
-            adapterBusGps.notifyDataSetChanged();
-        } else {
-            recyclerViewBusStation.setHasFixedSize(true);
-            recyclerViewBusStation.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-            adapterBusStation = new SearchAdapter(stops);
-            recyclerViewBusStation.setAdapter(adapterBusStation);
-            adapterBusStation.notifyDataSetChanged();
-        }
-    }
-
-    private void itemAdapterMethod(List<SearchItem> listStops, int position) {
+    private void itemAdapterMethod(@NotNull List<SearchItem> listStops, int position) {
         searchBarGps.setVisibility(View.GONE);
         if (!currentBusStopCode.equals(listStops.get(position).getBusStopName())) {
             if (adapterOutput != null && !outputItemList.isEmpty()) {
@@ -610,7 +645,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
-    private boolean refreshElement(int position) {
+    private boolean updateStarFavourite(int position) {
         if (stops.get(position).getImageFavourite() == R.drawable.star_border) {
             stops.get(position).setImageFavourite(R.drawable.star);
             return true;
@@ -638,31 +673,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     }
 
     @Override
-    public void onBackPressed() {
-        if (constraintLayoutSearch.getVisibility() == View.VISIBLE && currentBusStopCode.equals("")) {
-            setElementAppBar(false);
-            setDisplayChild(0);
-            fabBus.hide();
-        } else if (constraintLayoutSearch.getVisibility() == View.VISIBLE && !currentBusStopCode.equals("")) {
-            setElementAppBar(true);
-            setDisplayChild(1);
-            fabBus.show();
-        } else if (viewPagerRss.getVisibility() == View.INVISIBLE && currentBusStopCode.equals("")) {
-            searchViewBusStopName.setPlaceHolder("");
-        } else if (viewPagerRss.getVisibility() == View.VISIBLE && tabsRss.getVisibility() == View.VISIBLE) {
-            if (doubleBackToExitPressedOnce) {
-                super.onBackPressed();
-                return;
-            }
-            doubleBackToExitPressedOnce = true;
-            Toast.makeText(this, R.string.exit, Toast.LENGTH_SHORT).show();
-            new Handler().postDelayed(() -> doubleBackToExitPressedOnce = false, 2000);
-        } else {
-            super.onBackPressed();
-        }
-    }
-
-    @Override
     public void onRefresh() {
         checkBus(busStopCode, busLine, busHour);
         Toast.makeText(MainActivity.this, R.string.toast_update_output, Toast.LENGTH_SHORT).show();
@@ -678,7 +688,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     }
 
     @Override
-    public void processFinish(List<OutputItem> output) {
+    public void processFinish(@NotNull List<OutputItem> output) {
         RecyclerView recyclerViewBusOutput = findViewById(R.id.recyclerViewBusOutput);
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
