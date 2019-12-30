@@ -6,7 +6,6 @@
     <string name="alertDialog_gps_no">Cancel</string>
     <string name="alertDialog_gps_message">Turn on GPS</string>
     <string name="toast_update_output">Updated</string>
-    <string name="toast_theme">Restart the app</string>
     <string name="toast_permissions">Grant the necessary permissions</string>
     <string name="toast_no_file_deleted">Could not delete files</string>
     <string name="toast_no_bus_stop_gps">No stops nearby</string>

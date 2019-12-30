@@ -14,15 +14,14 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import java.util.StringTokenizer;
 
 public class BusReader {
 
-    private List<Double> arrayLongitude = new ArrayList();
-    private List<Double> arrayLatitude = new ArrayList();
+    private List<Double> arrayLongitude = new ArrayList<>();
+    private List<Double> arrayLatitude = new ArrayList<>();
 
     public ArrayList<BusClass> extractFromFile(Context context) {
         ArrayList<BusClass> busClass = new ArrayList<>();
@@ -177,7 +176,7 @@ public class BusReader {
     }
 
     private List<Double> cutTheCuttedFile(double searchValue, List<Double> cut) {
-        List<Double> result = new ArrayList();
+        List<Double> result = new ArrayList<>();
         for (int i = 0; i < cut.size(); i++) {
             if (cut.get(i) < (searchValue + 0.001) && cut.get(i) > (searchValue - 0.001)) {
                 result.add(cut.get(i));
@@ -188,7 +187,7 @@ public class BusReader {
 
     public List<String> takeTheCorrispondingBusStop(ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
         stopsCutLatitude(searchValueLatitude);
-        List<String> result = new ArrayList();
+        List<String> result = new ArrayList<>();
         for (int i = 0; i < busClass.size(); i++) {
             for (int j = 0; j < arrayLatitude.size(); j++) {
                 if (Double.parseDouble(busClass.get(i).getLatitude()) == arrayLatitude.get(j) && !result.contains(busClass.get(i).getBusStopCode())) {
