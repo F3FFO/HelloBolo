@@ -1,36 +1,72 @@
 <resources>
     <string name="app_name">HelloBolo</string>
+    <string name="network">Connessione ad internet assente!</string>
     <string name="exit">Premere di nuovo per uscire</string>
-    <string name="network">Connessione assente!</string>
-    <string name="permissions">Concedi le autorizzazioni necessarie</string>
-    <string name="update_output">Aggiornato</string>
-    <string name="busStopNameText">Cerca qui</string>
-    <string name="busCodeText">Autobus:</string>
-    <string name="busHourTextDefault">Ora:</string>
-    <string name="busHourText">Adesso</string>
-    <string name="busHourText2">%1$d:%2$s</string>
-    <string name="alertDialog_no">Chiudi</string>
-    <string name="alertDialog_open">Leggi</string>
-    <string name="alertDialogGps_message">Abilita GPS</string>
-    <string name="alertDialogGps_no">Chiudi</string>
-    <string name="alertDialogGps_yes">Impostazioni</string>
-    <string name="nav_menu_home">Home</string>
+    <!-- appBar -->
+    <string name="searchBar_hint">Cerca qui&#8230;</string>
+    <string name="busStopText">Linea:</string>
+    <string name="busHourTextDefault">Partenza:</string>
+    <string name="busHourTextNow">Adesso</string>
+    <string name="busHourText" translatable="false">%1$d:%2$s</string>
+    <!-- cardView.output -->
+    <string name="busHourOutputLive">In arrivo</string>
+    <string name="busHourOutputHour" translatable="false">h</string>
+    <string name="busHourOutputMin" translatable="false">min</string>
+    <!-- spinnerDialog -->
+    <string name="first_element_spinner">Tutte le linee</string>
+    <!-- alertDialog -->
+    <string name="alertDialog_rss_no">Chiudi</string>
+    <string name="alertDialog_rss_yes">Leggi&#8230;</string>
+    <string name="alertDialog_gps_message">Abilita GPS</string>
+    <string name="alertDialog_gps_no">Annulla</string>
+    <string name="alertDialog_gps_yes" translatable="false">OK</string>
+    <!-- navbar -->
+    <string name="nav_menu_home" translatable="false">Home</string>
     <string name="nav_menu_favourites">Preferiti</string>
     <string name="nav_menu_settings">Impostazioni</string>
-    <string name="favourite_added">Aggiunto ai preferiti!</string>
-    <string name="favourite_removed">Rimosso dai preferiti!</string>
-    <string name="favourite_not_added">Hai già 10 preferiti!</string>
+    <!-- timepicker -->
+    <string name="time_zone" translatable="false">Europe/Rome</string>
+    <!-- timepicker.button -->
     <string name="time_picker_ok">Imposta</string>
     <string name="time_picker_cancel">Annulla</string>
     <string name="time_picker_reset">Ripristina ora attuale</string>
-    <string name="tab_rss_1">Prima pagina</string>
-    <string name="tab_rss_2">Tutte</string>
-    <string name="tab_rss_3">Bologna</string>
-    <string name="gps_error">Gps non trovato</string>
-    <string name="preference_title">Impostazioni</string>
-    <string name="preference_theme">Tema</string>
-    <string name="preference_key_theme">NIGHT_MODE</string>
-    <string name="theme_0">Automatico</string>
-    <string name="theme_1">Chiaro</string>
-    <string name="theme_2">Scuro</string>
+    <!-- rss.tabName -->
+    <string name="tab_rss_0">Prima pagina</string>
+    <string name="tab_rss_1">Tutte</string>
+    <string name="tab_rss_2" translatable="false">Bologna</string>
+    <!-- preference -->
+    <string name="preference">Impostazioni</string>
+    <!-- preference.theme -->
+    <string name="preference_title_theme">Tema scuro</string>
+    <string name="preference_key_theme" translatable="false">night_mode</string>
+    <string name="preference_summary_theme" translatable="false">%1$s</string>
+    <string name="preference_summary_theme_29" translatable="false">%1$s</string>
+    <string name="theme_0">Sempre</string>
+    <string name="theme_1">Automatico (segui tema di sistema)</string>
+    <string name="theme_2">Mai</string>
+    <!-- preference.gps -->
+    <string name="preference_title_gps" translatable="false">Range GPS</string>
+    <string name="preference_key_gps" translatable="false">gps</string>
+    <string name="preference_summary_gps" translatable="false">%1$s</string>
+    <!-- preference.language -->
+    <string name="preference_title_language">Lingua</string>
+    <string name="preference_key_language" translatable="false">lang</string>
+    <string name="preference_summary_language" translatable="false">%1$s</string>
+    <string name="language_0">Italiano</string>
+    <string name="language_1">Inglese</string>
+    <!-- preference.clearMemory -->
+    <string name="preference_title_clear_memory">Elimina tutti i file</string>
+    <string name="preference_key_clear_memory" translatable="false">clear_mem</string>
+    <!-- toast -->
+    <string name="toast_update_output">Aggiornato</string>
+    <string name="toast_permissions">Concedere le autorizzazioni necessarie</string>
+    <string name="toast_no_bus_stop">Fermata mancante</string>
+    <string name="toast_favourite_added">Aggiunto ai preferiti!</string>
+    <string name="toast_favourite_not_added">Hai già 10 preferiti!</string>
+    <string name="toast_favourite_removed">Rimosso dai preferiti!</string>
+    <string name="toast_no_bus_stop_gps">Nessuna fermata nelle vicinanze</string>
+    <string name="toast_gps_error">GPS non trovato</string>
+    <string name="toast_file_deleted">File cancellati. Riavviare l\'applicazione</string>
+    <string name="toast_theme">Riavviare l\'applicazione</string>
+    <string name="toast_no_file_deleted">Impossibile eliminare i file</string>
 </resources>
