@@ -653,7 +653,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
-    private boolean updateStarFavourite(List<SearchItem> stopsTemp, int position) {
+    private boolean updateStarFavourite(@NotNull List<SearchItem> stopsTemp, int position) {
         if (stopsTemp.get(position).getImageFavourite() == R.drawable.star_border) {
             stopsTemp.get(position).setImageFavourite(R.drawable.star);
             return true;
