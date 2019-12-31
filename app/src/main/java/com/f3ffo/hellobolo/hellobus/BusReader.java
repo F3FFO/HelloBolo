@@ -7,6 +7,7 @@ import com.f3ffo.hellobolo.search.SearchItem;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -20,10 +21,9 @@ import java.util.StringTokenizer;
 
 public class BusReader {
 
-    private List<Double> arrayLongitude = new ArrayList<>();
     private List<Double> arrayLatitude = new ArrayList<>();
 
-    public ArrayList<BusClass> extractFromFile(Context context) {
+    public ArrayList<BusClass> extractFromFile(@NotNull Context context) {
         ArrayList<BusClass> busClass = new ArrayList<>();
         File[] listFiles = context.getFilesDir().listFiles();
         if (listFiles != null) {
@@ -66,7 +66,6 @@ public class BusReader {
                                     }
                                 }
                                 longitude = longitude.replace(",", ".");
-                                arrayLongitude.add(Double.parseDouble(longitude));
                                 busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress), latitude, longitude));
                             }
                         }
@@ -80,7 +79,7 @@ public class BusReader {
         return busClass;
     }
 
-    private File takeFileCut(Context context) {
+    private File takeFileCut(@NotNull Context context) {
         File[] listFiles = context.getFilesDir().listFiles();
         File file = null;
         for (File listFile : listFiles) {
@@ -91,7 +90,7 @@ public class BusReader {
         return file;
     }
 
-    private String[] takeFavElement(Context context) {
+    private String[] takeFavElement(@NotNull Context context) {
         Properties prop = new Properties();
         String[] propertiesFile = new String[10];
         try {
@@ -109,7 +108,7 @@ public class BusReader {
         return propertiesFile;
     }
 
-    private void writeFile(Context context, File file, ArrayList<BusClass> busClass) {
+    private void writeFile(Context context, File file, @NotNull ArrayList<BusClass> busClass) {
         ArrayList<String> stopsTemp = new ArrayList<>();
         String busStopCode;
         for (int i = 0; i < busClass.size(); i++) {
@@ -126,7 +125,7 @@ public class BusReader {
         stopsTemp.clear();
     }
 
-    private void extractFromFileCutted(Context context, File file, String[] propertiesFile, List<SearchItem> stops) {
+    private void extractFromFileCutted(@NotNull Context context, @NotNull File file, String[] propertiesFile, List<SearchItem> stops) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName()), StandardCharsets.UTF_8));
             String line;
@@ -140,7 +139,6 @@ public class BusReader {
                 arrayLatitude.add(Double.parseDouble(latitude));
                 String longitude = token.nextToken();
                 longitude = longitude.replace(",", ".");
-                arrayLongitude.add(Double.parseDouble(longitude));
                 boolean isElementAdded = false;
                 for (String s : propertiesFile) {
                     if (s.equals(busStopCode)) {
@@ -175,7 +173,7 @@ public class BusReader {
         arrayLatitude = cutTheCuttedFile(searchValue, arrayLatitude);
     }
 
-    private List<Double> cutTheCuttedFile(double searchValue, List<Double> cut) {
+    private List<Double> cutTheCuttedFile(double searchValue, @NotNull List<Double> cut) {
         List<Double> result = new ArrayList<>();
         for (int i = 0; i < cut.size(); i++) {
             if (cut.get(i) < (searchValue + 0.001) && cut.get(i) > (searchValue - 0.001)) {
@@ -185,7 +183,7 @@ public class BusReader {
         return result;
     }
 
-    public List<String> takeTheCorrespondingBusStop(ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
+    public List<String> takeTheCorrespondingBusStop(@NotNull ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
         stopsCutLatitude(searchValueLatitude);
         List<String> result = new ArrayList<>();
         for (int i = 0; i < busClass.size(); i++) {
