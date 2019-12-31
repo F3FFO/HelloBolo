@@ -10,7 +10,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
-import androidx.preference.ListPreference;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.f3ffo.hellobolo.MainActivity;
@@ -73,54 +72,46 @@ public class PreferencesActivity extends AppCompatActivity {
         private boolean reload() {
             startActivity(new Intent(getContext(), MainActivity.class).addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
             getActivity().finish();
-            return false;
+            return true;
         }
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.preference);
-            findPreference(getString(R.string.preference_key_theme)).setOnPreferenceChangeListener((preference, newValue) -> reload());
-            findPreference(getString(R.string.preference_key_language)).setOnPreferenceChangeListener((preference, newValue) -> {
-                Toast.makeText(getContext(), getString(R.string.toast_language_changed), Toast.LENGTH_LONG).show();
+            findPreference(getString(R.string.preference_key_theme)).setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> reload());
+            findPreference(getString(R.string.preference_key_language)).setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> reload());
+            findPreference(getString(R.string.preference_key_clear_memory)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
+                try {
+                    FileUtils.deleteDirectory(getContext().getFilesDir());
+                    Toast.makeText(getContext(), getString(R.string.toast_file_deleted), Toast.LENGTH_LONG).show();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getContext(), getString(R.string.toast_no_file_deleted), Toast.LENGTH_LONG).show();
+                }
                 return false;
             });
-            androidx.preference.Preference clearMemory = getPreferenceManager().findPreference(getString(R.string.preference_key_clear_memory));
-            if (clearMemory != null) {
-                clearMemory.setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
-                    try {
-                        FileUtils.deleteDirectory(getContext().getFilesDir());
-                        Toast.makeText(getContext(), getString(R.string.toast_file_deleted), Toast.LENGTH_LONG).show();
-                        return true;
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                        Toast.makeText(getContext(), getString(R.string.toast_no_file_deleted), Toast.LENGTH_LONG).show();
-                        return false;
-                    }
-                });
-            }
-            /*androidx.preference.Preference button = getPreferenceManager().findPreference(getString(R.string.preference_key_gps));
-            if (button != null) {
-                button.setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
-                    LinearLayoutCompat layout = new LinearLayoutCompat(getContext());
-                    layout.setOrientation(LinearLayoutCompat.VERTICAL);
-                    layout.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-                    Slider slider = new Slider(getContext());
-                    LinearLayoutCompat.LayoutParams lparams = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
-                    lparams.setMargins(128, 16, 128, 16);
-                    slider.setLayoutParams(lparams);
-                    slider.setValueFrom(0);
-                    slider.setValueTo(2);
-                    slider.setStepSize(1);
-                    layout.addView(slider);
-                    new MaterialAlertDialogBuilder(getContext(), R.style.AlertDialogTheme)
-                            .setTitle("Range")
-                            .setView(layout)
-                            .setNegativeButton(R.string.alertDialog_gps_no, (DialogInterface dialog, int which) -> dialog.dismiss())
-                            .setPositiveButton(R.string.alertDialog_gps_yes, (DialogInterface dialog, int which) -> new Preference(getContext()).setPreferenceGps(slider.getValue()))
-                            .show();
-                    return false;
-                });
-            }*/
+            /*findPreference(getString(R.string.preference_key_gps)).setOnPreferenceClickListener(preference -> {
+                LinearLayoutCompat layout = new LinearLayoutCompat(getContext());
+                layout.setOrientation(LinearLayoutCompat.VERTICAL);
+                layout.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
+                Slider slider = new Slider(getContext());
+                LinearLayoutCompat.LayoutParams layoutParams = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+                layoutParams.setMargins(128, 16, 128, 16);
+                slider.setLayoutParams(layoutParams);
+                slider.setBackgroundColor(getContext().getColor(R.color.colorAccent));
+                slider.setValueFrom(-500);
+                slider.setValueTo(500);
+                slider.setStepSize(250);
+                slider.setValue(0);
+                layout.addView(slider);
+                new MaterialAlertDialogBuilder(getContext(), R.style.AlertDialogTheme)
+                        .setTitle("Range")
+                        .setView(layout)
+                        .setNegativeButton(R.string.alertDialog_gps_no, (DialogInterface dialog, int which) -> dialog.dismiss())
+                        .setPositiveButton(R.string.alertDialog_gps_yes, (DialogInterface dialog, int which) -> new Preference(getContext()).setPreferenceGps(slider.getValue()))
+                        .show();
+                return false;
+            });*/
         }
     }
 }
