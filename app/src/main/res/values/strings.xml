@@ -30,6 +30,8 @@
     <string name="time_picker_ok">Imposta</string>
     <string name="time_picker_cancel">Annulla</string>
     <string name="time_picker_reset">Ripristina ora attuale</string>
+    <!-- rss -->
+    <string name="rss_error_load">C\'è stato un errore. Per favore riprova più tardi</string>
     <!-- rss.tabName -->
     <string name="tab_rss_0">Prima pagina</string>
     <string name="tab_rss_1">Tutte</string>
