@@ -58,7 +58,7 @@ public class ArticleFragment extends Fragment {
         recyclerViewRss = root.findViewById(R.id.recyclerViewRss);
         swipeRefreshLayoutRss = root.findViewById(R.id.swipeRefreshLayoutRss);
         articleViewModel = new ViewModelProvider(ArticleFragment.this).get(ArticleViewModel.class);
-        articleViewModel.getUrl().observe(ArticleFragment.this.getViewLifecycleOwner(), (String s) -> articleViewModel.fetchFeed(s));
+        articleViewModel.getUrl().observe(ArticleFragment.this.getViewLifecycleOwner(), (String s) -> articleViewModel.fetchFeed(inflater.getContext(), s));
         recyclerViewRss.setLayoutManager(new LinearLayoutManager(root.getContext()));
         recyclerViewRss.setItemAnimator(new DefaultItemAnimator());
         recyclerViewRss.setHasFixedSize(true);
@@ -84,7 +84,7 @@ public class ArticleFragment extends Fragment {
             articleAdapter.getArticleList().clear();
             articleAdapter.notifyDataSetChanged();
             swipeRefreshLayoutRss.setRefreshing(true);
-            articleViewModel.getUrl().observe(ArticleFragment.this.getViewLifecycleOwner(), (String s) -> articleViewModel.fetchFeed(s));
+            articleViewModel.getUrl().observe(ArticleFragment.this.getViewLifecycleOwner(), (String s) -> articleViewModel.fetchFeed(inflater.getContext(), s));
         });
         return root;
     }

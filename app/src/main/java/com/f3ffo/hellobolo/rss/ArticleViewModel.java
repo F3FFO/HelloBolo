@@ -1,10 +1,13 @@
 package com.f3ffo.hellobolo.rss;
 
+import android.content.Context;
+
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 import androidx.lifecycle.Transformations;
 import androidx.lifecycle.ViewModel;
 
+import com.f3ffo.hellobolo.R;
 import com.prof.rssparser.Article;
 import com.prof.rssparser.OnTaskCompleted;
 import com.prof.rssparser.Parser;
@@ -54,7 +57,7 @@ public class ArticleViewModel extends ViewModel {
         snackBar.setValue(null);
     }
 
-    public void fetchFeed(String urlString) {
+    public void fetchFeed(Context context, String urlString) {
         Parser parser = new Parser();
         parser.onFinish(new OnTaskCompleted() {
 
@@ -67,7 +70,7 @@ public class ArticleViewModel extends ViewModel {
             public void onError(Exception e) {
                 setArticleList(new ArrayList<>());
                 e.printStackTrace();
-                snackBar.postValue("C'è stato un errore. Per favore riprova");
+                snackBar.postValue(context.getString(R.string.rss_error_load));
             }
         });
         parser.execute(urlString);
