@@ -172,12 +172,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             if (getLocation()) {
                 latitude = ((long) (latitude * 1e6)) / 1e6;
                 longitude = ((long) (longitude * 1e6)) / 1e6;
-                List<String> busPosition = br.takeTheCorrispondingBusStop(busClass, latitude, longitude);
+                List<String> busPosition = br.takeTheCorrespondingBusStop(busClass, latitude, longitude);
                 stopsGps.clear();
+                List<Integer> listPosition = new ArrayList<>();
                 if (busPosition.size() > 1) {
                     for (int i = 0; i < stops.size(); i++) {
                         for (int j = 0; j < busPosition.size(); j++) {
                             if (stops.get(i).getBusStopCode().equals(busPosition.get(j))) {
+                                listPosition.add(i);
                                 stopsGps.add(new SearchItem(stops.get(i).getBusStopCode(), stops.get(i).getBusStopName(), stops.get(i).getBusStopAddress(), stops.get(i).getImageFavourite(), stops.get(i).getLatitude(), stops.get(i).getLongitude()));
                             }
                         }
@@ -186,15 +188,21 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     adapterBusGps.setOnItemClickListener((int position) -> itemAdapterMethod(stopsGps, position));
                     adapterBusGps.setOnFavouriteButtonClickListener((int position) -> {
                         Favourites favourites = new Favourites();
-                        if (updateStarFavourite(position)) {
+                        if (updateStarFavourite(stopsGps, position)) {
                             FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress(), stopsGps.get(position).getLatitude(), stopsGps.get(position).getLongitude());
                             if (item != null) {
                                 fav.add(item);
+                                for (int element : listPosition) {
+                                    if (stopsGps.get(position).getBusStopCode().equals(stops.get(element).getBusStopCode())) {
+                                        adapterBusStation.notifyItemChanged(element);
+                                        updateStarFavourite(stops, element);
+                                    }
+                                }
                                 adapterBusGps.notifyItemChanged(position);
                                 adapterFavourites.notifyItemInserted(fav.size());
-                                Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_LONG).show();
+                                Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_SHORT).show();
                             }
                         } else {
                             if (fv.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
@@ -235,7 +243,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     setDisplayChild(1);
                     fabBus.show();
                 } else {
-                    Toast.makeText(MainActivity.this, R.string.toast_no_bus_stop_gps, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_no_bus_stop_gps, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -283,15 +291,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         adapterBusStation.setOnItemClickListener((int position) -> itemAdapterMethod(stops, position));
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
-            if (updateStarFavourite(position)) {
+            if (updateStarFavourite(stops, position)) {
                 FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress(), stops.get(position).getLatitude(), stops.get(position).getLongitude());
                 if (item != null) {
                     fav.add(item);
                     adapterBusStation.notifyItemChanged(position);
                     adapterFavourites.notifyItemInserted(fav.size());
-                    Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_SHORT).show();
                 } else {
-                    Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_SHORT).show();
                 }
             } else {
                 if (fv.removeFavourite(MainActivity.this, stops.get(position).getBusStopCode())) {
@@ -304,7 +312,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                             isRemoved = true;
                         }
                     }
-                    Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -358,7 +366,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 checkBus(busStopCode, busLine, busHour);
                 swipeRefreshLayoutOutput.setEnabled(true);
             } else {
-                Toast.makeText(MainActivity.this, getString(R.string.toast_no_bus_stop), Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, getString(R.string.toast_no_bus_stop), Toast.LENGTH_SHORT).show();
             }
         });
         adapterFavourites.setOnItemClickListener((int position) -> {
@@ -382,14 +390,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
                 boolean isRemoved = false;
                 for (int i = 0; i < stops.size() && !isRemoved; i++) {
-                    if (fav.get(position).getBusStopCode().equals(stops.get(i).getBusStopCode()) && !updateStarFavourite(i)) {
+                    if (fav.get(position).getBusStopCode().equals(stops.get(i).getBusStopCode()) && !updateStarFavourite(stops, i)) {
                         adapterFavourites.notifyItemRemoved(position);
                         fav.remove(position);
                         adapterBusStation.notifyItemChanged(i);
                         isRemoved = true;
                     }
                 }
-                Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
+                Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -599,7 +607,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     longitude = LocationPassive.getLongitude();
                     return true;
                 } else {
-                    Toast.makeText(MainActivity.this, R.string.toast_gps_error, Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this, R.string.toast_gps_error, Toast.LENGTH_SHORT).show();
                     return false;
                 }
             }
@@ -645,12 +653,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
-    private boolean updateStarFavourite(int position) {
-        if (stops.get(position).getImageFavourite() == R.drawable.star_border) {
-            stops.get(position).setImageFavourite(R.drawable.star);
+    private boolean updateStarFavourite(List<SearchItem> stopsTemp, int position) {
+        if (stopsTemp.get(position).getImageFavourite() == R.drawable.star_border) {
+            stopsTemp.get(position).setImageFavourite(R.drawable.star);
             return true;
         } else {
-            stops.get(position).setImageFavourite(R.drawable.star_border);
+            stopsTemp.get(position).setImageFavourite(R.drawable.star_border);
             return false;
         }
     }
