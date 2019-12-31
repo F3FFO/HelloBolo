@@ -49,7 +49,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         Article currentArticle = articles.get(position);
         String articleDate;
         try {
-            articleDate = new SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN).format(Objects.requireNonNull(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzzz", Locale.ENGLISH).parse(currentArticle.getPubDate())));
+            articleDate = new SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN).format(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzzz", Locale.ENGLISH).parse(currentArticle.getPubDate()));
         } catch (ParseException e) {
             e.printStackTrace();
             articleDate = currentArticle.getPubDate();
@@ -61,7 +61,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             if (i == currentArticle.getCategories().size() - 1) {
                 categories.append(currentArticle.getCategories().get(i));
             } else {
-                categories.append(currentArticle.getCategories().get(i)).append(" - ");
+                categories.append(currentArticle.getCategories().get(i)).append("; ");
             }
         }
         viewHolder.textViewArticleCategory.setText(categories.toString());
@@ -72,7 +72,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             title.setPadding(64, 32, 64, 0);
             title.setTextIsSelectable(false);
             MaterialTextView description = new MaterialTextView(context);
-            description.setText(HtmlCompat.fromHtml(Objects.requireNonNull(articles.get(viewHolder.getAdapterPosition()).getDescription()), HtmlCompat.FROM_HTML_MODE_LEGACY));
+            description.setText(HtmlCompat.fromHtml(articles.get(viewHolder.getAdapterPosition()).getDescription(), HtmlCompat.FROM_HTML_MODE_COMPACT));
             description.setTextAppearance(R.style.TextAppearance_MaterialComponents_Body1_Custom);
             description.setPadding(64, 64, 64, 0);
             description.setTextIsSelectable(false);
