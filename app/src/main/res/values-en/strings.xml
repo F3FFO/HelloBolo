@@ -51,6 +51,7 @@
     <string name="toast_favourite_removed">Removed from favorites!</string>
     <string name="toast_no_bus_stop_gps">No stops nearby</string>
     <string name="toast_gps_error">GPS not found</string>
-    <string name="toast_file_deleted">Deleted files. Restart the application</string>
+    <string name="toast_language_changed">Restart the app</string>
+    <string name="toast_file_deleted">Deleted files. Restart the app</string>
     <string name="toast_no_file_deleted">Could not delete files</string>
 </resources>

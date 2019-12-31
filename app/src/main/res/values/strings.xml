@@ -68,6 +68,7 @@
     <string name="toast_favourite_removed">Rimosso dai preferiti!</string>
     <string name="toast_no_bus_stop_gps">Nessuna fermata nelle vicinanze</string>
     <string name="toast_gps_error">GPS non trovato</string>
+    <string name="toast_language_changed">Riavviare l\'applicazione</string>
     <string name="toast_file_deleted">File cancellati. Riavviare l\'applicazione</string>
     <string name="toast_no_file_deleted">Impossibile eliminare i file</string>
 </resources>
