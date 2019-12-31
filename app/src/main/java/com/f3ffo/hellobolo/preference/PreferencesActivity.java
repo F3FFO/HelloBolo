@@ -80,8 +80,7 @@ public class PreferencesActivity extends AppCompatActivity {
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.preference);
             findPreference(getString(R.string.preference_key_theme)).setOnPreferenceChangeListener((preference, newValue) -> reload());
-            ListPreference listPreferenceLanguage = findPreference(getString(R.string.preference_key_theme));
-            listPreferenceLanguage.setOnPreferenceChangeListener((preference, newValue) -> {
+            findPreference(getString(R.string.preference_key_language)).setOnPreferenceChangeListener((preference, newValue) -> {
                 Toast.makeText(getContext(), getString(R.string.toast_language_changed), Toast.LENGTH_LONG).show();
                 return false;
             });
