@@ -19,7 +19,7 @@
     <string name="alertDialog_rss_yes">Leggi&#8230;</string>
     <string name="alertDialog_gps_message">Abilita GPS</string>
     <string name="alertDialog_gps_no">Annulla</string>
-    <string name="alertDialog_gps_yes" translatable="false">OK</string>
+    <string name="alertDialog_gps_yes">Imposta</string>
     <!-- navbar -->
     <string name="nav_menu_home" translatable="false">Home</string>
     <string name="nav_menu_favourites">Preferiti</string>

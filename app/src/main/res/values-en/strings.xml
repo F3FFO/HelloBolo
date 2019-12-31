@@ -17,6 +17,7 @@
     <string name="alertDialog_rss_yes">Read more&#8230;</string>
     <string name="alertDialog_gps_message">Turn on GPS</string>
     <string name="alertDialog_gps_no">Cancel</string>
+    <string name="alertDialog_gps_yes">Set</string>
     <!-- navbar -->
     <string name="nav_menu_favourites">Favourites</string>
     <string name="nav_menu_settings">Settings</string>
