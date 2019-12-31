@@ -185,7 +185,7 @@ public class BusReader {
         return result;
     }
 
-    public List<String> takeTheCorrispondingBusStop(ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
+    public List<String> takeTheCorrespondingBusStop(ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
         stopsCutLatitude(searchValueLatitude);
         List<String> result = new ArrayList<>();
         for (int i = 0; i < busClass.size(); i++) {
