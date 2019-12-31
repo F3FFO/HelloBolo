@@ -2,14 +2,12 @@ package com.f3ffo.hellobolo.favourite;
 
 public class FavouritesItem {
 
-    private String busStopCode, busStopName, busStopAddress, latitude, longitude;
+    private String busStopCode, busStopName, busStopAddress;
 
-    public FavouritesItem(String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
+    public FavouritesItem(String busStopCode, String busStopName, String busStopAddress) {
         this.busStopCode = busStopCode;
         this.busStopName = busStopName;
         this.busStopAddress = busStopAddress;
-        this.latitude = latitude;
-        this.longitude = longitude;
     }
 
     public String getBusStopCode() {
@@ -22,13 +20,5 @@ public class FavouritesItem {
 
     public String getBusStopAddress() {
         return busStopAddress;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public String getLongitude() {
-        return longitude;
     }
 }

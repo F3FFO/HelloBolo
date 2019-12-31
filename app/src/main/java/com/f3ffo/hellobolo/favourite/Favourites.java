@@ -2,6 +2,8 @@ package com.f3ffo.hellobolo.favourite;
 
 import android.content.Context;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +20,7 @@ public class Favourites {
         return favouritesList;
     }
 
-    public void readFile(Context context) {
+    public void readFile(@NotNull Context context) {
         try {
             prop.load(context.openFileInput(this.fileName));
             for (int i = 0; i < prop.size(); i++) {
@@ -28,9 +30,7 @@ public class Favourites {
                     String busStopCode = token.nextToken();
                     String busStopName = token.nextToken();
                     String busStopAddress = token.nextToken();
-                    String latitude = token.nextToken();
-                    String longitude = token.nextToken();
-                    favouritesList.add(new FavouritesItem(busStopCode, busStopName, busStopAddress, latitude, longitude));
+                    favouritesList.add(new FavouritesItem(busStopCode, busStopName, busStopAddress));
                 }
             }
         } catch (IOException e) {
@@ -38,7 +38,7 @@ public class Favourites {
         }
     }
 
-    public FavouritesItem addFavourite(Context context, String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
+    public FavouritesItem addFavourite(@NotNull Context context, String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
         FavouritesItem item = null;
         try {
             prop.load(context.openFileInput(this.fileName));
@@ -46,9 +46,9 @@ public class Favourites {
             for (int i = 0; i < 10 && !isAdded; i++) {
                 if (prop.getProperty("busStopCode.Fav." + i).equals("")) {
                     isAdded = true;
-                    prop.setProperty("busStopCode.Fav." + i, busStopCode + ";" + busStopName + ";" + busStopAddress + ";" + latitude + ";" + longitude);
-                    prop.store(context.openFileOutput(this.fileName, Context.MODE_PRIVATE), "User favourite");
-                    item = new FavouritesItem(busStopCode, busStopName, busStopAddress, latitude, longitude);
+                    prop.setProperty("busStopCode.Fav." + i, busStopCode + ";" + busStopName + ";" + busStopAddress);
+                    prop.store(context.openFileOutput(this.fileName, Context.MODE_PRIVATE), "User favourites");
+                    item = new FavouritesItem(busStopCode, busStopName, busStopAddress);
                 }
             }
         } catch (IOException e) {
@@ -57,7 +57,7 @@ public class Favourites {
         return item;
     }
 
-    public boolean removeFavourite(Context context, String busStopCode) {
+    public boolean removeFavourite(@NotNull Context context, String busStopCode) {
         boolean ris = false;
         try {
             prop.load(context.openFileInput(this.fileName));
