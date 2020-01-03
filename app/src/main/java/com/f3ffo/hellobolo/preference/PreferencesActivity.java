@@ -1,5 +1,6 @@
 package com.f3ffo.hellobolo.preference;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.net.Uri;
@@ -12,12 +13,16 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.preference.PreferenceFragmentCompat;
 
+import com.f3ffo.hellobolo.FullScreenDialog;
+import com.f3ffo.hellobolo.Log;
 import com.f3ffo.hellobolo.MainActivity;
 import com.f3ffo.hellobolo.R;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 
 public class PreferencesActivity extends AppCompatActivity {
@@ -80,15 +85,37 @@ public class PreferencesActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.preference);
             findPreference(getString(R.string.preference_key_theme)).setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> reload());
             findPreference(getString(R.string.preference_key_language)).setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> reload());
+            findPreference(getString(R.string.preference_key_open_log)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
+                FullScreenDialog.display(getActivity().getSupportFragmentManager());
+                return true;
+            });
+            findPreference(getString(R.string.preference_key_delete_log)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
+                new MaterialAlertDialogBuilder(getContext(), R.style.DialogTheme)
+                        .setTitle(R.string.dialog_delete_log_title)
+                        .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
+                        .setPositiveButton(R.string.dialog_delete_log_yes, (DialogInterface dialog, int which) -> {
+                            FileUtils.deleteQuietly(new File(getContext().getFilesDir(), Log.LOG_FILENAME));
+                            Toast.makeText(getContext(), getString(R.string.toast_log_file_deleted), Toast.LENGTH_LONG).show();
+                        })
+                        .show();
+                return true;
+            });
             findPreference(getString(R.string.preference_key_clear_memory)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
-                try {
-                    FileUtils.deleteDirectory(getContext().getFilesDir());
-                    Toast.makeText(getContext(), getString(R.string.toast_file_deleted), Toast.LENGTH_LONG).show();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Toast.makeText(getContext(), getString(R.string.toast_no_file_deleted), Toast.LENGTH_LONG).show();
-                }
-                return false;
+                new MaterialAlertDialogBuilder(getContext(), R.style.DialogTheme)
+                        .setTitle(R.string.dialog_clear_mem_title)
+                        .setMessage(R.string.dialog_clear_mem_warning)
+                        .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
+                        .setPositiveButton(R.string.dialog_clear_mem_yes, (DialogInterface dialog, int which) -> {
+                            try {
+                                FileUtils.deleteDirectory(getContext().getFilesDir());
+                                getActivity().finish();
+                            } catch (IOException e) {
+                                Log.logFile(getContext(), e);
+                                Toast.makeText(getContext(), getString(R.string.toast_no_files_deleted), Toast.LENGTH_LONG).show();
+                            }
+                        })
+                        .show();
+                return true;
             });
             /*findPreference(getString(R.string.preference_key_gps)).setOnPreferenceClickListener(preference -> {
                 LinearLayoutCompat layout = new LinearLayoutCompat(getContext());
