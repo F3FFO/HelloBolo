@@ -169,82 +169,86 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         searchBarGps.setOnClickListener((View view) -> {
-            if (getLocation()) {
-                latitude = ((long) (latitude * 1e6)) / 1e6;
-                longitude = ((long) (longitude * 1e6)) / 1e6;
-                List<String> busPosition = br.takeTheCorrespondingBusStop(busClass, latitude, longitude);
-                stopsGps.clear();
-                List<Integer> listPosition = new ArrayList<>();
-                if (busPosition.size() > 1) {
-                    for (int i = 0; i < stops.size(); i++) {
-                        for (int j = 0; j < busPosition.size(); j++) {
-                            if (stops.get(i).getBusStopCode().equals(busPosition.get(j))) {
-                                listPosition.add(i);
-                                stopsGps.add(new SearchItem(stops.get(i).getBusStopCode(), stops.get(i).getBusStopName(), stops.get(i).getBusStopAddress(), stops.get(i).getImageFavourite(), stops.get(i).getLatitude(), stops.get(i).getLongitude()));
+            try {
+                if (getLocation()) {
+                    latitude = ((long) (latitude * 1e6)) / 1e6;
+                    longitude = ((long) (longitude * 1e6)) / 1e6;
+                    List<String> busPosition = br.takeTheCorrespondingBusStop(busClass, latitude, longitude);
+                    stopsGps.clear();
+                    List<Integer> listPosition = new ArrayList<>();
+                    if (busPosition.size() > 1) {
+                        for (int i = 0; i < stops.size(); i++) {
+                            for (int j = 0; j < busPosition.size(); j++) {
+                                if (stops.get(i).getBusStopCode().equals(busPosition.get(j))) {
+                                    listPosition.add(i);
+                                    stopsGps.add(new SearchItem(stops.get(i).getBusStopCode(), stops.get(i).getBusStopName(), stops.get(i).getBusStopAddress(), stops.get(i).getImageFavourite(), stops.get(i).getLatitude(), stops.get(i).getLongitude()));
+                                }
                             }
                         }
-                    }
-                    buildRecyclerViewSearch(stopsGps, true);
-                    adapterBusGps.setOnItemClickListener((int position) -> itemAdapterMethod(stopsGps, position));
-                    adapterBusGps.setOnFavouriteButtonClickListener((int position) -> {
-                        Favourites favourites = new Favourites();
-                        if (updateStarFavourite(stopsGps, position)) {
-                            FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress(), stopsGps.get(position).getLatitude(), stopsGps.get(position).getLongitude());
-                            if (item != null) {
-                                fav.add(item);
-                                for (int element : listPosition) {
-                                    if (stopsGps.get(position).getBusStopCode().equals(stops.get(element).getBusStopCode())) {
-                                        adapterBusStation.notifyItemChanged(element);
-                                        updateStarFavourite(stops, element);
+                        buildRecyclerViewSearch(stopsGps, true);
+                        adapterBusGps.setOnItemClickListener((int position) -> itemAdapterMethod(stopsGps, position));
+                        adapterBusGps.setOnFavouriteButtonClickListener((int position) -> {
+                            Favourites favourites = new Favourites();
+                            if (updateStarFavourite(stopsGps, position)) {
+                                FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress(), stopsGps.get(position).getLatitude(), stopsGps.get(position).getLongitude());
+                                if (item != null) {
+                                    fav.add(item);
+                                    for (int element : listPosition) {
+                                        if (stopsGps.get(position).getBusStopCode().equals(stops.get(element).getBusStopCode())) {
+                                            adapterBusStation.notifyItemChanged(element);
+                                            updateStarFavourite(stops, element);
+                                        }
                                     }
+                                    adapterBusGps.notifyItemChanged(position);
+                                    adapterFavourites.notifyItemInserted(fav.size());
+                                    Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_SHORT).show();
                                 }
-                                adapterBusGps.notifyItemChanged(position);
-                                adapterFavourites.notifyItemInserted(fav.size());
-                                Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            if (fv.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
-                                boolean isRemoved = false;
-                                for (int i = 0; i < fav.size() && !isRemoved; i++) {
-                                    if (fav.get(i).getBusStopCode().equals(stopsGps.get(position).getBusStopCode())) {
-                                        fav.remove(i);
-                                        adapterBusGps.notifyItemChanged(position);
-                                        adapterFavourites.notifyItemRemoved(i);
-                                        isRemoved = true;
+                                if (fv.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
+                                    boolean isRemoved = false;
+                                    for (int i = 0; i < fav.size() && !isRemoved; i++) {
+                                        if (fav.get(i).getBusStopCode().equals(stopsGps.get(position).getBusStopCode())) {
+                                            fav.remove(i);
+                                            adapterBusGps.notifyItemChanged(position);
+                                            adapterFavourites.notifyItemRemoved(i);
+                                            isRemoved = true;
+                                        }
                                     }
+                                    Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
                                 }
-                                Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else if (busPosition.size() == 1) {
+                        if (adapterOutput != null && !outputItemList.isEmpty()) {
+                            outputItemList.clear();
+                            adapterOutput.notifyDataSetChanged();
+                        }
+                        busStopCode = busPosition.get(0);
+                        boolean element = false;
+                        int i;
+                        for (i = 0; i < stops.size() && !element; i++) {
+                            if (stops.get(i).getBusStopCode().equals(busPosition.get(0))) {
+                                element = true;
                             }
                         }
-                    });
-                } else if (busPosition.size() == 1) {
-                    if (adapterOutput != null && !outputItemList.isEmpty()) {
-                        outputItemList.clear();
-                        adapterOutput.notifyDataSetChanged();
+                        currentBusStopCode = stops.get(i).getBusStopCode();
+                        spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
+                        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
+                        spinnerBusCode.setAdapter(spinnerArrayAdapter);
+                        searchViewBusStopName.setPlaceHolder(stops.get(i).getBusStopName());
+                        searchViewBusStopName.disableSearch();
+                        searchBarGps.setVisibility(View.GONE);
+                        setElementAppBar(true);
+                        setDisplayChild(1);
+                        fabBus.show();
+                    } else {
+                        Toast.makeText(MainActivity.this, R.string.toast_no_bus_stop_gps, Toast.LENGTH_SHORT).show();
                     }
-                    busStopCode = busPosition.get(0);
-                    boolean element = false;
-                    int i;
-                    for (i = 0; i < stops.size() && !element; i++) {
-                        if (stops.get(i).getBusStopCode().equals(busPosition.get(0))) {
-                            element = true;
-                        }
-                    }
-                    currentBusStopCode = stops.get(i).getBusStopCode();
-                    spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
-                    spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
-                    spinnerBusCode.setAdapter(spinnerArrayAdapter);
-                    searchViewBusStopName.setPlaceHolder(stops.get(i).getBusStopName());
-                    searchViewBusStopName.disableSearch();
-                    searchBarGps.setVisibility(View.GONE);
-                    setElementAppBar(true);
-                    setDisplayChild(1);
-                    fabBus.show();
-                } else {
-                    Toast.makeText(MainActivity.this, R.string.toast_no_bus_stop_gps, Toast.LENGTH_SHORT).show();
                 }
+            } catch (Exception e) {
+                Log.logFile(MainActivity.this, e);
             }
         });
         searchViewBusStopName.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
@@ -582,9 +586,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private boolean getLocation() {
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             new MaterialAlertDialogBuilder(MainActivity.this)
-                    .setMessage(R.string.alertDialog_gps_message)
-                    .setPositiveButton(R.string.alertDialog_gps_yes, (DialogInterface dialog, int which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                    .setNegativeButton(R.string.alertDialog_gps_no, (DialogInterface dialog, int which) -> dialog.cancel())
+                    .setMessage(R.string.dialog_gps_message)
+                    .setPositiveButton(R.string.dialog_gps_yes, (DialogInterface dialog, int which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                    .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.cancel())
                     .show();
             return false;
         } else {
@@ -747,7 +751,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             UrlElaboration ue = new UrlElaboration(busStop, busLine, busHour, MainActivity.this);
             ue.execute();
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.logFile(MainActivity.this, e);
         }
     }
 }
