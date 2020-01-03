@@ -8,7 +8,7 @@
         <item name="colorSecondary">@color/colorPrimary</item>
         <item name="colorError">@color/colorError</item>
         <item name="colorControlNormal">@color/colorIcon</item>
-        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="alertDialogTheme">@style/DialogTheme</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="android:navigationBarColor">@color/colorPrimary</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>

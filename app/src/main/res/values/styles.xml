@@ -8,7 +8,7 @@
         <item name="colorSecondary">@color/colorPrimary</item>
         <item name="colorError">@color/colorError</item>
         <item name="colorControlNormal">@color/colorIcon</item>
-        <item name="alertDialogTheme">@style/AlertDialogTheme</item>
+        <item name="alertDialogTheme">@style/DialogTheme</item>
         <item name="android:textColor">@color/colorText</item>
         <item name="android:statusBarColor">@color/colorPrimary</item>
     </style>
@@ -39,20 +39,29 @@
         <item name="android:textColor">?android:attr/textColor</item>
     </style>
 
-    <style name="AlertDialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog">
+    <style name="DialogFullScreenTheme" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="android:windowBackground">?attr/colorPrimary</item>
         <item name="android:background">?attr/colorPrimary</item>
-        <item name="buttonBarPositiveButtonStyle">@style/Alert.Button.Positive</item>
-        <item name="buttonBarNegativeButtonStyle">@style/Alert.Button.Neutral</item>
-        <item name="buttonBarNeutralButtonStyle">@style/Alert.Button.Neutral</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Dialog.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Dialog.Button.Neutral</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Dialog.Button.Neutral</item>
     </style>
 
-    <style name="Alert.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
+    <style name="DialogTheme" parent="ThemeOverlay.MaterialComponents.Dialog">
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="buttonBarPositiveButtonStyle">@style/Dialog.Button.Positive</item>
+        <item name="buttonBarNegativeButtonStyle">@style/Dialog.Button.Neutral</item>
+        <item name="buttonBarNeutralButtonStyle">@style/Dialog.Button.Neutral</item>
+    </style>
+
+    <style name="Dialog.Button.Positive" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="rippleColor">?android:attr/textColor</item>
         <item name="android:textColor">?android:attr/textColor</item>
     </style>
 
-    <style name="Alert.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
+    <style name="Dialog.Button.Neutral" parent="Widget.MaterialComponents.Button.TextButton">
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="rippleColor">?android:attr/textColor</item>
         <item name="android:textColor">?android:attr/textColor</item>
