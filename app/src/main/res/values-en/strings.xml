@@ -12,12 +12,17 @@
     <string name="busHourOutputLive">Arriving</string>
     <!-- spinnerDialog -->
     <string name="first_element_spinner">All bus line</string>
-    <!-- alertDialog -->
-    <string name="alertDialog_rss_no">Close</string>
-    <string name="alertDialog_rss_yes">Read more&#8230;</string>
-    <string name="alertDialog_gps_message">Turn on GPS</string>
-    <string name="alertDialog_gps_no">Cancel</string>
-    <string name="alertDialog_gps_yes">Set</string>
+    <!-- dialog -->
+    <string name="dialog_rss_no">Close</string>
+    <string name="dialog_rss_yes">Read more&#8230;</string>
+    <string name="dialog_gps_message">Turn on GPS</string>
+    <string name="dialog_gps_yes">Set</string>
+    <string name="dialog_delete_log_title">Delete log files?</string>
+    <string name="dialog_delete_log_yes">Delete</string>
+    <string name="dialog_clear_mem_title">Do you want to update bus stops?</string>
+    <string name="dialog_clear_mem_warning">Warning! An app restart will be required</string>
+    <string name="dialog_clear_mem_yes">Update</string>
+    <string name="dialog_generic_no">Cancel</string>
     <!-- navbar -->
     <string name="nav_menu_favourites">Favourites</string>
     <string name="nav_menu_settings">Settings</string>
@@ -41,8 +46,11 @@
     <string name="preference_title_language">Language</string>
     <string name="language_0">Italian</string>
     <string name="language_1">English</string>
+    <!-- preference.log -->
+    <string name="preference_title_open_log">Display Log file</string>
+    <string name="preference_title_delete_log">Delete Log file</string>
     <!-- preference.clearMemory -->
-    <string name="preference_title_clear_memory">Delete all files</string>
+    <string name="preference_title_clear_memory">Update bus station</string>
     <!-- toast -->
     <string name="toast_update_output">Updated</string>
     <string name="toast_permissions">Grant the necessary permissions</string>
@@ -53,6 +61,6 @@
     <string name="toast_no_bus_stop_gps">No stops nearby</string>
     <string name="toast_gps_error">GPS not found</string>
     <string name="toast_language_changed">Restart the app</string>
-    <string name="toast_file_deleted">Deleted files. Restart the app</string>
-    <string name="toast_no_file_deleted">Could not delete files</string>
+    <string name="toast_log_file_deleted">Log file deleted</string>
+    <string name="toast_no_files_deleted">Could not update bus station</string>
 </resources>
