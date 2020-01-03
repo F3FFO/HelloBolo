@@ -12,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.f3ffo.hellobolo.Log;
 import com.f3ffo.hellobolo.R;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
@@ -51,7 +52,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         try {
             articleDate = new SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN).format(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzzz", Locale.ENGLISH).parse(currentArticle.getPubDate()));
         } catch (ParseException e) {
-            e.printStackTrace();
+            Log.logFile(context, e);
             articleDate = currentArticle.getPubDate();
         }
         viewHolder.textViewArticleTitle.setText(currentArticle.getTitle());
@@ -76,11 +77,11 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             description.setTextAppearance(R.style.TextAppearance_MaterialComponents_Body1_Custom);
             description.setPadding(64, 64, 64, 0);
             description.setTextIsSelectable(false);
-            new MaterialAlertDialogBuilder(context, R.style.AlertDialogTheme)
+            new MaterialAlertDialogBuilder(context, R.style.DialogTheme)
                     .setCustomTitle(title)
                     .setView(description)
-                    .setNegativeButton(R.string.alertDialog_rss_no, (DialogInterface dialog, int which) -> dialog.dismiss())
-                    .setPositiveButton(R.string.alertDialog_rss_yes, (DialogInterface dialog, int which) -> {
+                    .setNegativeButton(R.string.dialog_rss_no, (DialogInterface dialog, int which) -> dialog.dismiss())
+                    .setPositiveButton(R.string.dialog_rss_yes, (DialogInterface dialog, int which) -> {
                         Uri uri = Uri.parse(articles.get(viewHolder.getAdapterPosition()).getLink());
                         context.startActivity(new Intent(Intent.ACTION_VIEW, uri));
                     })

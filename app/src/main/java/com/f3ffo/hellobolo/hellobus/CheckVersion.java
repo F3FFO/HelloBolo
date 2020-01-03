@@ -4,6 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.f3ffo.hellobolo.Log;
 import com.f3ffo.hellobolo.asyncInterface.AsyncResponseVersion;
 
 import org.apache.commons.io.FileUtils;
@@ -65,7 +66,7 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
             }
             return true;
         } catch (Exception e) {
-            e.printStackTrace();
+            Log.logFile(context, e);
             return false;
         }
     }

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
+import com.f3ffo.hellobolo.Log;
+
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -33,7 +35,7 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
                     try {
                         FileUtils.forceDelete(new File(context.getFilesDir(), listFile.getName()));
                     } catch (IOException e) {
-                        e.printStackTrace();
+                        Log.logFile(context, e);
                     }
                 }
             }
@@ -47,14 +49,14 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
                 outputStream.close();
                 readableByteChannel.close();
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.logFile(context, e);
             }
         } else {
             try {
                 URL url = new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=" + version + "&format=csv");
                 FileUtils.copyURLToFile(url, new File(context.getFilesDir() + "/lineefermate_" + version + ".csv"));
             } catch (IOException e) {
-                e.printStackTrace();
+                Log.logFile(context, e);
             }
         }
         return null;

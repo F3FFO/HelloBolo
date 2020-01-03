@@ -2,6 +2,7 @@ package com.f3ffo.hellobolo.hellobus;
 
 import android.content.Context;
 
+import com.f3ffo.hellobolo.Log;
 import com.f3ffo.hellobolo.R;
 import com.f3ffo.hellobolo.search.SearchItem;
 
@@ -72,6 +73,7 @@ public class BusReader {
                         br.close();
                     } catch (IOException e) {
                         busClass.clear();
+                        Log.logFile(context, e);
                     }
                 }
             }
@@ -103,7 +105,7 @@ public class BusReader {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.logFile(context, e);
         }
         return propertiesFile;
     }
@@ -118,7 +120,7 @@ public class BusReader {
                 try {
                     FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + ";" + busClass.get(i).getBusStopName() + ";" + busClass.get(i).getBusStopAddress() + ";" + busClass.get(i).getLatitude().replace(",", ".") + ";" + busClass.get(i).getLongitude().replace(",", ".") + "\n"), StandardCharsets.UTF_8, true);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    Log.logFile(context, e);
                 }
             }
         }
@@ -152,7 +154,7 @@ public class BusReader {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.logFile(context, e);
         }
     }
 
