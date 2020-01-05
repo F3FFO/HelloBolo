@@ -60,7 +60,6 @@
     <string name="toast_favourite_removed">Removed from favorites!</string>
     <string name="toast_no_bus_stop_gps">No stops nearby</string>
     <string name="toast_gps_error">GPS not found</string>
-    <string name="toast_language_changed">Restart the app</string>
     <string name="toast_log_file_deleted">Log file deleted</string>
     <string name="toast_no_files_deleted">Could not update bus station</string>
 </resources>
