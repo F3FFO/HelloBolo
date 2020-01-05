@@ -46,11 +46,15 @@
     <string name="preference_title_language">Language</string>
     <string name="language_0">Italian</string>
     <string name="language_1">English</string>
+    <!-- preference.exit -->
+    <string name="preference_title_exit">Press twice to exit</string>
     <!-- preference.log -->
-    <string name="preference_title_open_log">Display Log file</string>
-    <string name="preference_title_delete_log">Delete Log file</string>
+    <string name="preference_title_open_log">Display log file</string>
+    <string name="preference_title_delete_log">Delete log file</string>
     <!-- preference.clearMemory -->
     <string name="preference_title_clear_memory">Update bus station</string>
+    <!-- preference.license -->
+    <string name="preference_title_license">Licenses &#38; Acknowledgements</string>
     <!-- toast -->
     <string name="toast_update_output">Updated</string>
     <string name="toast_permissions">Grant the necessary permissions</string>

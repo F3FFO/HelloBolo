@@ -51,4 +51,8 @@ public class Preference {
     public boolean setPreferenceLanguage() {
         return sharedPreference.getString(context.getString(R.string.preference_key_language), "it").equals("en");
     }
+
+    public boolean setPreferenceExit() {
+        return !sharedPreference.getBoolean(context.getString(R.string.preference_key_exit), true);
+    }
 }

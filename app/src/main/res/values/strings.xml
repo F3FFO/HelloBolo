@@ -61,14 +61,20 @@
     <string name="preference_summary_language" translatable="false">%1$s</string>
     <string name="language_0">Italiano</string>
     <string name="language_1">Inglese</string>
+    <!-- preference.exit -->
+    <string name="preference_key_exit" translatable="false">double_exit</string>
+    <string name="preference_title_exit">Premere due volte per uscire</string>
     <!-- preference.log -->
-    <string name="preference_title_open_log">Visualizza file di Log</string>
+    <string name="preference_title_open_log">Visualizza file di log</string>
     <string name="preference_key_open_log" translatable="false">open_log</string>
-    <string name="preference_title_delete_log">Elimina file di Log</string>
+    <string name="preference_title_delete_log">Elimina file di log</string>
     <string name="preference_key_delete_log" translatable="false">delete_log</string>
     <!-- preference.clearMemory -->
     <string name="preference_title_clear_memory">Aggiorna le fermate degli autobus</string>
     <string name="preference_key_clear_memory" translatable="false">clear_mem</string>
+    <!-- preference.license -->
+    <string name="preference_title_license">Licenze &#38; Riconoscimenti</string>
+    <string name="preference_key_license" translatable="false">license</string>
     <!-- toast -->
     <string name="toast_update_output">Aggiornato</string>
     <string name="toast_permissions">Concedere le autorizzazioni necessarie</string>
