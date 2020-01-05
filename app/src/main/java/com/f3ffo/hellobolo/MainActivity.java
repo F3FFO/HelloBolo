@@ -50,6 +50,8 @@ import com.f3ffo.hellobolo.preference.PreferencesActivity;
 import com.f3ffo.hellobolo.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobolo.search.SearchAdapter;
 import com.f3ffo.hellobolo.search.SearchItem;
+import com.f3ffo.hellobolo.utility.CheckInternet;
+import com.f3ffo.hellobolo.utility.Log;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -692,10 +694,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     @Override
     public void processStart() {
-        if (outputItemList.isEmpty()) {
-            progressBarOutput.setVisibility(View.VISIBLE);
+        if (CheckInternet.isNetworkAvailable(MainActivity.this)) {
+            if (outputItemList.isEmpty()) {
+                progressBarOutput.setVisibility(View.VISIBLE);
+            } else {
+                outputItemList.clear();
+            }
         } else {
-            outputItemList.clear();
+            Toast.makeText(MainActivity.this, R.string.network, Toast.LENGTH_LONG).show();
         }
     }
 
@@ -704,41 +710,45 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         RecyclerView recyclerViewBusOutput = findViewById(R.id.recyclerViewBusOutput);
         recyclerViewBusOutput.setHasFixedSize(true);
         recyclerViewBusOutput.setLayoutManager(new LinearLayoutManager(MainActivity.this));
-        if ("".equals(output.get(0).getError())) {
-            adapterOutput = new OutputAdapter(MainActivity.this, outputItemList);
-            if ("".equals(busHour)) {
-                String diffTime;
-                Calendar now = Calendar.getInstance(TimeZone.getTimeZone(getString(R.string.time_zone)), Locale.ITALY);
-                for (int i = 1; i < output.size(); i++) {
-                    StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
-                    int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
-                    int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
-                    if (diffHour == 0 || diffHour < 0) {
-                        if (diffMin < 2) {
-                            diffTime = getString(R.string.busHourOutputLive);
+        try {
+            if ("".equals(output.get(0).getError())) {
+                adapterOutput = new OutputAdapter(MainActivity.this, outputItemList);
+                if ("".equals(busHour)) {
+                    String diffTime;
+                    Calendar now = Calendar.getInstance(TimeZone.getTimeZone(getString(R.string.time_zone)), Locale.ITALY);
+                    for (int i = 1; i < output.size(); i++) {
+                        StringTokenizer token = new StringTokenizer(output.get(i).getBusHour(), ":");
+                        int diffHour = Integer.parseInt(token.nextToken()) - now.get(Calendar.HOUR_OF_DAY);
+                        int diffMin = Integer.parseInt(token.nextToken()) - now.get(Calendar.MINUTE);
+                        if (diffHour == 0 || diffHour < 0) {
+                            if (diffMin < 2) {
+                                diffTime = getString(R.string.busHourOutputLive);
+                            } else {
+                                diffTime = diffMin + getString(R.string.busHourOutputMin);
+                            }
+                        } else if (diffMin < 0) {
+                            diffTime = 60 + diffMin + getString(R.string.busHourOutputMin);
                         } else {
-                            diffTime = diffMin + getString(R.string.busHourOutputMin);
+                            diffTime = diffHour + getString(R.string.busHourOutputHour) + " " + diffMin + getString(R.string.busHourOutputMin);
                         }
-                    } else if (diffMin < 0) {
-                        diffTime = 60 + diffMin + getString(R.string.busHourOutputMin);
-                    } else {
-                        diffTime = diffHour + getString(R.string.busHourOutputHour) + " " + diffMin + getString(R.string.busHourOutputMin);
+                        outputItemList.add(new OutputItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
+                        recyclerViewBusOutput.setAdapter(adapterOutput);
                     }
-                    outputItemList.add(new OutputItem(output.get(i).getBusNumber(), diffTime, output.get(i).getBusHourComplete(), output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
-                    recyclerViewBusOutput.setAdapter(adapterOutput);
+                } else {
+                    for (int i = 1; i < output.size(); i++) {
+                        outputItemList.add(new OutputItem(output.get(i).getBusNumber(), output.get(i).getBusHourComplete(), "", output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
+                        recyclerViewBusOutput.setAdapter(adapterOutput);
+                    }
                 }
+                adapterOutput.notifyDataSetChanged();
             } else {
-                for (int i = 1; i < output.size(); i++) {
-                    outputItemList.add(new OutputItem(output.get(i).getBusNumber(), output.get(i).getBusHourComplete(), "", output.get(i).getSatelliteOrHour(), output.get(i).getHandicap()));
-                    recyclerViewBusOutput.setAdapter(adapterOutput);
-                }
+                outputItemList.add(new OutputItem(output.get(0).getError()));
+                OutputErrorAdapter adapterOutputError = new OutputErrorAdapter(MainActivity.this, outputItemList);
+                recyclerViewBusOutput.setAdapter(adapterOutputError);
+                adapterOutputError.notifyDataSetChanged();
             }
-            adapterOutput.notifyDataSetChanged();
-        } else {
-            outputItemList.add(new OutputItem(output.get(0).getError()));
-            OutputErrorAdapter adapterOutputError = new OutputErrorAdapter(MainActivity.this, outputItemList);
-            recyclerViewBusOutput.setAdapter(adapterOutputError);
-            adapterOutputError.notifyDataSetChanged();
+        } catch (Exception e) {
+            Log.logFile(MainActivity.this, e);
         }
         swipeRefreshLayoutOutput.setRefreshing(false);
         progressBarOutput.setVisibility(View.GONE);
