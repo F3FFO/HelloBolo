@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,8 +14,8 @@ import androidx.annotation.NonNull;
 import androidx.core.text.HtmlCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.f3ffo.hellobolo.utility.Log;
 import com.f3ffo.hellobolo.R;
+import com.f3ffo.hellobolo.utility.Log;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textview.MaterialTextView;
 import com.prof.rssparser.Article;
@@ -22,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
 
@@ -71,8 +74,26 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
             title.setTextAppearance(R.style.TextAppearance_MaterialComponents_Headline6_Custom);
             title.setPadding(64, 32, 64, 0);
             title.setTextIsSelectable(false);
+            title.setLines(2);
+            title.setEllipsize(TextUtils.TruncateAt.END);
             MaterialTextView description = new MaterialTextView(context);
-            description.setText(HtmlCompat.fromHtml(articles.get(viewHolder.getAdapterPosition()).getDescription(), HtmlCompat.FROM_HTML_MODE_COMPACT));
+            String content = articles.get(viewHolder.getAdapterPosition()).getDescription();
+            if (content != null) {
+                if (Pattern.matches(".*<h[1-6]>.*", content)) {
+                    content = content.replaceAll("<h[1-6]>", "");
+                    content = content.replaceAll("</h[1-6]>", "");
+                    System.out.println(content);
+                }
+                if (content.contains("<a href=/")) {
+                    content = content.replace("<a href=\"", "<a href=\"https://www.tper.it");
+                    description.setMovementMethod(LinkMovementMethod.getInstance());
+                }
+                if (content.contains("strong")) {
+                    content = content.replace("<strong>", "");
+                    content = content.replace("</strong>", "");
+                }
+                description.setText(HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_COMPACT));
+            }
             description.setTextAppearance(R.style.TextAppearance_MaterialComponents_Body1_Custom);
             description.setPadding(64, 64, 64, 0);
             description.setTextIsSelectable(false);
@@ -95,7 +116,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
 
     class ArticleViewHolder extends RecyclerView.ViewHolder {
 
-        MaterialTextView textViewArticleDate, textViewArticleTitle, textViewArticleCategory;
+        private MaterialTextView textViewArticleDate, textViewArticleTitle, textViewArticleCategory;
 
         ArticleViewHolder(View itemView) {
             super(itemView);
