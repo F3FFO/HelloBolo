@@ -1,9 +1,6 @@
 package com.f3ffo.hellobolo;
 
-import android.content.Context;
 import android.content.Intent;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.view.WindowManager;
@@ -14,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.f3ffo.hellobolo.asyncInterface.AsyncResponseVersion;
 import com.f3ffo.hellobolo.hellobus.CheckVersion;
 import com.f3ffo.hellobolo.hellobus.DownloadCsv;
+import com.f3ffo.hellobolo.utility.CheckInternet;
 
 public class SplashActivity extends AppCompatActivity implements AsyncResponseVersion {
 
@@ -21,7 +19,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        if (isNetworkAvailable()) {
+        if (CheckInternet.isNetworkAvailable(SplashActivity.this)) {
             try {
                 new CheckVersion(SplashActivity.this, SplashActivity.this).execute().get();
             } catch (Exception e) {
@@ -31,14 +29,8 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             finish();
         } else {
             Toast.makeText(SplashActivity.this, R.string.network, Toast.LENGTH_LONG).show();
-            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
         }
-    }
-
-    private boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     @Override
