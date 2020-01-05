@@ -4,6 +4,7 @@ import android.app.Dialog;
 import android.content.res.Configuration;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.method.ScrollingMovementMethod;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,9 +14,13 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.f3ffo.hellobolo.utility.Log;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.textview.MaterialTextView;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.ArrayList;
 
 public class FullScreenDialog extends DialogFragment {
 
@@ -40,6 +45,13 @@ public class FullScreenDialog extends DialogFragment {
         super.onCreateView(inflater, container, savedInstanceState);
         View view = inflater.inflate(R.layout.dialog_full_screen, container, false);
         materialToolbarDialogFullScreen = view.findViewById(R.id.materialToolbarDialogFullScreen);
+        MaterialTextView materialTextViewDialogFullScreen = view.findViewById(R.id.materialTextViewDialogFullScreen);
+        materialTextViewDialogFullScreen.setHorizontallyScrolling(true);
+        materialTextViewDialogFullScreen.setMovementMethod(new ScrollingMovementMethod());
+        ArrayList<String> file = Log.getLog(inflater.getContext());
+        for (int i = 0; i < file.size(); i++) {
+            materialTextViewDialogFullScreen.append(file.get(i) + "\n");
+        }
         return view;
     }
 
