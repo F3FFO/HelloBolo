@@ -95,15 +95,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private List<FavouritesItem> fav = new ArrayList<>();
     private List<SearchItem> stops = new ArrayList<>(), stopsGps = new ArrayList<>();
     private ArrayList<BusClass> busClass = new ArrayList<>();
-    private String busStopCode = "", busLine = "", busHour = "", currentBusStopCode = "";
-    private Favourites fv = new Favourites();
-    private BusReader br = new BusReader();
     private LocationManager locationManager;
+    private String busStopCode = "", busLine = "", busHour = "", currentBusStopCode = "";
     private double latitude, longitude;
+    private BusReader busReader = new BusReader();
+    private Favourites favourites = new Favourites();
+    private Preference preference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Preference preference = new Preference(MainActivity.this);
+        preference = new Preference(MainActivity.this);
         preference.setPreferenceTheme();
         super.onCreate(savedInstanceState);
         if (preference.setPreferenceLanguage()) {
@@ -159,11 +160,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         swipeRefreshLayoutOutput.setEnabled(false);
         swipeRefreshLayoutOutput.setProgressBackgroundColorSchemeResource(R.color.colorPrimary);
         swipeRefreshLayoutOutput.setColorSchemeResources(R.color.colorAccent);
-        busClass.addAll(br.extractFromFile(MainActivity.this));
-        stops.addAll(br.stopsViewer(MainActivity.this, busClass));
+        busClass.addAll(busReader.extractFromFile(MainActivity.this));
+        stops.addAll(busReader.stopsViewer(MainActivity.this, busClass));
         buildRecyclerViewSearch(stops, false);
-        fv.readFile(MainActivity.this);
-        fav.addAll(fv.getFavouritesList());
+        favourites.readFile(MainActivity.this);
+        fav.addAll(favourites.getFavouritesList());
         buildRecyclerViewFavourites();
         viewPagerRss.setAdapter(new ArticleStatePagerAdapter(MainActivity.this, getSupportFragmentManager()));
         tabsRss.setupWithViewPager(viewPagerRss);
@@ -175,7 +176,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 if (getLocation()) {
                     latitude = ((long) (latitude * 1e6)) / 1e6;
                     longitude = ((long) (longitude * 1e6)) / 1e6;
-                    List<String> busPosition = br.takeTheCorrespondingBusStop(busClass, latitude, longitude);
+                    List<String> busPosition = busReader.takeTheCorrespondingBusStop(busClass, latitude, longitude);
                     stopsGps.clear();
                     List<Integer> listPosition = new ArrayList<>();
                     if (busPosition.size() > 1) {
@@ -208,7 +209,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                                     Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_SHORT).show();
                                 }
                             } else {
-                                if (fv.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
+                                if (favourites.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
                                     boolean isRemoved = false;
                                     for (int i = 0; i < fav.size() && !isRemoved; i++) {
                                         if (fav.get(i).getBusStopCode().equals(stopsGps.get(position).getBusStopCode())) {
@@ -308,7 +309,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_SHORT).show();
                 }
             } else {
-                if (fv.removeFavourite(MainActivity.this, stops.get(position).getBusStopCode())) {
+                if (favourites.removeFavourite(MainActivity.this, stops.get(position).getBusStopCode())) {
                     boolean isRemoved = false;
                     for (int i = 0; i < fav.size() && !isRemoved; i++) {
                         if (fav.get(i).getBusStopCode().equals(stops.get(position).getBusStopCode())) {
@@ -393,7 +394,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             fabBus.show();
         });
         adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
-            if (fv.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
+            if (favourites.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
                 boolean isRemoved = false;
                 for (int i = 0; i < stops.size() && !isRemoved; i++) {
                     if (fav.get(position).getBusStopCode().equals(stops.get(i).getBusStopCode()) && !updateStarFavourite(stops, i)) {
@@ -411,6 +412,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     @Override
     protected void onResume() {
         super.onResume();
+        initPreference(preference);
         if (constraintLayoutFavourites.getVisibility() == View.VISIBLE) {
             bottomNavView.setSelectedItemId(R.id.navigation_favourites);
         } else if (viewPagerRss.getVisibility() == View.VISIBLE) {
@@ -519,6 +521,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             recyclerViewBusStation.setVisibility(View.GONE);
             recyclerViewBusGps.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void initPreference(@NotNull Preference preference) {
+        doubleBackToExitPressedOnce = preference.setPreferenceExit();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
