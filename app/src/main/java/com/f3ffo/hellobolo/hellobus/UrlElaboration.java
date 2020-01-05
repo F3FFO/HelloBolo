@@ -42,9 +42,9 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
         List<OutputItem> outputItemList = new ArrayList<>();
         try {
             Request get = new Request.Builder().url("https://hellobuswsweb.tper.it/web-services/hello-bus.asmx/QueryHellobus?fermata=" + busStop + "&oraHHMM=" + busHour + "&linea=" + busLine).build();
-            BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
             String line;
-            while ((line = br.readLine()) != null) {
+            while ((line = bufferedReader.readLine()) != null) {
                 if (!line.startsWith("<?xml")) {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     if (line.contains("NESSUNA ALTRA CORSA")) {
@@ -107,7 +107,7 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
                     }
                 }
             }
-            br.close();
+            bufferedReader.close();
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -5,6 +5,5 @@
     android:ellipsize="marquee"
     android:fontFamily="sans-serif"
     android:singleLine="true"
-    android:textAlignment="inherit"
     android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
     android:textIsSelectable="false" />

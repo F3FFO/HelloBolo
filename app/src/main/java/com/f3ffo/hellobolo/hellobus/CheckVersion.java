@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.f3ffo.hellobolo.Log;
+import com.f3ffo.hellobolo.utility.Log;
 import com.f3ffo.hellobolo.asyncInterface.AsyncResponseVersion;
 
 import org.apache.commons.io.FileUtils;

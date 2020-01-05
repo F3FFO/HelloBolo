@@ -2,7 +2,7 @@ package com.f3ffo.hellobolo.hellobus;
 
 import android.content.Context;
 
-import com.f3ffo.hellobolo.Log;
+import com.f3ffo.hellobolo.utility.Log;
 import com.f3ffo.hellobolo.R;
 import com.f3ffo.hellobolo.search.SearchItem;
 
@@ -31,10 +31,10 @@ public class BusReader {
             for (File listFile : listFiles) {
                 if (listFile.getName().contains("lineefermate_") && listFile.getName().contains(".csv")) {
                     try {
-                        BufferedReader br = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
+                        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(listFile.getName()), StandardCharsets.UTF_8));
                         String line;
                         boolean doubleComma = false;
-                        while ((line = br.readLine()) != null) {
+                        while ((line = bufferedReader.readLine()) != null) {
                             if (line.contains(";;")) {
                                 line = line.replace(";;", ";");
                                 doubleComma = true;
@@ -70,7 +70,7 @@ public class BusReader {
                                 busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress), latitude, longitude));
                             }
                         }
-                        br.close();
+                        bufferedReader.close();
                     } catch (IOException e) {
                         busClass.clear();
                         Log.logFile(context, e);
@@ -153,6 +153,7 @@ public class BusReader {
                     stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.star, latitude, longitude));
                 }
             }
+            bufferedReader.close();
         } catch (IOException e) {
             Log.logFile(context, e);
         }
