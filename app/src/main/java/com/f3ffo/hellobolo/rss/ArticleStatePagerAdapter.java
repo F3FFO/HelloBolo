@@ -14,7 +14,7 @@ public class ArticleStatePagerAdapter extends FragmentStatePagerAdapter {
 
     @StringRes
     private static final int[] TAB_TITLES = new int[]{R.string.tab_rss_0, R.string.tab_rss_1, R.string.tab_rss_2};
-    private final Context context;
+    private Context context;
 
     public ArticleStatePagerAdapter(Context context, FragmentManager fragmentManager) {
         super(fragmentManager, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT);

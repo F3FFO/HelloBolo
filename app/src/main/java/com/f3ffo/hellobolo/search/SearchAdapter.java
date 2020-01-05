@@ -13,6 +13,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.f3ffo.hellobolo.R;
 import com.google.android.material.textview.MaterialTextView;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,7 +79,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
 
         @SuppressWarnings("unchecked")
         @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
+        protected void publishResults(CharSequence constraint, @NotNull FilterResults results) {
             outputSearchViewItemList.clear();
             outputSearchViewItemList.addAll((List<SearchItem>) results.values);
             notifyDataSetChanged();
@@ -102,8 +104,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
 
     static class SearchAdapterHolder extends RecyclerView.ViewHolder {
 
-        MaterialTextView textViewBusStopCodeSearch, textViewBusStopNameSearch, textViewBusStopAddressSearch;
-        AppCompatImageButton imageButtonFavouriteSearch;
+        private MaterialTextView textViewBusStopCodeSearch, textViewBusStopNameSearch, textViewBusStopAddressSearch;
+        private AppCompatImageButton imageButtonFavouriteSearch;
 
         SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener, final OnFavouriteButtonClickListener listener2) {
             super(itemView);

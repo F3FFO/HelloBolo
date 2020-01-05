@@ -61,15 +61,14 @@ public class FavouritesAdapter extends RecyclerView.Adapter<FavouritesAdapter.Fa
 
     static class FavouritesAdapterHolder extends RecyclerView.ViewHolder {
 
-        MaterialTextView textViewBusStopCodeFavourite, textViewBusStopNameFavourite, textViewBusStopAddressFavourite;
-        AppCompatImageButton imageButtonFavouriteSearch;
+        private MaterialTextView textViewBusStopCodeFavourite, textViewBusStopNameFavourite, textViewBusStopAddressFavourite;
 
         FavouritesAdapterHolder(@NonNull View itemView, final OnItemClickListener listener, final OnFavouriteButtonClickListener listener2) {
             super(itemView);
             textViewBusStopCodeFavourite = itemView.findViewById(R.id.textViewBusStopCodeFavourite);
             textViewBusStopNameFavourite = itemView.findViewById(R.id.textViewBusStopNameFavourite);
             textViewBusStopAddressFavourite = itemView.findViewById(R.id.textViewBusStopAddressFavourite);
-            imageButtonFavouriteSearch = itemView.findViewById(R.id.imageButtonFavourite);
+            AppCompatImageButton imageButtonFavouriteSearch = itemView.findViewById(R.id.imageButtonFavourite);
 
             itemView.setOnClickListener((View v) -> {
                 if (listener != null) {

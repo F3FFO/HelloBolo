@@ -20,7 +20,7 @@ import com.google.android.material.textview.MaterialTextView;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
+import java.util.List;
 
 public class FullScreenDialog extends DialogFragment {
 
@@ -48,7 +48,7 @@ public class FullScreenDialog extends DialogFragment {
         MaterialTextView materialTextViewDialogFullScreen = view.findViewById(R.id.materialTextViewDialogFullScreen);
         materialTextViewDialogFullScreen.setHorizontallyScrolling(true);
         materialTextViewDialogFullScreen.setMovementMethod(new ScrollingMovementMethod());
-        ArrayList<String> file = Log.getLog(inflater.getContext());
+        List<String> file = Log.getLog(inflater.getContext());
         for (int i = 0; i < file.size(); i++) {
             materialTextViewDialogFullScreen.append(file.get(i) + "\n");
         }

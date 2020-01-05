@@ -52,9 +52,9 @@ public class OutputAdapter extends RecyclerView.Adapter<OutputAdapter.OutputView
 
     static class OutputViewHolder extends RecyclerView.ViewHolder {
 
-        MaterialTextView textViewBusHourOutput, textViewBusHourCompleteOutput;
-        MaterialButton buttonBusNumberOutput;
-        AppCompatImageView imageViewSatOrTable, imageViewHandicap;
+        private MaterialTextView textViewBusHourOutput, textViewBusHourCompleteOutput;
+        private MaterialButton buttonBusNumberOutput;
+        private AppCompatImageView imageViewSatOrTable, imageViewHandicap;
 
         OutputViewHolder(@NonNull View itemView) {
             super(itemView);

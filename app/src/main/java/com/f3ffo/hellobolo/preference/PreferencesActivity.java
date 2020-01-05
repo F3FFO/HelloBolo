@@ -14,9 +14,9 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.f3ffo.hellobolo.FullScreenDialog;
-import com.f3ffo.hellobolo.utility.Log;
 import com.f3ffo.hellobolo.MainActivity;
 import com.f3ffo.hellobolo.R;
+import com.f3ffo.hellobolo.utility.Log;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
@@ -125,17 +125,30 @@ public class PreferencesActivity extends AppCompatActivity {
                 LinearLayoutCompat.LayoutParams layoutParams = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
                 layoutParams.setMargins(128, 16, 128, 16);
                 slider.setLayoutParams(layoutParams);
-                slider.setBackgroundColor(getContext().getColor(R.color.colorAccent));
                 slider.setValueFrom(-500);
                 slider.setValueTo(500);
                 slider.setStepSize(250);
                 slider.setValue(0);
+                slider.setOnChangeListener((slider1, value) -> {
+                    double distance = BusReader.distance;
+                    if (value == 250) {
+                        distance = BusReader.distance + 0.0025;
+                    } else if (value == -250) {
+                        distance = BusReader.distance - 0.0025;
+                    } else if (value == 500) {
+                        distance = BusReader.distance + 0.005;
+                    } else if (value == -500) {
+                        distance = BusReader.distance - 0.005;
+                    }
+                    BusReader.distance = distance;
+                    System.out.println(distance);
+                });
                 layout.addView(slider);
-                new MaterialAlertDialogBuilder(getContext(), R.style.AlertDialogTheme)
+                new MaterialAlertDialogBuilder(getContext(), R.style.DialogTheme)
                         .setTitle("Range")
                         .setView(layout)
-                        .setNegativeButton(R.string.alertDialog_gps_no, (DialogInterface dialog, int which) -> dialog.dismiss())
-                        .setPositiveButton(R.string.alertDialog_gps_yes, (DialogInterface dialog, int which) -> new Preference(getContext()).setPreferenceGps(slider.getValue()))
+                        .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
+                        .setPositiveButton(R.string.dialog_gps_yes, (DialogInterface dialog, int which) -> new Preference(getContext()).setPreferenceGps(slider.getValue()))
                         .show();
                 return false;
             });*/

@@ -23,6 +23,7 @@ import java.util.StringTokenizer;
 public class BusReader {
 
     private List<Double> arrayLatitude = new ArrayList<>();
+    public static double distance = 0.001;
 
     public ArrayList<BusClass> extractFromFile(@NotNull Context context) {
         ArrayList<BusClass> busClass = new ArrayList<>();
@@ -179,7 +180,7 @@ public class BusReader {
     private List<Double> cutTheCuttedFile(double searchValue, @NotNull List<Double> cut) {
         List<Double> result = new ArrayList<>();
         for (int i = 0; i < cut.size(); i++) {
-            if (cut.get(i) < (searchValue + 0.001) && cut.get(i) > (searchValue - 0.001)) {
+            if (cut.get(i) < (searchValue + distance) && cut.get(i) > (searchValue - distance)) {
                 result.add(cut.get(i));
             }
         }
@@ -192,7 +193,7 @@ public class BusReader {
         for (int i = 0; i < busClass.size(); i++) {
             for (int j = 0; j < arrayLatitude.size(); j++) {
                 if (Double.parseDouble(busClass.get(i).getLatitude()) == arrayLatitude.get(j) && !result.contains(busClass.get(i).getBusStopCode())) {
-                    if (Double.parseDouble(busClass.get(i).getLongitude()) < (searchValueLongitude + 0.001) && Double.parseDouble(busClass.get(i).getLongitude()) > (searchValueLongitude - 0.001)) {
+                    if (Double.parseDouble(busClass.get(i).getLongitude()) < (searchValueLongitude + distance) && Double.parseDouble(busClass.get(i).getLongitude()) > (searchValueLongitude - distance)) {
                         result.add(busClass.get(i).getBusStopCode());
                     }
                 }
