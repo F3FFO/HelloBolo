@@ -17,8 +17,20 @@
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
-        android:id="@+id/frameLayoutDialogFullScreen"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/materialTextViewDialogFullScreen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:fontFamily="sans-serif"
+            android:scrollbars="horizontal|vertical"
+            android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+            android:textIsSelectable="false" />
+    </FrameLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
