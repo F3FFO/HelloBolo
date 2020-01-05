@@ -14,7 +14,7 @@ import androidx.appcompat.widget.AppCompatImageButton;
 import androidx.preference.PreferenceFragmentCompat;
 
 import com.f3ffo.hellobolo.FullScreenDialog;
-import com.f3ffo.hellobolo.Log;
+import com.f3ffo.hellobolo.utility.Log;
 import com.f3ffo.hellobolo.MainActivity;
 import com.f3ffo.hellobolo.R;
 import com.google.android.material.appbar.MaterialToolbar;
