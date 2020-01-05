@@ -4,7 +4,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import com.f3ffo.hellobolo.Log;
+import com.f3ffo.hellobolo.utility.Log;
 
 import org.apache.commons.io.FileUtils;
 
@@ -31,7 +31,7 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
         File[] listFiles = context.getFilesDir().listFiles();
         if (listFiles != null) {
             for (File listFile : listFiles) {
-                if (!listFile.isDirectory() && !listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties")) {
+                if (!listFile.isDirectory() && !listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties") && !listFile.getName().equals(Log.LOG_FILENAME)) {
                     try {
                         FileUtils.forceDelete(new File(context.getFilesDir(), listFile.getName()));
                     } catch (IOException e) {
