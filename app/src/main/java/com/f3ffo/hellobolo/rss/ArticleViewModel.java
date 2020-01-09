@@ -12,6 +12,8 @@ import com.prof.rssparser.Article;
 import com.prof.rssparser.OnTaskCompleted;
 import com.prof.rssparser.Parser;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,7 +64,7 @@ public class ArticleViewModel extends ViewModel {
         parser.onFinish(new OnTaskCompleted() {
 
             @Override
-            public void onTaskCompleted(List<Article> list) {
+            public void onTaskCompleted(@NotNull List<Article> list) {
                 setArticleList(list);
             }
 

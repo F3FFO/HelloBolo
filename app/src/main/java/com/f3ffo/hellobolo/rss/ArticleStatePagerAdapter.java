@@ -10,6 +10,8 @@ import androidx.fragment.app.FragmentStatePagerAdapter;
 
 import com.f3ffo.hellobolo.R;
 
+import org.jetbrains.annotations.NotNull;
+
 public class ArticleStatePagerAdapter extends FragmentStatePagerAdapter {
 
     @StringRes
@@ -21,6 +23,7 @@ public class ArticleStatePagerAdapter extends FragmentStatePagerAdapter {
         this.context = context;
     }
 
+    @NotNull
     @Override
     public Fragment getItem(int position) {
         return ArticleFragment.newInstance(position + 1);

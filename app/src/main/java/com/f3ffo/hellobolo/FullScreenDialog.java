@@ -21,16 +21,16 @@ import com.google.android.material.textview.MaterialTextView;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
+import java.util.Objects;
 
 public class FullScreenDialog extends DialogFragment {
 
     private static final String TAG = "dialog_full_screen";
     private MaterialToolbar materialToolbarDialogFullScreen;
 
-    public static FullScreenDialog display(FragmentManager fragmentManager) {
+    public static void display(FragmentManager fragmentManager) {
         FullScreenDialog fullScreenDialog = new FullScreenDialog();
         fullScreenDialog.show(fragmentManager, TAG);
-        return fullScreenDialog;
     }
 
     @Override
@@ -67,7 +67,7 @@ public class FullScreenDialog extends DialogFragment {
         super.onStart();
         Dialog dialog = getDialog();
         if (dialog != null) {
-            dialog.getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            Objects.requireNonNull(dialog.getWindow()).setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
                 case Configuration.UI_MODE_NIGHT_NO:
                     if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {

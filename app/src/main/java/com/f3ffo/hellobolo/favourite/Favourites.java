@@ -38,7 +38,7 @@ public class Favourites {
         }
     }
 
-    public FavouritesItem addFavourite(@NotNull Context context, String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
+    public FavouritesItem addFavourite(@NotNull Context context, String busStopCode, String busStopName, String busStopAddress) {
         FavouritesItem item = null;
         try {
             prop.load(context.openFileInput(this.fileName));

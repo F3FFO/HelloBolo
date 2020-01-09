@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleViewHolder> {
@@ -36,7 +37,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         this.context = context;
     }
 
-    public List<Article> getArticleList() {
+    List<Article> getArticleList() {
         return articles;
     }
 
@@ -52,7 +53,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         Article currentArticle = articles.get(position);
         String articleDate;
         try {
-            articleDate = new SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN).format(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzzz", Locale.ENGLISH).parse(currentArticle.getPubDate()));
+            articleDate = new SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN).format(Objects.requireNonNull(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzzz", Locale.ENGLISH).parse(currentArticle.getPubDate())));
         } catch (ParseException e) {
             Log.logFile(context, e);
             articleDate = currentArticle.getPubDate();

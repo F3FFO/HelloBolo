@@ -31,7 +31,7 @@ public class ArticleFragment extends Fragment {
     private RecyclerView recyclerViewRss;
     private ConstraintLayout constraintLayoutRss;
 
-    public static ArticleFragment newInstance(int index) {
+    static ArticleFragment newInstance(int index) {
         ArticleFragment fragment = new ArticleFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);

@@ -174,10 +174,10 @@ public class BusReader {
     }
 
     private void stopsCutLatitude(double searchValue) {
-        arrayLatitude = cutTheCuttedFile(searchValue, arrayLatitude);
+        arrayLatitude = cutTheCutFile(searchValue, arrayLatitude);
     }
 
-    private List<Double> cutTheCuttedFile(double searchValue, @NotNull List<Double> cut) {
+    private List<Double> cutTheCutFile(double searchValue, @NotNull List<Double> cut) {
         List<Double> result = new ArrayList<>();
         for (int i = 0; i < cut.size(); i++) {
             if (cut.get(i) < (searchValue + distance) && cut.get(i) > (searchValue - distance)) {

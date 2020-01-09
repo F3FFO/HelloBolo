@@ -10,7 +10,7 @@ public class CheckInternet {
 
     public static boolean isNetworkAvailable(@NotNull Context context) {
         ConnectivityManager connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        NetworkInfo activeNetworkInfo = connectivityManager != null ? connectivityManager.getActiveNetworkInfo() : null;
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }
