@@ -67,6 +67,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
@@ -193,7 +194,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                         adapterBusGps.setOnFavouriteButtonClickListener((int position) -> {
                             Favourites favourites = new Favourites();
                             if (updateStarFavourite(stopsGps, position)) {
-                                FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress(), stopsGps.get(position).getLatitude(), stopsGps.get(position).getLongitude());
+                                FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress());
                                 if (item != null) {
                                     fav.add(item);
                                     for (int element : listPosition) {
@@ -299,7 +300,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
             Favourites favourites = new Favourites();
             if (updateStarFavourite(stops, position)) {
-                FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress(), stops.get(position).getLatitude(), stops.get(position).getLongitude());
+                FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress());
                 if (item != null) {
                     fav.add(item);
                     adapterBusStation.notifyItemChanged(position);
@@ -351,7 +352,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if (spinnerArrayAdapter != null && !spinnerArrayAdapter.getItem(position).equals(busStopCode)) {
+                if (!Objects.equals(spinnerArrayAdapter.getItem(position), busStopCode)) {
                     swipeRefreshLayoutOutput.setEnabled(false);
                     outputItemList.clear();
                     fabBus.show();
