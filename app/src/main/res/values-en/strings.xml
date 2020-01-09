@@ -42,6 +42,11 @@
     <string name="theme_0">Always</string>
     <string name="theme_1">Automatically (follow system theme)</string>
     <string name="theme_2">Never</string>
+    <!-- preference.gps -->
+    <string name="preference_title_gps">GPS search range</string>
+    <string name="preference_summary_gps">Set the distance, from where you are, to search for bus stops via GPS</string>
+    <string name="preference_slider_gps_text_high">Warning! Increasing the search range will result in more stops but will be slower</string>
+    <string name="preference_slider_gps_text_low">Warning! Decreasing the search range will result in fewer stops</string>
     <!-- preference.language -->
     <string name="preference_title_language">Language</string>
     <string name="language_0">Italian</string>

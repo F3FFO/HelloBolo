@@ -52,9 +52,11 @@
     <string name="theme_1">Automatico (segui tema di sistema)</string>
     <string name="theme_2">Mai</string>
     <!-- preference.gps -->
-    <string name="preference_title_gps" translatable="false">Range GPS</string>
+    <string name="preference_title_gps">Range di ricerca GPS</string>
     <string name="preference_key_gps" translatable="false">gps</string>
-    <string name="preference_summary_gps" translatable="false">%1$s</string>
+    <string name="preference_summary_gps">Imposta la distanza, rispetto a dove ti trovi, per la ricerca delle fermate degli autobus trmite il GPS</string>
+    <string name="preference_slider_gps_text_high">Attenzione! Aumentando il range di ricerca si otterrà un numero maggiore di fermate ma sarà più lento</string>
+    <string name="preference_slider_gps_text_low">Attenzione! Diminuendo il range di ricerca si otterrà un numero minore di fermate</string>
     <!-- preference.language -->
     <string name="preference_title_language">Lingua</string>
     <string name="preference_key_language" translatable="false">lang</string>

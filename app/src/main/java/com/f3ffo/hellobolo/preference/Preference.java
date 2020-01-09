@@ -19,7 +19,7 @@ public class Preference {
         this.sharedPreference = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
-    public String setPreferenceTheme() {
+    public void setPreferenceTheme() {
         SharedPreferences.Editor editor = sharedPreference.edit();
         if (sharedPreference.getString(context.getString(R.string.preference_key_theme), "").equals("true")) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
@@ -38,14 +38,17 @@ public class Preference {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
             }
         }
-        return null;
     }
 
-    public void setPreferenceGps(float value) {
+    void setPreferenceGps(float value) {
         SharedPreferences.Editor editor = sharedPreference.edit();
-        editor.putString(context.getString(R.string.preference_key_gps), Float.toString(value));
+        editor.putFloat(context.getString(R.string.preference_key_gps), value);
         editor.apply();
         editor.commit();
+    }
+
+    float getPreferenceGps() {
+        return sharedPreference.getFloat(context.getString(R.string.preference_key_gps), 0);
     }
 
     public boolean setPreferenceLanguage() {
