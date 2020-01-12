@@ -36,8 +36,6 @@ import java.util.Objects;
 
 public class PreferencesActivity extends AppCompatActivity {
 
-    private BottomNavigationView bottomNavView;
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -57,7 +55,7 @@ public class PreferencesActivity extends AppCompatActivity {
         MaterialToolbar materialToolbar = findViewById(R.id.materialToolbarPreference);
         setSupportActionBar(materialToolbar);
         materialToolbar.setNavigationOnClickListener((View v) -> super.onBackPressed());
-        bottomNavView = findViewById(R.id.bottomNavViewPreference);
+        BottomNavigationView bottomNavView = findViewById(R.id.bottomNavViewPreference);
         bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
         AppCompatImageView imageViewAppIconPreferenceSettings = findViewById(R.id.imageViewAppIconPreferenceSettings);
         imageViewAppIconPreferenceSettings.setOnClickListener(view -> startActivity(new Intent(Settings.ACTION_APPLICATION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)));

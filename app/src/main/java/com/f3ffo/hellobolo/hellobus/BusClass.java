@@ -1,12 +1,10 @@
 package com.f3ffo.hellobolo.hellobus;
 
-import java.util.Comparator;
-
 public class BusClass {
 
     private String busCode, busStopCode, busStopName, busStopAddress, latitude, longitude;
 
-    public BusClass(String busCode, String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
+    BusClass(String busCode, String busStopCode, String busStopName, String busStopAddress, String latitude, String longitude) {
         this.busCode = busCode;
         this.busStopCode = busStopCode;
         this.busStopName = busStopName;
@@ -38,6 +36,4 @@ public class BusClass {
     public String getLongitude() {
         return longitude;
     }
-
-    public static Comparator<BusClass> sortByLat = (BusClass obj1, BusClass obj2) -> obj1.latitude.compareTo(obj2.latitude);
 }
