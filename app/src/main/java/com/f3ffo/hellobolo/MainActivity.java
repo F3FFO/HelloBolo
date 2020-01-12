@@ -2,7 +2,6 @@ package com.f3ffo.hellobolo;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -150,7 +149,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
         placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        searchBarGps.setOnClickListener((View view) -> {
+        searchBarGps.setOnClickListener(view -> {
             try {
                 if (getLocation()) {
                     latitude = ((long) (latitude * 1e6)) / 1e6;
@@ -168,8 +167,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                             }
                         }
                         buildRecyclerViewSearch(stopsGps, true);
-                        adapterBusGps.setOnItemClickListener((int position) -> itemAdapterMethod(stopsGps, position));
-                        adapterBusGps.setOnFavouriteButtonClickListener((int position) -> {
+                        adapterBusGps.setOnItemClickListener(position -> itemAdapterMethod(stopsGps, position));
+                        adapterBusGps.setOnFavouriteButtonClickListener(position -> {
                             Favourites favourites = new Favourites();
                             if (updateStarFavourite(stopsGps, position)) {
                                 FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress());
@@ -274,8 +273,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             public void afterTextChanged(Editable editable) {
             }
         });
-        adapterBusStation.setOnItemClickListener((int position) -> itemAdapterMethod(stops, position));
-        adapterBusStation.setOnFavouriteButtonClickListener((int position) -> {
+        adapterBusStation.setOnItemClickListener(position -> itemAdapterMethod(stops, position));
+        adapterBusStation.setOnFavouriteButtonClickListener(position -> {
             Favourites favourites = new Favourites();
             if (updateStarFavourite(stops, position)) {
                 FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress());
@@ -302,22 +301,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 }
             }
         });
-        materialTextViewBusHour.setOnClickListener((View view) -> {
+        materialTextViewBusHour.setOnClickListener(view -> {
             view = LayoutInflater.from(MainActivity.this).inflate(R.layout.time_picker, null);
             TimePicker timePicker = view.findViewById(R.id.timePicker);
             timePicker.setIs24HourView(true);
             boolean[] isNow = {true};
-            timePicker.setOnTimeChangedListener((TimePicker timePicker2, int i, int i1) -> isNow[0] = false);
+            timePicker.setOnTimeChangedListener((timePicker2, i, i1) -> isNow[0] = false);
             new MaterialAlertDialogBuilder(MainActivity.this, R.style.TimePickerTheme)
                     .setView(view)
-                    .setPositiveButton(R.string.time_picker_ok, (DialogInterface dialog, int which) -> {
+                    .setPositiveButton(R.string.time_picker_ok, (dialog, which) -> {
                         setTime(timePicker.getHour(), timePicker.getMinute(), isNow[0]);
                         dialog.dismiss();
                     })
-                    .setNeutralButton(R.string.time_picker_cancel, (DialogInterface dialog, int which) -> dialog.dismiss())
+                    .setNeutralButton(R.string.time_picker_cancel, (dialog, which) -> dialog.dismiss())
                     .show();
             MaterialTextView textViewResetHour = view.findViewById(R.id.textViewResetHour);
-            textViewResetHour.setOnClickListener((View secondView) -> {
+            textViewResetHour.setOnClickListener(secondView -> {
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone(getString(R.string.time_zone)), Locale.ITALY);
                 int hour = now.get(Calendar.HOUR_OF_DAY);
                 int minute = now.get(Calendar.MINUTE);
@@ -341,7 +340,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             public void onNothingSelected(AdapterView<?> parent) {
             }
         });
-        fabBus.setOnClickListener((View v) -> {
+        fabBus.setOnClickListener(view -> {
             if (!busStopCode.isEmpty()) {
                 if (spinnerBusCode.getSelectedItem().toString().equals(getString(R.string.first_element_spinner))) {
                     busLine = "";
@@ -355,7 +354,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 Toast.makeText(MainActivity.this, getString(R.string.toast_no_bus_stop), Toast.LENGTH_SHORT).show();
             }
         });
-        adapterFavourites.setOnItemClickListener((int position) -> {
+        adapterFavourites.setOnItemClickListener(position -> {
             materialTextViewAppName.setVisibility(View.GONE);
             if (adapterOutput != null && !outputItemList.isEmpty()) {
                 outputItemList.clear();
@@ -372,7 +371,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             setDisplayChild(1);
             fabBus.show();
         });
-        adapterFavourites.setOnFavouriteButtonClickListener((int position) -> {
+        adapterFavourites.setOnFavouriteButtonClickListener(position -> {
             if (favourites.removeFavourite(MainActivity.this, fav.get(position).getBusStopCode())) {
                 boolean isRemoved = false;
                 for (int i = 0; i < stops.size() && !isRemoved; i++) {
@@ -569,7 +568,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     searchViewBusStopName.disableSearch();
                 }
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
-                startActivity(new Intent(MainActivity.this, PreferencesActivity.class).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+                startActivity(new Intent(MainActivity.this, PreferencesActivity.class).setFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
                 return true;
         }
         return false;
@@ -605,8 +604,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             new MaterialAlertDialogBuilder(MainActivity.this)
                     .setMessage(R.string.dialog_gps_message)
-                    .setPositiveButton(R.string.dialog_gps_yes, (DialogInterface dialog, int which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                    .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.cancel())
+                    .setPositiveButton(R.string.dialog_gps_yes, (dialog, which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
+                    .setNegativeButton(R.string.dialog_generic_no, (dialog, which) -> dialog.cancel())
                     .show();
             return false;
         } else {
