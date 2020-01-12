@@ -29,7 +29,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             finish();
         } else {
             Toast.makeText(SplashActivity.this, R.string.network, Toast.LENGTH_LONG).show();
-            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS).addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION));
+            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS));
         }
     }
 

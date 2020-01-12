@@ -31,11 +31,11 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
         File[] listFiles = context.getFilesDir().listFiles();
         if (listFiles != null) {
             for (File listFile : listFiles) {
-                if (!listFile.isDirectory() && !listFile.getName().contains(this.version) && !listFile.getName().equals("favourites.properties") && !listFile.getName().equals(Log.LOG_FILENAME)) {
+                if (!listFile.isDirectory() && !listFile.getName().contains(version) && !listFile.getName().equals("favourites.properties") && !listFile.getName().equals(Log.LOG_FILENAME)) {
                     try {
                         FileUtils.forceDelete(new File(context.getFilesDir(), listFile.getName()));
                     } catch (IOException e) {
-                        Log.logFile(context, e);
+                        Log.logError(context, e);
                     }
                 }
             }
@@ -49,14 +49,14 @@ public class DownloadCsv extends AsyncTask<Void, Void, Void> {
                 outputStream.close();
                 readableByteChannel.close();
             } catch (IOException e) {
-                Log.logFile(context, e);
+                Log.logError(context, e);
             }
         } else {
             try {
                 URL url = new URL("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=lineefermate&version=" + version + "&format=csv");
                 FileUtils.copyURLToFile(url, new File(context.getFilesDir() + "/lineefermate_" + version + ".csv"));
             } catch (IOException e) {
-                Log.logFile(context, e);
+                Log.logError(context, e);
             }
         }
         return null;

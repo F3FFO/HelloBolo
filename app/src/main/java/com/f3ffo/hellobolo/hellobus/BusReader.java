@@ -74,7 +74,7 @@ public class BusReader {
                         bufferedReader.close();
                     } catch (IOException e) {
                         busClass.clear();
-                        Log.logFile(context, e);
+                        Log.logError(context, e);
                     }
                 }
             }
@@ -106,7 +106,7 @@ public class BusReader {
                 }
             }
         } catch (IOException e) {
-            Log.logFile(context, e);
+            Log.logError(context, e);
         }
         return propertiesFile;
     }
@@ -121,7 +121,7 @@ public class BusReader {
                 try {
                     FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + ";" + busClass.get(i).getBusStopName() + ";" + busClass.get(i).getBusStopAddress() + ";" + busClass.get(i).getLatitude().replace(",", ".") + ";" + busClass.get(i).getLongitude().replace(",", ".") + "\n"), StandardCharsets.UTF_8, true);
                 } catch (IOException e) {
-                    Log.logFile(context, e);
+                    Log.logError(context, e);
                 }
             }
         }
@@ -156,7 +156,7 @@ public class BusReader {
             }
             bufferedReader.close();
         } catch (IOException e) {
-            Log.logFile(context, e);
+            Log.logError(context, e);
         }
     }
 

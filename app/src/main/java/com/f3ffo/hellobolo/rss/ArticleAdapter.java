@@ -55,7 +55,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
         try {
             articleDate = new SimpleDateFormat("dd MMMM yyyy", Locale.ITALIAN).format(Objects.requireNonNull(new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzzz", Locale.ENGLISH).parse(currentArticle.getPubDate())));
         } catch (ParseException e) {
-            Log.logFile(context, e);
+            Log.logError(context, e);
             articleDate = currentArticle.getPubDate();
         }
         viewHolder.textViewArticleTitle.setText(currentArticle.getTitle());
