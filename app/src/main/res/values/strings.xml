@@ -15,6 +15,7 @@
     <!-- spinnerDialog -->
     <string name="first_element_spinner">Tutte le linee</string>
     <!-- dialog -->
+    <string name="dialog_no_service_title">Servizio non disponibile</string>
     <string name="dialog_rss_no">Chiudi</string>
     <string name="dialog_rss_yes">Leggi&#8230;</string>
     <string name="dialog_gps_message">Abilita GPS</string>
@@ -24,6 +25,7 @@
     <string name="dialog_clear_mem_title">Vuoi aggiornare le fermate dell\'autobus?</string>
     <string name="dialog_clear_mem_warning">Attenzione! Sarà richiesto un riavvio dell\'app</string>
     <string name="dialog_clear_mem_yes">Aggiorna</string>
+    <string name="dialog_generic_yes" translatable="false">OK</string>
     <string name="dialog_generic_no">Annulla</string>
     <!-- navbar -->
     <string name="nav_menu_home" translatable="false">Home</string>
@@ -56,7 +58,6 @@
     <string name="preference_key_gps" translatable="false">gps</string>
     <string name="preference_summary_gps">Imposta la distanza, rispetto a dove ti trovi, per la ricerca delle fermate degli autobus trmite il GPS</string>
     <string name="preference_slider_gps_text_high">Attenzione! Aumentando il range di ricerca si otterrà un numero maggiore di fermate ma sarà più lento</string>
-    <string name="preference_slider_gps_text_low">Attenzione! Diminuendo il range di ricerca si otterrà un numero minore di fermate</string>
     <!-- preference.language -->
     <string name="preference_title_language">Lingua</string>
     <string name="preference_key_language" translatable="false">lang</string>
@@ -75,8 +76,14 @@
     <string name="preference_title_clear_memory">Aggiorna le fermate degli autobus</string>
     <string name="preference_key_clear_memory" translatable="false">clear_mem</string>
     <!-- preference.license -->
-    <string name="preference_title_license">Licenze &#38; Riconoscimenti</string>
+    <string name="preference_title_license">Licenze</string>
     <string name="preference_key_license" translatable="false">license</string>
+    <!-- preference.cardView -->
+    <string name="preference_card_app_version">Versione: 0.0.1</string>
+    <string name="preference_card_dev">Sviluppatore</string>
+    <string name="preference_card_dev_1" translatable="false">F3FFO (Federico Pierantoni)</string>
+    <string name="preference_card_ackn">Ringraziamenti</string>
+    <string name="preference_card_ackn_1" translatable="false">Raphael Fantini</string>
     <!-- toast -->
     <string name="toast_update_output">Aggiornato</string>
     <string name="toast_permissions">Concedere le autorizzazioni necessarie</string>
@@ -88,4 +95,10 @@
     <string name="toast_gps_error">GPS non trovato</string>
     <string name="toast_log_file_deleted">File Log cancellato</string>
     <string name="toast_no_files_deleted">Impossibile aggiornare le fermate</string>
+    <!-- output -->
+    <string name="output_no_lines">NESSUNA LINEA TROVATA</string>
+    <string name="output_line">LINEA %1$s ASSENTE</string>
+    <string name="output_no_line_managed">LINEA %1$s NON GESTITA</string>
+    <string name="output_error">ERRORE</string>
+    <string name="output_no_bus_stop_managed">FERMATA %1$s NON GESTITA</string>
 </resources>

@@ -1,5 +1,6 @@
 package com.f3ffo.hellobolo.hellobus;
 
+import android.content.Context;
 import android.os.AsyncTask;
 
 import com.f3ffo.hellobolo.R;
@@ -23,12 +24,14 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
     private String busLine;
     private String busHour;
     private AsyncResponseUrl delegate;
+    private Context context;
 
-    public UrlElaboration(String busStop, String busLine, String busHour, AsyncResponseUrl delegate) {
+    public UrlElaboration(String busStop, String busLine, String busHour, AsyncResponseUrl delegate, Context context) {
         this.busStop = busStop;
         this.busLine = busLine;
         this.busHour = busHour;
         this.delegate = delegate;
+        this.context = context;
     }
 
     @Override
@@ -49,18 +52,18 @@ public class UrlElaboration extends AsyncTask<Void, Void, List<OutputItem>> {
                     line = line.substring(line.lastIndexOf("asmx\">") + 6, line.lastIndexOf("<"));
                     if (line.contains("NESSUNA ALTRA CORSA")) {
                         if (busLine.isEmpty()) {
-                            outputItemList.add(new OutputItem("NESSUNA LINEA PRESENTE"));
+                            outputItemList.add(new OutputItem(context.getString(R.string.output_no_lines)));
                         } else {
-                            outputItemList.add(new OutputItem("LINEA " + busLine + " ASSENTE"));
+                            outputItemList.add(new OutputItem(context.getString(R.string.output_line, busLine)));
                         }
                     } else if (line.contains("LINEA " + busLine + " NON GESTITA")) {
-                        outputItemList.add(new OutputItem("LINEA " + busLine + " NON GESTITA"));
+                        outputItemList.add(new OutputItem(context.getString(R.string.output_no_line_managed, busLine)));
                     } else if (line.contains("TEMPORANEAMENTE SOSPESE")) {
-                        outputItemList.add(new OutputItem("ERRORE"));
+                        outputItemList.add(new OutputItem(context.getString(R.string.output_error)));
                     } else if (line.equals("NULL")) {
-                        outputItemList.add(new OutputItem("ERRORE"));
+                        outputItemList.add(new OutputItem(context.getString(R.string.output_error)));
                     } else if (line.contains("FERMATA " + busStop + " NON GESTITA")) {
-                        outputItemList.add(new OutputItem("FERMATA " + busStop + " NON GESTITA"));
+                        outputItemList.add(new OutputItem(context.getString(R.string.output_no_bus_stop_managed, busStop)));
                     } else {
                         outputItemList.add(new OutputItem(""));
                         line = line.substring(line.indexOf(":") + 2);

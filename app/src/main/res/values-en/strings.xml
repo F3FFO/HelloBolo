@@ -13,6 +13,7 @@
     <!-- spinnerDialog -->
     <string name="first_element_spinner">All bus line</string>
     <!-- dialog -->
+    <string name="dialog_no_service_title">Service unavailable</string>
     <string name="dialog_rss_no">Close</string>
     <string name="dialog_rss_yes">Read more&#8230;</string>
     <string name="dialog_gps_message">Turn on GPS</string>
@@ -46,7 +47,6 @@
     <string name="preference_title_gps">GPS search range</string>
     <string name="preference_summary_gps">Set the distance, from where you are, to search for bus stops via GPS</string>
     <string name="preference_slider_gps_text_high">Warning! Increasing the search range will result in more stops but will be slower</string>
-    <string name="preference_slider_gps_text_low">Warning! Decreasing the search range will result in fewer stops</string>
     <!-- preference.language -->
     <string name="preference_title_language">Language</string>
     <string name="language_0">Italian</string>
@@ -59,7 +59,11 @@
     <!-- preference.clearMemory -->
     <string name="preference_title_clear_memory">Update bus station</string>
     <!-- preference.license -->
-    <string name="preference_title_license">Licenses &#38; Acknowledgements</string>
+    <string name="preference_title_license">Licenses</string>
+    <!-- preference.cardView -->
+    <string name="preference_card_app_version">Version: 0.0.1</string>
+    <string name="preference_card_dev">Developer</string>
+    <string name="preference_card_ackn">Acknowledgements</string>
     <!-- toast -->
     <string name="toast_update_output">Updated</string>
     <string name="toast_permissions">Grant the necessary permissions</string>
@@ -71,4 +75,10 @@
     <string name="toast_gps_error">GPS not found</string>
     <string name="toast_log_file_deleted">Log file deleted</string>
     <string name="toast_no_files_deleted">Could not update bus station</string>
+    <!-- output -->
+    <string name="output_no_lines">NO LINE FOUND</string>
+    <string name="output_line">LINE %1$s ABSENT</string>
+    <string name="output_no_line_managed">LINE %1$s NOT MANAGED</string>
+    <string name="output_error">ERROR</string>
+    <string name="output_no_bus_stop_managed">BUS STOP %1$s NOT MANAGED</string>
 </resources>
