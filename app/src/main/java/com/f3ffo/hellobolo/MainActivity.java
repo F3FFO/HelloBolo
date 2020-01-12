@@ -134,33 +134,11 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 break;
         }
         setContentView(R.layout.activity_main);
-        checkPermissions();
-        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
-        constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
-        constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
-        constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
-        linearLayoutHour = findViewById(R.id.linearLayoutHour);
-        linearLayoutBusCode = findViewById(R.id.linearLayoutBusCode);
-        bottomNavView = findViewById(R.id.bottomNavView);
-        spinnerBusCode = findViewById(R.id.spinnerBusCode);
-        materialTextViewBusHour = findViewById(R.id.materialTextViewBusHour);
-        materialTextViewAppName = findViewById(R.id.materialTextViewAppName);
-        searchBarGps = findViewById(R.id.searchBarGps);
-        fabBus = findViewById(R.id.fabBus);
-        swipeRefreshLayoutOutput = findViewById(R.id.swipeRefreshLayoutOutput);
-        searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
-        progressBarOutput = findViewById(R.id.progressBarOutput);
-        bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        viewPagerRss = findViewById(R.id.viewPagerRss);
-        tabsRss = findViewById(R.id.tabsRss);
-        recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
-        recyclerViewBusGps = findViewById(R.id.recyclerViewBusGps);
+        init();
+        Log.logInfo(MainActivity.this);
         bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
         outputItemList = new ArrayList<>();
-        swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
-        swipeRefreshLayoutOutput.setEnabled(false);
-        swipeRefreshLayoutOutput.setProgressBackgroundColorSchemeResource(R.color.colorPrimary);
-        swipeRefreshLayoutOutput.setColorSchemeResources(R.color.colorAccent);
+        setSwipeRefreshLayoutOutput();
         busClass.addAll(busReader.extractFromFile(MainActivity.this));
         stops.addAll(busReader.stopsViewer(MainActivity.this, busClass));
         buildRecyclerViewSearch(stops, false);
@@ -252,7 +230,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     }
                 }
             } catch (Exception e) {
-                Log.logFile(MainActivity.this, e);
+                Log.logError(MainActivity.this, e);
             }
         });
         searchViewBusStopName.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
@@ -458,6 +436,30 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
+    private void init() {
+        checkPermissions();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+        constraintLayoutOutput = findViewById(R.id.constraintLayoutOutput);
+        constraintLayoutSearch = findViewById(R.id.constraintLayoutSearch);
+        constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
+        linearLayoutHour = findViewById(R.id.linearLayoutHour);
+        linearLayoutBusCode = findViewById(R.id.linearLayoutBusCode);
+        bottomNavView = findViewById(R.id.bottomNavView);
+        spinnerBusCode = findViewById(R.id.spinnerBusCode);
+        materialTextViewBusHour = findViewById(R.id.materialTextViewBusHour);
+        materialTextViewAppName = findViewById(R.id.materialTextViewAppName);
+        searchBarGps = findViewById(R.id.searchBarGps);
+        fabBus = findViewById(R.id.fabBus);
+        swipeRefreshLayoutOutput = findViewById(R.id.swipeRefreshLayoutOutput);
+        searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
+        progressBarOutput = findViewById(R.id.progressBarOutput);
+        bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        viewPagerRss = findViewById(R.id.viewPagerRss);
+        tabsRss = findViewById(R.id.tabsRss);
+        recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
+        recyclerViewBusGps = findViewById(R.id.recyclerViewBusGps);
+    }
+
     private void checkPermissions() {
         final List<String> missingPermissions = new ArrayList<>();
         for (String permission : REQUIRED_SDK_PERMISSIONS) {
@@ -502,6 +504,13 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             constraintLayoutSearch.setVisibility(View.GONE);
             constraintLayoutFavourites.setVisibility(View.VISIBLE);
         }
+    }
+
+    private void setSwipeRefreshLayoutOutput() {
+        swipeRefreshLayoutOutput.setOnRefreshListener(MainActivity.this);
+        swipeRefreshLayoutOutput.setEnabled(false);
+        swipeRefreshLayoutOutput.setProgressBackgroundColorSchemeResource(R.color.colorPrimary);
+        swipeRefreshLayoutOutput.setColorSchemeResources(R.color.colorAccent);
     }
 
     private void setElementAppBar(boolean isVisible) {
@@ -755,7 +764,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 adapterOutputError.notifyDataSetChanged();
             }
         } catch (Exception e) {
-            Log.logFile(MainActivity.this, e);
+            Log.logError(MainActivity.this, e);
         }
         swipeRefreshLayoutOutput.setRefreshing(false);
         progressBarOutput.setVisibility(View.GONE);
@@ -765,10 +774,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private void checkBus(String busStop, String busLine, String busHour) {
         try {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE, WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-            UrlElaboration ue = new UrlElaboration(busStop, busLine, busHour, MainActivity.this);
+            UrlElaboration ue = new UrlElaboration(busStop, busLine, busHour, MainActivity.this, MainActivity.this);
             ue.execute();
         } catch (Exception e) {
-            Log.logFile(MainActivity.this, e);
+            Log.logError(MainActivity.this, e);
         }
     }
 }
