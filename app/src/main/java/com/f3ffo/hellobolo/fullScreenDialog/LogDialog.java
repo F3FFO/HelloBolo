@@ -1,4 +1,4 @@
-package com.f3ffo.hellobolo;
+package com.f3ffo.hellobolo.fullScreenDialog;
 
 import android.app.Dialog;
 import android.content.res.Configuration;
@@ -14,6 +14,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.FragmentManager;
 
+import com.f3ffo.hellobolo.R;
 import com.f3ffo.hellobolo.utility.Log;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textview.MaterialTextView;
@@ -23,14 +24,13 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.Objects;
 
-public class FullScreenDialog extends DialogFragment {
+public class LogDialog extends DialogFragment {
 
-    private static final String TAG = "dialog_full_screen";
-    private MaterialToolbar materialToolbarDialogFullScreen;
+    private static final String TAG = "dialog_log";
 
     public static void display(FragmentManager fragmentManager) {
-        FullScreenDialog fullScreenDialog = new FullScreenDialog();
-        fullScreenDialog.show(fragmentManager, TAG);
+        LogDialog logDialog = new LogDialog();
+        logDialog.show(fragmentManager, TAG);
     }
 
     @Override
@@ -43,23 +43,22 @@ public class FullScreenDialog extends DialogFragment {
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         super.onCreateView(inflater, container, savedInstanceState);
-        View view = inflater.inflate(R.layout.dialog_full_screen, container, false);
-        materialToolbarDialogFullScreen = view.findViewById(R.id.materialToolbarDialogFullScreen);
-        MaterialTextView materialTextViewDialogFullScreen = view.findViewById(R.id.materialTextViewDialogFullScreen);
-        materialTextViewDialogFullScreen.setHorizontallyScrolling(true);
-        materialTextViewDialogFullScreen.setMovementMethod(new ScrollingMovementMethod());
-        List<String> file = Log.getLog(inflater.getContext());
-        for (int i = 0; i < file.size(); i++) {
-            materialTextViewDialogFullScreen.append(file.get(i) + "\n");
-        }
-        return view;
+        return inflater.inflate(R.layout.dialog_log, container, false);
     }
 
     @Override
     public void onViewCreated(@NotNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        MaterialToolbar materialToolbarDialogFullScreen = view.findViewById(R.id.materialToolbarDialogLog);
         materialToolbarDialogFullScreen.setNavigationOnClickListener(v -> dismiss());
         materialToolbarDialogFullScreen.setTitle(Log.LOG_FILENAME);
+        MaterialTextView materialTextViewDialogFullScreen = view.findViewById(R.id.materialTextViewDialogLog);
+        materialTextViewDialogFullScreen.setHorizontallyScrolling(true);
+        materialTextViewDialogFullScreen.setMovementMethod(new ScrollingMovementMethod());
+        List<String> file = Log.getLog(view.getContext());
+        for (int i = 0; i < file.size(); i++) {
+            materialTextViewDialogFullScreen.append(file.get(i) + "\n");
+        }
     }
 
     @Override
