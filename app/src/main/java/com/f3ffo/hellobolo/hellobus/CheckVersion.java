@@ -2,10 +2,13 @@ package com.f3ffo.hellobolo.hellobus;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 
+import com.f3ffo.hellobolo.R;
 import com.f3ffo.hellobolo.utility.Log;
 import com.f3ffo.hellobolo.asyncInterface.AsyncResponseVersion;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 
 import org.apache.commons.io.FileUtils;
 
@@ -53,7 +56,7 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
             do {
                 versionUpdate = br.readLine();
             } while (!versionUpdate.startsWith("lineefermate"));
-            this.version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
+            version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
             FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
             FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
             Properties prop = new Properties();
@@ -61,12 +64,16 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
             if (prop.stringPropertyNames().size() == 0) {
                 for (int i = 0; i < 10; i++) {
                     prop.setProperty("busStopCode.Fav." + i, "");
-                    prop.store(context.openFileOutput("favourites.properties", Context.MODE_PRIVATE), "User favourite");
+                    prop.store(context.openFileOutput("favourites.properties", Context.MODE_PRIVATE), "User favourites");
                 }
             }
             return true;
         } catch (Exception e) {
-            Log.logFile(context, e);
+            Log.logError(context, e);
+            new MaterialAlertDialogBuilder(context, R.style.DialogTheme)
+                    .setTitle(R.string.dialog_no_service_title)
+                    .setPositiveButton(R.string.dialog_generic_yes, (DialogInterface dialog, int which) -> dialog.dismiss())
+                    .show();
             return false;
         }
     }
@@ -75,7 +82,7 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
         if (aBoolean && !takeFile()) {
-            delegate.processFinisVersion(this.version);
+            delegate.processFinisVersion(version);
         }
     }
 }
