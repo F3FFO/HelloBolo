@@ -61,7 +61,6 @@
     <!-- preference.license -->
     <string name="preference_title_license">Licenses</string>
     <!-- preference.cardView -->
-    <string name="preference_card_app_version">Version: 0.0.1</string>
     <string name="preference_card_dev">Developer</string>
     <string name="preference_card_ackn">Acknowledgements</string>
     <!-- toast -->

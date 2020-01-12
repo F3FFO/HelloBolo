@@ -79,7 +79,7 @@
     <string name="preference_title_license">Licenze</string>
     <string name="preference_key_license" translatable="false">license</string>
     <!-- preference.cardView -->
-    <string name="preference_card_app_version">Versione: 0.0.1</string>
+    <string name="preference_card_app_version" translatable="false">(0.0.1)</string>
     <string name="preference_card_dev">Sviluppatore</string>
     <string name="preference_card_dev_1" translatable="false">F3FFO (Federico Pierantoni)</string>
     <string name="preference_card_ackn">Ringraziamenti</string>
