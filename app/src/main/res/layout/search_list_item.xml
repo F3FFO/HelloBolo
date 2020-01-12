@@ -28,7 +28,7 @@
             android:layout_marginStart="16dp"
             android:orientation="vertical"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@id/imageButtonFavouriteSearch"
+            app:layout_constraintEnd_toStartOf="@id/linearLayoutSearchOption"
             app:layout_constraintStart_toEndOf="@id/imageViewSearch"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -36,7 +36,9 @@
                 android:id="@+id/textViewBusStopNameSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif"
+                android:lines="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
                 android:textIsSelectable="false" />
 
@@ -44,7 +46,9 @@
                 android:id="@+id/textViewBusStopAddressSearch"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:ellipsize="end"
                 android:fontFamily="sans-serif"
+                android:lines="1"
                 android:textAppearance="@style/TextAppearance.MaterialComponents.Body1"
                 android:textIsSelectable="false" />
 
@@ -57,17 +61,32 @@
                 android:textIsSelectable="false" />
         </androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.AppCompatImageButton
-            android:id="@+id/imageButtonFavouriteSearch"
-            style="@android:style/Widget.Material.Light.ImageButton"
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/linearLayoutSearchOption"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginEnd="8dp"
-            android:background="@android:color/transparent"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/linearLayoutSearchItem"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/imageButtonFavouriteSearch"
+                style="@android:style/Widget.Material.Light.ImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent" />
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/imageButtonFavouriteMaps"
+                style="@android:style/Widget.Material.Light.ImageButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:backgroundTint="@android:color/transparent"
+                android:src="@drawable/open_in_new" />
+        </androidx.appcompat.widget.LinearLayoutCompat>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <View
