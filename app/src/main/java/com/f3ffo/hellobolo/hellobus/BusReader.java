@@ -2,13 +2,14 @@ package com.f3ffo.hellobolo.hellobus;
 
 import android.content.Context;
 
-import com.f3ffo.hellobolo.utility.Log;
 import com.f3ffo.hellobolo.R;
 import com.f3ffo.hellobolo.search.SearchItem;
+import com.f3ffo.hellobolo.utility.Log;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -68,7 +69,7 @@ public class BusReader {
                                     }
                                 }
                                 longitude = longitude.replace(",", ".");
-                                busClass.add(new BusClass(busCode, stopCode, stopName, StringUtils.capitalize(stopAddress), latitude, longitude));
+                                busClass.add(new BusClass(busCode, stopCode, stopName, stopAddress, latitude, longitude));
                             }
                         }
                         bufferedReader.close();
@@ -82,15 +83,15 @@ public class BusReader {
         return busClass;
     }
 
+    @Nullable
     private File takeFileCut(@NotNull Context context) {
         File[] listFiles = context.getFilesDir().listFiles();
-        File file = null;
         for (File listFile : listFiles) {
             if (listFile.getName().contains("cut_") && listFile.getName().contains(".csv")) {
-                file = listFile;
+                return listFile;
             }
         }
-        return file;
+        return null;
     }
 
     private String[] takeFavElement(@NotNull Context context) {
@@ -119,7 +120,7 @@ public class BusReader {
             if (!stopsTemp.contains(busStopCode)) {
                 stopsTemp.add(busStopCode);
                 try {
-                    FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + ";" + busClass.get(i).getBusStopName() + ";" + busClass.get(i).getBusStopAddress() + ";" + busClass.get(i).getLatitude().replace(",", ".") + ";" + busClass.get(i).getLongitude().replace(",", ".") + "\n"), StandardCharsets.UTF_8, true);
+                    FileUtils.writeStringToFile(new File(context.getFilesDir(), file.getName()), (busStopCode + ";" + busClass.get(i).getBusStopName() + ";" + StringUtils.capitalize(busClass.get(i).getBusStopAddress()) + ";" + busClass.get(i).getLatitude().replace(",", ".") + ";" + busClass.get(i).getLongitude().replace(",", ".") + "\n"), StandardCharsets.UTF_8, true);
                 } catch (IOException e) {
                     Log.logError(context, e);
                 }
@@ -128,7 +129,7 @@ public class BusReader {
         stopsTemp.clear();
     }
 
-    private void extractFromFileCutted(@NotNull Context context, @NotNull File file, String[] propertiesFile, List<SearchItem> stops) {
+    private void extractFromFileCut(@NotNull Context context, @NotNull File file, String[] propertiesFile, List<SearchItem> stops) {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName()), StandardCharsets.UTF_8));
             String line;
@@ -166,9 +167,9 @@ public class BusReader {
         String[] propertiesFile = takeFavElement(context);
         if (FileUtils.sizeOf(file) == 0) {
             writeFile(context, file, busClass);
-            extractFromFileCutted(context, file, propertiesFile, stops);
+            extractFromFileCut(context, file, propertiesFile, stops);
         } else {
-            extractFromFileCutted(context, file, propertiesFile, stops);
+            extractFromFileCut(context, file, propertiesFile, stops);
         }
         return stops;
     }

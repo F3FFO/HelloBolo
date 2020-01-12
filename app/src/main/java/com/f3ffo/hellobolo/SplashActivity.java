@@ -18,6 +18,25 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        init();
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        init();
+    }
+
+    @Override
+    public void processFinisVersion(String version) {
+        try {
+            new DownloadCsv(SplashActivity.this, version).execute().get();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void init() {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
         if (CheckInternet.isNetworkAvailable(SplashActivity.this)) {
             try {
@@ -29,16 +48,7 @@ public class SplashActivity extends AppCompatActivity implements AsyncResponseVe
             finish();
         } else {
             Toast.makeText(SplashActivity.this, R.string.network, Toast.LENGTH_LONG).show();
-            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS));
-        }
-    }
-
-    @Override
-    public void processFinisVersion(String version) {
-        try {
-            new DownloadCsv(SplashActivity.this, version).execute().get();
-        } catch (Exception e) {
-            e.printStackTrace();
+            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
         }
     }
 }
