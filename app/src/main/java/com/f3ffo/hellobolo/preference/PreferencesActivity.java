@@ -17,13 +17,15 @@ import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.f3ffo.hellobolo.FullScreenDialog;
 import com.f3ffo.hellobolo.MainActivity;
 import com.f3ffo.hellobolo.R;
+import com.f3ffo.hellobolo.fullScreenDialog.LicensesDialog;
+import com.f3ffo.hellobolo.fullScreenDialog.LogDialog;
 import com.f3ffo.hellobolo.hellobus.BusReader;
 import com.f3ffo.hellobolo.utility.Log;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textview.MaterialTextView;
@@ -57,17 +59,11 @@ public class PreferencesActivity extends AppCompatActivity {
         materialToolbar.setNavigationOnClickListener((View v) -> super.onBackPressed());
         BottomNavigationView bottomNavView = findViewById(R.id.bottomNavViewPreference);
         bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
-        AppCompatImageView imageViewAppIconPreferenceSettings = findViewById(R.id.imageViewAppIconPreferenceSettings);
-        imageViewAppIconPreferenceSettings.setOnClickListener(view -> startActivity(new Intent(Settings.ACTION_APPLICATION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)));
+        MaterialCardView materialCardViewInfo = findViewById(R.id.materialCardViewInfo);
+        materialCardViewInfo.setOnClickListener(view -> startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).addCategory(Intent.CATEGORY_DEFAULT).setData(Uri.parse("package:" + getPackageName()))));
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutPreference, new PreferencesFragment()).commit();
         }
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        finish();
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
@@ -93,7 +89,7 @@ public class PreferencesActivity extends AppCompatActivity {
             findPreference(getString(R.string.preference_key_theme)).setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> reload());
             findPreference(getString(R.string.preference_key_language)).setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> reload());
             findPreference(getString(R.string.preference_key_open_log)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
-                FullScreenDialog.display(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
+                LogDialog.display(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
                 return true;
             });
             findPreference(getString(R.string.preference_key_delete_log)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
@@ -157,23 +153,13 @@ public class PreferencesActivity extends AppCompatActivity {
                         .setTitle(getString(R.string.preference_title_gps))
                         .setView(layout)
                         .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
-                        .setPositiveButton(R.string.dialog_gps_yes, (DialogInterface dialog, int which) -> {
-                            double defaultDistance = BusReader.distance;
-                            if (BusReader.distance == defaultDistance && tempDistance[0] == 250) {
-                                BusReader.distance += 0.0025;
-                            } else if (BusReader.distance == defaultDistance && tempDistance[0] == -250) {
-                                BusReader.distance -= 0.0025;
-                            } else if (BusReader.distance == defaultDistance && tempDistance[0] == 500) {
-                                BusReader.distance += 0.005;
-                            } else if (BusReader.distance == defaultDistance && tempDistance[0] == -500) {
-                                BusReader.distance -= 0.005;
-                            } else {
-                                BusReader.distance = 0.001;
-                            }
-                            new Preference(getContext()).setPreferenceGps(slider.getValue());
-                        })
+                        .setPositiveButton(R.string.dialog_gps_yes, (DialogInterface dialog, int which) -> setDistance(tempDistance[0], slider))
                         .show();
                 return false;
+            });
+            findPreference(getString(R.string.preference_key_license)).setOnPreferenceClickListener(preference -> {
+                LicensesDialog.display(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
+                return true;
             });
         }
 
@@ -189,6 +175,38 @@ public class PreferencesActivity extends AppCompatActivity {
             } else {
                 materialTextView.setVisibility(View.GONE);
             }
+        }
+
+        private void setDistance(float value, Slider slider) {
+            double defaultDistance = BusReader.distance;
+            if (value == 250) {
+                if (BusReader.distance == defaultDistance) {
+                    BusReader.distance += 0.0025;
+                } else {
+                    BusReader.distance = defaultDistance + 0.0025;
+                }
+            } else if (value == 500) {
+                if (BusReader.distance == defaultDistance) {
+                    BusReader.distance += 0.0050;
+                } else {
+                    BusReader.distance = defaultDistance + 0.0050;
+                }
+            } else if (value == 750) {
+                if (BusReader.distance == defaultDistance) {
+                    BusReader.distance += 0.0075;
+                } else {
+                    BusReader.distance = defaultDistance + 0.0075;
+                }
+            } else if (value == 1000) {
+                if (BusReader.distance == defaultDistance) {
+                    BusReader.distance += 0.0100;
+                } else {
+                    BusReader.distance = defaultDistance + 0.0100;
+                }
+            } else {
+                BusReader.distance = 0.001;
+            }
+            new Preference(getContext()).setPreferenceGps(slider.getValue());
         }
     }
 }
