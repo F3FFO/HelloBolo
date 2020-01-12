@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/navigation_preference_paypal"
+        android:icon="@drawable/paypal"
+        android:title="Paypal" />
+
+    <item
+        android:id="@+id/navigation_preference_github"
+        android:icon="@drawable/github"
+        android:title="Github" />
+
+</menu>

@@ -6,11 +6,14 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageButton;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -20,6 +23,7 @@ import com.f3ffo.hellobolo.R;
 import com.f3ffo.hellobolo.hellobus.BusReader;
 import com.f3ffo.hellobolo.utility.Log;
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.slider.Slider;
 import com.google.android.material.textview.MaterialTextView;
@@ -31,6 +35,8 @@ import java.io.IOException;
 import java.util.Objects;
 
 public class PreferencesActivity extends AppCompatActivity {
+
+    private BottomNavigationView bottomNavView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -51,19 +57,13 @@ public class PreferencesActivity extends AppCompatActivity {
         MaterialToolbar materialToolbar = findViewById(R.id.materialToolbarPreference);
         setSupportActionBar(materialToolbar);
         materialToolbar.setNavigationOnClickListener((View v) -> super.onBackPressed());
+        bottomNavView = findViewById(R.id.bottomNavViewPreference);
+        bottomNavView.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+        AppCompatImageView imageViewAppIconPreferenceSettings = findViewById(R.id.imageViewAppIconPreferenceSettings);
+        imageViewAppIconPreferenceSettings.setOnClickListener(view -> startActivity(new Intent(Settings.ACTION_APPLICATION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY).addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS)));
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction().replace(R.id.frameLayoutPreference, new PreferencesFragment()).commit();
         }
-        AppCompatImageButton imageButtonPreferenceDonation = findViewById(R.id.imageButtonPreferenceDonation);
-        AppCompatImageButton imageButtonPreferenceContribute = findViewById(R.id.imageButtonPreferenceContribute);
-        imageButtonPreferenceDonation.setOnClickListener((View view) -> {
-            Uri uri = Uri.parse("https://www.paypal.me/f3ff0");
-            PreferencesActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-        });
-        imageButtonPreferenceContribute.setOnClickListener((View view) -> {
-            Uri uri = Uri.parse("https://github.com/F3FFO/HelloBolo");
-            PreferencesActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
-        });
     }
 
     @Override
@@ -71,6 +71,21 @@ public class PreferencesActivity extends AppCompatActivity {
         super.onPause();
         finish();
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener mOnNavigationItemSelectedListener = (@NonNull MenuItem item) -> {
+        Uri uri;
+        switch (item.getItemId()) {
+            case R.id.navigation_preference_paypal:
+                uri = Uri.parse("https://www.paypal.me/f3ff0");
+                PreferencesActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                return true;
+            case R.id.navigation_preference_github:
+                uri = Uri.parse("https://github.com/F3FFO/HelloBolo");
+                PreferencesActivity.this.startActivity(new Intent(Intent.ACTION_VIEW, uri));
+                return true;
+        }
+        return false;
+    };
 
     public static class PreferencesFragment extends PreferenceFragmentCompat {
 
@@ -89,6 +104,7 @@ public class PreferencesActivity extends AppCompatActivity {
                         .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
                         .setPositiveButton(R.string.dialog_delete_log_yes, (DialogInterface dialog, int which) -> {
                             FileUtils.deleteQuietly(new File(getContext().getFilesDir(), Log.LOG_FILENAME));
+                            Log.logInfo(getContext());
                             Toast.makeText(getContext(), getString(R.string.toast_log_file_deleted), Toast.LENGTH_LONG).show();
                         })
                         .show();
@@ -104,7 +120,7 @@ public class PreferencesActivity extends AppCompatActivity {
                                 FileUtils.deleteDirectory(getContext().getFilesDir());
                                 Objects.requireNonNull(getActivity()).finish();
                             } catch (IOException e) {
-                                Log.logFile(getContext(), e);
+                                Log.logError(getContext(), e);
                                 Toast.makeText(getContext(), getString(R.string.toast_no_files_deleted), Toast.LENGTH_LONG).show();
                             }
                         })
@@ -119,17 +135,19 @@ public class PreferencesActivity extends AppCompatActivity {
                 LinearLayoutCompat.LayoutParams layoutParamsSlider = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
                 layoutParamsSlider.setMargins(128, 16, 128, 8);
                 slider.setLayoutParams(layoutParamsSlider);
-                slider.setValueFrom(-500);
-                slider.setValueTo(500);
+                slider.setValueFrom(0);
+                slider.setValueTo(1000);
                 slider.setStepSize(250);
                 float[] tempDistance = {new Preference(getContext()).getPreferenceGps()};
                 slider.setValue(tempDistance[0]);
                 MaterialTextView attention = new MaterialTextView(getContext());
                 LinearLayoutCompat.LayoutParams layoutParamsTextView = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
                 layoutParamsTextView.setMargins(64, 8, 64, 16);
+                attention.setVisibility(View.GONE);
                 attention.setLayoutParams(layoutParamsTextView);
                 attention.setTextAppearance(R.style.TextAppearance_MaterialComponents_Caption);
                 attention.setTextIsSelectable(false);
+                attention.setText(getString(R.string.preference_slider_gps_text_high));
                 setTextTextView(tempDistance[0], attention);
                 slider.setOnChangeListener((slider1, value) -> {
                     tempDistance[0] = value;
@@ -168,12 +186,10 @@ public class PreferencesActivity extends AppCompatActivity {
         }
 
         private void setTextTextView(float distance, MaterialTextView materialTextView) {
-            if (distance > 250) {
-                materialTextView.setText(getString(R.string.preference_slider_gps_text_high));
-            } else if (distance < -250) {
-                materialTextView.setText(getString(R.string.preference_slider_gps_text_low));
+            if (distance > 500) {
+                materialTextView.setVisibility(View.VISIBLE);
             } else {
-                materialTextView.setText("");
+                materialTextView.setVisibility(View.GONE);
             }
         }
     }
