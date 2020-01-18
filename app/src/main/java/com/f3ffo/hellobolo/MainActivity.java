@@ -153,8 +153,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         searchViewBusStopName.setOnExtraButtonClickListener(view -> {
             try {
-                Log.logCoordinates(MainActivity.this, latitude, longitude);
                 if (getLocation()) {
+                    Log.logCoordinates(MainActivity.this, latitude, longitude);
                     latitude = ((long) (latitude * 1e6)) / 1e6;
                     longitude = ((long) (longitude * 1e6)) / 1e6;
                     List<String> busPosition = busReader.takeTheCorrespondingBusStop(busClass, latitude, longitude);
