@@ -21,10 +21,14 @@ public class Log {
     public static String LOG_FILENAME = "log.log";
 
     public static void logInfo(@NotNull Context context) {
-        try {
-            FileUtils.writeLines(new File(context.getFilesDir(), LOG_FILENAME), setInfoLog());
-        } catch (IOException e) {
-            logError(context, e);
+        File file = new File(context.getFilesDir(), LOG_FILENAME);
+        System.out.println(FileUtils.sizeOf(file));
+        if (FileUtils.sizeOf(file) == 0) {
+            try {
+                FileUtils.writeLines(file, setInfoLog());
+            } catch (IOException e) {
+                logError(context, e);
+            }
         }
     }
 
@@ -44,10 +48,14 @@ public class Log {
         return info;
     }
 
+    public static void logCoordinates(@NotNull Context context, double lat, double longi) throws IOException {
+        File file = new File(context.getFilesDir(), LOG_FILENAME);
+        FileUtils.write(file, ("latitude: " + lat + " longitude: " + longi + "\n"), StandardCharsets.UTF_8, true);
+    }
+
     public static void logError(@NotNull Context context, @NotNull Exception error) {
         File file = new File(context.getFilesDir(), LOG_FILENAME);
-        System.out.println(Double.parseDouble(String.valueOf(file.length())));
-        if (Double.parseDouble(String.valueOf(file.length())) > 8e+6) {
+        if (FileUtils.sizeOf(file) > 5e6) {
             FileUtils.deleteQuietly(file);
             logInfo(context);
         }
