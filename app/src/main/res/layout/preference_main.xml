@@ -48,7 +48,7 @@
         style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:background="?attr/colorSecondary"
+        android:background="?attr/colorPrimaryDark"
         app:elevation="0dp"
         app:itemIconTint="?attr/colorControlNormal"
         app:labelVisibilityMode="unlabeled"

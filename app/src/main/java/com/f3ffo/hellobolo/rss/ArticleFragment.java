@@ -43,11 +43,11 @@ public class ArticleFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         articleViewModel = new ViewModelProvider(ArticleFragment.this).get(ArticleViewModel.class);
-        int index = 1;
         if (getArguments() != null) {
-            index = getArguments().getInt(ARG_SECTION_NUMBER);
+            articleViewModel.setIndex(getArguments().getInt(ARG_SECTION_NUMBER));
+        } else {
+            articleViewModel.setIndex(1);
         }
-        articleViewModel.setIndex(index);
     }
 
     @Override
