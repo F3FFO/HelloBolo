@@ -51,13 +51,13 @@ import com.f3ffo.hellobolo.search.SearchAdapter;
 import com.f3ffo.hellobolo.search.SearchItem;
 import com.f3ffo.hellobolo.utility.CheckInternet;
 import com.f3ffo.hellobolo.utility.Log;
+import com.f3ffo.searchbar.SearchBar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.tabs.TabLayout;
 import com.google.android.material.textview.MaterialTextView;
-import com.mancj.materialsearchbar.MaterialSearchBar;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -78,13 +78,12 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ViewPager viewPagerRss;
     private TabLayout tabsRss;
     private LinearLayoutCompat linearLayoutBusCode, linearLayoutHour;
-    private MaterialTextView materialTextViewBusHour, materialTextViewAppName;
-    private View searchBarGps;
+    private MaterialTextView materialTextViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
     private ProgressBar progressBarOutput;
     private SwipeRefreshLayout swipeRefreshLayoutOutput;
-    private MaterialSearchBar searchViewBusStopName;
+    private SearchBar searchViewBusStopName;
     private BottomNavigationView bottomNavView;
     private RecyclerView recyclerViewBusStation, recyclerViewBusGps;
     private SearchAdapter adapterBusStation, adapterBusGps;
@@ -136,6 +135,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         init();
         Log.logInfo(MainActivity.this);
         bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
+        searchViewBusStopName.setRadiusSearchBar(20);
+        searchViewBusStopName.setCardViewElevation(0);
+        searchViewBusStopName.setExtraIcon(R.drawable.gps_fixed);
         outputItemList = new ArrayList<>();
         setSwipeRefreshLayoutOutput();
         busClass.addAll(busReader.extractFromFile(MainActivity.this));
@@ -149,8 +151,9 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
         placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        searchBarGps.setOnClickListener(view -> {
+        searchViewBusStopName.setOnExtraButtonClickListener(view -> {
             try {
+                Log.logCoordinates(MainActivity.this, latitude, longitude);
                 if (getLocation()) {
                     latitude = ((long) (latitude * 1e6)) / 1e6;
                     longitude = ((long) (longitude * 1e6)) / 1e6;
@@ -220,7 +223,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                         spinnerBusCode.setAdapter(spinnerArrayAdapter);
                         searchViewBusStopName.setPlaceHolder(stops.get(i).getBusStopName());
                         searchViewBusStopName.disableSearch();
-                        searchBarGps.setVisibility(View.GONE);
                         setElementAppBar(true);
                         setDisplayChild(1);
                         fabBus.show();
@@ -232,20 +234,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 Log.logError(MainActivity.this, e);
             }
         });
-        searchViewBusStopName.setOnSearchActionListener(new MaterialSearchBar.OnSearchActionListener() {
+        searchViewBusStopName.setOnSearchActionListener(new SearchBar.OnSearchActionListener() {
             @Override
             public void onSearchStateChanged(boolean enabled) {
                 if (enabled) {
-                    materialTextViewAppName.setVisibility(View.GONE);
-                    searchBarGps.setVisibility(View.VISIBLE);
                     setVisibilityRecycler(false);
                     setElementAppBar(false);
                     fabBus.hide();
                     setDisplayChild(2);
                 } else {
                     if (constraintLayoutOutput.getVisibility() == View.GONE && currentBusStopCode.equals("")) {
-                        materialTextViewAppName.setVisibility(View.VISIBLE);
-                        searchBarGps.setVisibility(View.GONE);
                         setDisplayChild(0);
                     }
                 }
@@ -253,10 +251,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
             @Override
             public void onSearchConfirmed(CharSequence text) {
-            }
-
-            @Override
-            public void onButtonClicked(int buttonCode) {
             }
         });
         searchViewBusStopName.addTextChangeListener(new TextWatcher() {
@@ -355,7 +349,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             }
         });
         adapterFavourites.setOnItemClickListener(position -> {
-            materialTextViewAppName.setVisibility(View.GONE);
             if (adapterOutput != null && !outputItemList.isEmpty()) {
                 outputItemList.clear();
                 adapterOutput.notifyDataSetChanged();
@@ -404,10 +397,16 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             setElementAppBar(false);
             setDisplayChild(0);
             fabBus.hide();
+            if (searchViewBusStopName.isSearchEnabled()) {
+                searchViewBusStopName.disableSearch();
+            }
         } else if (constraintLayoutSearch.getVisibility() == View.VISIBLE && !currentBusStopCode.equals("")) {
             setElementAppBar(true);
             setDisplayChild(1);
             fabBus.show();
+            if (searchViewBusStopName.isSearchEnabled()) {
+                searchViewBusStopName.disableSearch();
+            }
         } else if (viewPagerRss.getVisibility() == View.INVISIBLE && currentBusStopCode.equals("")) {
             searchViewBusStopName.setPlaceHolder("");
         } else if (viewPagerRss.getVisibility() == View.VISIBLE && tabsRss.getVisibility() == View.VISIBLE) {
@@ -446,8 +445,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         bottomNavView = findViewById(R.id.bottomNavView);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         materialTextViewBusHour = findViewById(R.id.materialTextViewBusHour);
-        materialTextViewAppName = findViewById(R.id.materialTextViewAppName);
-        searchBarGps = findViewById(R.id.searchBarGps);
         fabBus = findViewById(R.id.fabBus);
         swipeRefreshLayoutOutput = findViewById(R.id.swipeRefreshLayoutOutput);
         searchViewBusStopName = findViewById(R.id.searchViewBusStopName);
@@ -544,8 +541,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 if (searchViewBusStopName.isSearchEnabled()) {
                     searchViewBusStopName.disableSearch();
                 }
-                materialTextViewAppName.setVisibility(View.VISIBLE);
-                searchBarGps.setVisibility(View.GONE);
                 setDisplayChild(0);
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
@@ -556,8 +551,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 if (searchViewBusStopName.isSearchEnabled()) {
                     searchViewBusStopName.disableSearch();
                 }
-                materialTextViewAppName.setVisibility(View.VISIBLE);
-                searchBarGps.setVisibility(View.GONE);
                 setDisplayChild(3);
                 fabBus.hide();
                 bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
@@ -650,7 +643,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     }
 
     private void itemAdapterMethod(@NotNull List<SearchItem> listStops, int position) {
-        searchBarGps.setVisibility(View.GONE);
         if (!currentBusStopCode.equals(listStops.get(position).getBusStopName())) {
             if (adapterOutput != null && !outputItemList.isEmpty()) {
                 outputItemList.clear();
