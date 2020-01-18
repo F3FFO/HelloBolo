@@ -20,11 +20,11 @@
     </style>
 
     <style name="MaterialSearchBar" parent="MaterialSearchBarLight">
-        <item name="mt_searchBarColor">?attr/colorPrimary</item>
-        <item name="mt_navIconTint">?android:attr/textColor</item>
-        <item name="mt_searchIconTint">?android:attr/textColor</item>
-        <item name="mt_clearIconTint">?android:attr/textColor</item>
-        <item name="mt_backIconTint">?android:attr/textColor</item>
+        <item name="mt_searchBarColor">?attr/colorPrimaryDark</item>
+        <item name="mt_searchIconTint">?attr/colorControlNormal</item>
+        <item name="mt_clearIconTint">?attr/colorControlNormal</item>
+        <item name="mt_extraIconTint">?attr/colorControlNormal</item>
+        <item name="mt_backIconTint">?attr/colorControlNormal</item>
         <item name="mt_textCursorTint">?attr/colorAccent</item>
         <item name="mt_textColor">?android:attr/textColor</item>
         <item name="mt_hintColor">@color/colorGrey</item>

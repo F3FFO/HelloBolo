@@ -12,64 +12,23 @@
         style="@style/Widget.MaterialComponents.AppBarLayout.Primary"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:background="?attr/colorPrimary"
         app:layout_constraintBottom_toTopOf="@id/constraintLayout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            style="@style/Widget.MaterialComponents.Toolbar"
+        <com.f3ffo.searchbar.SearchBar
+            android:id="@+id/searchViewBusStopName"
+            style="@style/MaterialSearchBar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-
-            <com.google.android.material.textview.MaterialTextView
-                android:id="@+id/materialTextViewAppName"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:fontFamily="sans-serif"
-                android:gravity="center"
-                android:text="@string/app_name"
-                android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
-                android:textIsSelectable="false"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/searchViewBusStopName"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <com.mancj.materialsearchbar.MaterialSearchBar
-                android:id="@+id/searchViewBusStopName"
-                style="@style/MaterialSearchBar"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/searchBarGps"
-                app:layout_constraintStart_toEndOf="@id/materialTextViewAppName"
-                app:layout_constraintTop_toTopOf="parent"
-                app:mt_backIconTint="?attr/colorControlNormal"
-                app:mt_clearIconTint="?attr/colorControlNormal"
-                app:mt_hint="@string/searchBar_hint"
-                app:mt_searchIconTint="?attr/colorControlNormal"
-                app:mt_textCursorTint="?attr/colorAccent" />
-
-            <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/searchBarGps"
-                style="@android:style/Widget.Material.ImageButton"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:backgroundTint="?attr/colorPrimary"
-                android:padding="16dp"
-                android:visibility="gone"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/searchViewBusStopName"
-                app:layout_constraintTop_toTopOf="parent"
-                app:srcCompat="@drawable/gps_fixed" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
+            android:layout_height="match_parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp"
+            android:visibility="visible"
+            app:mt_hint="@string/searchBar_hint" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -144,7 +103,10 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/linearLayoutBusCode"
+                app:tabGravity="center"
                 app:tabIndicatorColor="?attr/colorAccent"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicatorHeight="3dp"
                 app:tabSelectedTextColor="?attr/colorAccent"
                 app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Button"
                 app:tabTextColor="?android:attr/textColor" />
@@ -188,7 +150,7 @@
             style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="?attr/colorSecondary"
+            android:background="?attr/colorPrimaryDark"
             app:elevation="0dp"
             app:itemIconTint="@drawable/bottom_navbar_color"
             app:itemTextColor="@drawable/bottom_navbar_color"
