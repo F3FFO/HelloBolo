@@ -1,0 +1,29 @@
+<resources>
+    <!-- MaterialSearchBarLightTheme-->
+    <style name="MaterialSearchBarLight" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="mt_searchBarColor">@color/searchBarPrimaryColor</item>
+        <item name="mt_searchIconTint">@color/searchBarSearchIconTintColor</item>
+        <item name="mt_clearIconTint">@color/searchBarClearIconTintColor</item>
+        <item name="mt_extraIconTint">@color/searchBarExtraIconTintColor</item>
+        <item name="mt_backIconTint">@color/searchBarBackIconTintColor</item>
+        <item name="mt_textCursorTint">@color/searchBarCursorColor</item>
+        <item name="mt_textColor">@color/searchBarTextColor</item>
+        <item name="mt_hintColor">@color/searchBarHintColor</item>
+        <item name="mt_placeholderColor">@color/searchBarPlaceholderColor</item>
+        <item name="mt_highlightedTextColor">@color/searchBarTextHighlightColor</item>
+    </style>
+
+    <!-- MaterialSearchBarDarkTheme-->
+    <style name="MaterialSearchBarDark" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="mt_searchBarColor">@color/searchBarPrimaryColorDark</item>
+        <item name="mt_searchIconTint">@color/searchBarSearchIconTintColorDark</item>
+        <item name="mt_clearIconTint">@color/searchBarClearIconTintColorDark</item>
+        <item name="mt_extraIconTint">@color/searchBarExtraIconTintColorDark</item>
+        <item name="mt_backIconTint">@color/searchBarBackIconTintColorDark</item>
+        <item name="mt_textCursorTint">@color/searchBarCursorColor</item>
+        <item name="mt_textColor">@color/searchBarTextColorDark</item>
+        <item name="mt_hintColor">@color/searchBarHintColorDark</item>
+        <item name="mt_placeholderColor">@color/searchBarPlaceholderColorDark</item>
+        <item name="mt_highlightedTextColor">@color/searchBarTextHighlightColorDark</item>
+    </style>
+</resources>
