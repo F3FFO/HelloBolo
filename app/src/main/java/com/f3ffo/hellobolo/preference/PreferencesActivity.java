@@ -153,7 +153,7 @@ public class PreferencesActivity extends AppCompatActivity {
                         .setTitle(getString(R.string.preference_title_gps))
                         .setView(layout)
                         .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
-                        .setPositiveButton(R.string.dialog_gps_yes, (DialogInterface dialog, int which) -> setDistance(tempDistance[0], slider))
+                        .setPositiveButton(R.string.dialog_preference_gps_yes, (DialogInterface dialog, int which) -> setDistance(tempDistance[0], slider))
                         .show();
                 return false;
             });
