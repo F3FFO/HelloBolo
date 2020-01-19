@@ -3,12 +3,12 @@
     <color name="colorPrimary">#FFFFFFFF</color>
     <color name="colorPrimaryDark">#FFFFFFFF</color>
     <color name="colorAccent">#FF1A73E9</color>
-    <color name="colorError">#B00020</color>
+    <color name="colorError">#FFB00020</color>
     <color name="colorText">#FF202125</color>
     <color name="colorIcon">#FF505458</color>
     <!-- Color -->
     <color name="colorWhite">#FFFFFFFF</color>
     <color name="colorGreen">#FF2FD32F</color>
     <color name="colorGrey">#FF5F6366</color>
-    <color name="colorGold">#FFD600</color>
+    <color name="colorGold">#FFFFD600</color>
 </resources>
