@@ -2,9 +2,9 @@
 <resources>
 
     <color name="white">#FFFFFFFF</color>
-    <color name="searchBarIconColor">#FF3A3A3A</color>
+    <color name="searchBarIconColor">#FF00A1FF</color>
     //Base
-    <color name="searchBarPrimaryColor">#FFFFFF</color>
+    <color name="searchBarPrimaryColor">#FF303030</color>
     <color name="searchBarCursorColor">#8000A1FF</color>
     //Icons
     <color name="searchBarSearchIconTintColor">@color/searchBarIconColor</color>
@@ -12,9 +12,9 @@
     <color name="searchBarExtraIconTintColor">@color/searchBarIconColor</color>
     <color name="searchBarBackIconTintColor">@color/searchBarIconColor</color>
     //Text
-    <color name="searchBarTextColor">#DE000000</color>
-    <color name="searchBarHintColor">#42000000</color>
-    <color name="searchBarPlaceholderColor">#8A000000</color>
-    <color name="searchBarTextHighlightColor">#8000A1FF</color>
+    <color name="searchBarTextColor">#DEFFFFFF</color>
+    <color name="searchBarHintColor">#42FFFFFF</color>
+    <color name="searchBarPlaceholderColor">#8AFFFFFF</color>
+    <color name="searchBarTextHighlightColor">#BF00A1FF</color>
 
 </resources>
