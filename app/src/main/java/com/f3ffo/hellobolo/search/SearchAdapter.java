@@ -24,6 +24,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     private List<SearchItem> outputSearchViewItemListFull;
     private OnItemClickListener itemClickListener;
     private OnFavouriteButtonClickListener favouriteButtonClickListener;
+    private OnMapsButtonClickListener mapsButtonClickListener;
 
     public SearchAdapter(List<SearchItem> outputSearchViewItemList) {
         this.outputSearchViewItemList = outputSearchViewItemList;
@@ -34,7 +35,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
     @Override
     public SearchAdapterHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_list_item, parent, false);
-        return new SearchAdapterHolder(view, itemClickListener, favouriteButtonClickListener);
+        return new SearchAdapterHolder(view, itemClickListener, favouriteButtonClickListener, mapsButtonClickListener);
     }
 
     @Override
@@ -102,18 +103,27 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
         favouriteButtonClickListener = listener;
     }
 
+    public interface OnMapsButtonClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnMapsButtonClickListener(OnMapsButtonClickListener listener) {
+        mapsButtonClickListener = listener;
+    }
+
     static class SearchAdapterHolder extends RecyclerView.ViewHolder {
 
         private MaterialTextView textViewBusStopCodeSearch, textViewBusStopNameSearch, textViewBusStopAddressSearch;
-        private AppCompatImageButton imageButtonFavouriteSearch;
+        private AppCompatImageButton imageButtonFavouriteSearch, imageButtonMaps;
 
-        SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener, final OnFavouriteButtonClickListener listener2) {
+        SearchAdapterHolder(@NonNull View itemView, final OnItemClickListener listener, final OnFavouriteButtonClickListener listener2, final OnMapsButtonClickListener listener3) {
             super(itemView);
             textViewBusStopCodeSearch = itemView.findViewById(R.id.textViewBusStopCodeSearch);
             textViewBusStopNameSearch = itemView.findViewById(R.id.textViewBusStopNameSearch);
             textViewBusStopAddressSearch = itemView.findViewById(R.id.textViewBusStopAddressSearch);
             imageButtonFavouriteSearch = itemView.findViewById(R.id.imageButtonFavouriteSearch);
-            itemView.setOnClickListener((View v) -> {
+            imageButtonMaps = itemView.findViewById(R.id.imageButtonMaps);
+            itemView.setOnClickListener(v -> {
                 if (listener != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
@@ -121,11 +131,19 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchAdap
                     }
                 }
             });
-            imageButtonFavouriteSearch.setOnClickListener((View v) -> {
+            imageButtonFavouriteSearch.setOnClickListener(v -> {
                 if (listener2 != null) {
                     int position = getAdapterPosition();
                     if (position != RecyclerView.NO_POSITION) {
                         listener2.onItemClick(position);
+                    }
+                }
+            });
+            imageButtonMaps.setOnClickListener(v -> {
+                if (listener3 != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener3.onItemClick(position);
                     }
                 }
             });
