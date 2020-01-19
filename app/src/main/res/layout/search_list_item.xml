@@ -80,7 +80,7 @@
                 android:backgroundTint="@android:color/transparent" />
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/imageButtonFavouriteMaps"
+                android:id="@+id/imageButtonMaps"
                 style="@android:style/Widget.Material.Light.ImageButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
