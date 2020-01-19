@@ -12,21 +12,25 @@
     <string name="busHourOutputLive">In arrivo</string>
     <string name="busHourOutputHour" translatable="false">h</string>
     <string name="busHourOutputMin" translatable="false">min</string>
+    <!-- favourites -->
+    <string name="no_favourites">Nessun elemento in Preferiti</string>
     <!-- spinnerDialog -->
     <string name="first_element_spinner">Tutte le linee</string>
     <!-- dialog -->
+    <string name="dialog_generic_yes" translatable="false">OK</string>
+    <string name="dialog_generic_no">Annulla</string>
     <string name="dialog_no_service_title">Servizio non disponibile</string>
     <string name="dialog_rss_no">Chiudi</string>
-    <string name="dialog_rss_yes">Leggi&#8230;</string>
+    <string name="dialog_rss_yes">Leggi</string>
     <string name="dialog_gps_message">Abilita GPS</string>
-    <string name="dialog_gps_yes">Imposta</string>
+    <string name="dialog_gps_yes">Abilita</string>
+    <!-- dialog.preference -->
+    <string name="dialog_preference_gps_yes">Imposta</string>
     <string name="dialog_delete_log_title">Eliminare file di log?</string>
     <string name="dialog_delete_log_yes">Elimina</string>
     <string name="dialog_clear_mem_title">Vuoi aggiornare le fermate dell\'autobus?</string>
     <string name="dialog_clear_mem_warning">Attenzione! Sarà richiesto un riavvio dell\'app</string>
     <string name="dialog_clear_mem_yes">Aggiorna</string>
-    <string name="dialog_generic_yes" translatable="false">OK</string>
-    <string name="dialog_generic_no">Annulla</string>
     <!-- navbar -->
     <string name="nav_menu_home" translatable="false">Home</string>
     <string name="nav_menu_favourites">Preferiti</string>

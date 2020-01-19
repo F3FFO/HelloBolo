@@ -10,20 +10,24 @@
     <string name="busHourTextNow">Now</string>
     <!-- cardView.output -->
     <string name="busHourOutputLive">Arriving</string>
+    <!-- favourites -->
+    <string name="no_favourites">No items in Favorites</string>
     <!-- spinnerDialog -->
     <string name="first_element_spinner">All bus line</string>
     <!-- dialog -->
+    <string name="dialog_generic_no">Cancel</string>
     <string name="dialog_no_service_title">Service unavailable</string>
     <string name="dialog_rss_no">Close</string>
-    <string name="dialog_rss_yes">Read more&#8230;</string>
+    <string name="dialog_rss_yes">Read more</string>
     <string name="dialog_gps_message">Turn on GPS</string>
-    <string name="dialog_gps_yes">Set</string>
+    <string name="dialog_gps_yes">Active</string>
+    <!-- dialog.preference -->
+    <string name="dialog_preference_gps_yes">Set</string>
     <string name="dialog_delete_log_title">Delete log files?</string>
     <string name="dialog_delete_log_yes">Delete</string>
     <string name="dialog_clear_mem_title">Do you want to update bus stops?</string>
     <string name="dialog_clear_mem_warning">Warning! An app restart will be required</string>
     <string name="dialog_clear_mem_yes">Update</string>
-    <string name="dialog_generic_no">Cancel</string>
     <!-- navbar -->
     <string name="nav_menu_favourites">Favourites</string>
     <string name="nav_menu_settings">Settings</string>
