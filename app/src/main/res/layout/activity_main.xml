@@ -103,10 +103,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/linearLayoutBusCode"
-                app:tabGravity="center"
                 app:tabIndicatorColor="?attr/colorAccent"
                 app:tabIndicatorFullWidth="false"
-                app:tabIndicatorHeight="3dp"
                 app:tabSelectedTextColor="?attr/colorAccent"
                 app:tabTextAppearance="@style/TextAppearance.MaterialComponents.Button"
                 app:tabTextColor="?android:attr/textColor" />
