@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private ConstraintLayout constraintLayoutOutput, constraintLayoutSearch, constraintLayoutFavourites;
     private ViewPager viewPagerRss;
     private TabLayout tabsRss;
-    private LinearLayoutCompat linearLayoutBusCode, linearLayoutHour;
+    private LinearLayoutCompat linearLayoutBusCode, linearLayoutHour, linearLayoutNoFavourites;
     private MaterialTextView materialTextViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
@@ -85,7 +85,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private SwipeRefreshLayout swipeRefreshLayoutOutput;
     private SearchBar searchViewBusStopName;
     private BottomNavigationView bottomNavView;
-    private RecyclerView recyclerViewBusStation, recyclerViewBusGps;
+    private RecyclerView recyclerViewBusStation, recyclerViewBusGps, recyclerViewFavourites;
     private SearchAdapter adapterBusStation, adapterBusGps;
     private FavouritesAdapter adapterFavourites;
     private OutputAdapter adapterOutput;
@@ -94,7 +94,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private List<FavouritesItem> fav = new ArrayList<>();
     private List<SearchItem> stops = new ArrayList<>(), stopsGps = new ArrayList<>();
     private ArrayList<BusClass> busClass = new ArrayList<>();
-    private LocationManager locationManager;
     private String busStopCode = "", busLine = "", busHour = "", currentBusStopCode = "";
     private double latitude, longitude;
     private BusReader busReader = new BusReader();
@@ -134,7 +133,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         setContentView(R.layout.activity_main);
         init();
         Log.logInfo(MainActivity.this);
-        bottomNavView.setLabelVisibilityMode(LabelVisibilityMode.LABEL_VISIBILITY_SELECTED);
         searchViewBusStopName.setRadiusSearchBar(20);
         searchViewBusStopName.setCardViewElevation(0);
         searchViewBusStopName.setExtraIcon(R.drawable.gps_fixed);
@@ -145,12 +143,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         buildRecyclerViewSearch(stops, false);
         favourites.readFile(MainActivity.this);
         fav.addAll(favourites.getFavouritesList());
+        if (fav.isEmpty()) {
+            recyclerViewFavourites.setVisibility(View.GONE);
+            linearLayoutNoFavourites.setVisibility(View.VISIBLE);
+        }
         buildRecyclerViewFavourites();
         viewPagerRss.setAdapter(new ArticleStatePagerAdapter(MainActivity.this, getSupportFragmentManager()));
         tabsRss.setupWithViewPager(viewPagerRss);
-        MaterialTextView placeHolder = findViewById(R.id.mt_placeholder);
-        placeHolder.setTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        searchViewBusStopName.setPlaceholderTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
         searchViewBusStopName.setOnExtraButtonClickListener(view -> {
             try {
                 if (getLocation()) {
@@ -238,12 +238,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             @Override
             public void onSearchStateChanged(boolean enabled) {
                 if (enabled) {
+                    bottomNavView.setVisibility(View.GONE);
                     setVisibilityRecycler(false);
                     setElementAppBar(false);
                     fabBus.hide();
                     setDisplayChild(2);
                 } else {
                     if (constraintLayoutOutput.getVisibility() == View.GONE && currentBusStopCode.equals("")) {
+                        bottomNavView.setVisibility(View.VISIBLE);
+                        bottomNavView.setSelectedItemId(R.id.navigation_home);
                         setDisplayChild(0);
                     }
                 }
@@ -267,10 +270,15 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             public void afterTextChanged(Editable editable) {
             }
         });
-        adapterBusStation.setOnItemClickListener(position -> itemAdapterMethod(stops, position));
+        adapterBusStation.setOnItemClickListener(position -> {
+            bottomNavView.setVisibility(View.VISIBLE);
+            itemAdapterMethod(stops, position);
+        });
         adapterBusStation.setOnFavouriteButtonClickListener(position -> {
             Favourites favourites = new Favourites();
             if (updateStarFavourite(stops, position)) {
+                recyclerViewFavourites.setVisibility(View.VISIBLE);
+                linearLayoutNoFavourites.setVisibility(View.GONE);
                 FavouritesItem item = favourites.addFavourite(MainActivity.this, stops.get(position).getBusStopCode(), stops.get(position).getBusStopName(), stops.get(position).getBusStopAddress());
                 if (item != null) {
                     fav.add(item);
@@ -291,9 +299,17 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                             isRemoved = true;
                         }
                     }
+                    if (fav.isEmpty()) {
+                        recyclerViewFavourites.setVisibility(View.GONE);
+                        linearLayoutNoFavourites.setVisibility(View.VISIBLE);
+                    }
                     Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_SHORT).show();
                 }
             }
+        });
+        adapterBusStation.setOnMapsButtonClickListener(position -> {
+            Uri uri = Uri.parse("https://www.google.com/maps/search/?api=1&query=" + stops.get(position).getLatitude() + "," + stops.get(position).getLongitude());
+            startActivity(new Intent(Intent.ACTION_VIEW, uri));
         });
         materialTextViewBusHour.setOnClickListener(view -> {
             view = LayoutInflater.from(MainActivity.this).inflate(R.layout.time_picker, null);
@@ -375,6 +391,10 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                         isRemoved = true;
                     }
                 }
+                if (fav.isEmpty()) {
+                    recyclerViewFavourites.setVisibility(View.GONE);
+                    linearLayoutNoFavourites.setVisibility(View.VISIBLE);
+                }
                 Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_SHORT).show();
             }
         });
@@ -395,6 +415,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     public void onBackPressed() {
         if (constraintLayoutSearch.getVisibility() == View.VISIBLE && currentBusStopCode.equals("")) {
             setElementAppBar(false);
+            bottomNavView.setVisibility(View.VISIBLE);
             setDisplayChild(0);
             fabBus.hide();
             if (searchViewBusStopName.isSearchEnabled()) {
@@ -402,6 +423,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             }
         } else if (constraintLayoutSearch.getVisibility() == View.VISIBLE && !currentBusStopCode.equals("")) {
             setElementAppBar(true);
+            bottomNavView.setVisibility(View.VISIBLE);
             setDisplayChild(1);
             fabBus.show();
             if (searchViewBusStopName.isSearchEnabled()) {
@@ -442,6 +464,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         constraintLayoutFavourites = findViewById(R.id.constraintLayoutFavourites);
         linearLayoutHour = findViewById(R.id.linearLayoutHour);
         linearLayoutBusCode = findViewById(R.id.linearLayoutBusCode);
+        linearLayoutNoFavourites = findViewById(R.id.linearLayoutNoFavourites);
         bottomNavView = findViewById(R.id.bottomNavView);
         spinnerBusCode = findViewById(R.id.spinnerBusCode);
         materialTextViewBusHour = findViewById(R.id.materialTextViewBusHour);
@@ -454,6 +477,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         tabsRss = findViewById(R.id.tabsRss);
         recyclerViewBusStation = findViewById(R.id.recyclerViewBusStation);
         recyclerViewBusGps = findViewById(R.id.recyclerViewBusGps);
+        recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
     }
 
     private void checkPermissions() {
@@ -585,7 +609,6 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     }
 
     private void buildRecyclerViewFavourites() {
-        RecyclerView recyclerViewFavourites = findViewById(R.id.recyclerViewFavourites);
         recyclerViewFavourites.setHasFixedSize(true);
         recyclerViewFavourites.setLayoutManager(new LinearLayoutManager(MainActivity.this));
         adapterFavourites = new FavouritesAdapter(fav);
@@ -594,7 +617,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     }
 
     private boolean getLocation() {
-        if (!locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (!Objects.requireNonNull(locationManager).isProviderEnabled(LocationManager.GPS_PROVIDER)) {
             new MaterialAlertDialogBuilder(MainActivity.this)
                     .setMessage(R.string.dialog_gps_message)
                     .setPositiveButton(R.string.dialog_gps_yes, (dialog, which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
