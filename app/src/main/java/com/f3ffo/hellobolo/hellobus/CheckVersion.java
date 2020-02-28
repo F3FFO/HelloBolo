@@ -14,9 +14,9 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.util.Objects;
 import java.util.Properties;
 
 import okhttp3.OkHttpClient;
@@ -47,28 +47,57 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
         return fileExists;
     }
 
-    @Override
-    protected Boolean doInBackground(Void... voids) {
-        try {
-            Request get = new Request.Builder().url("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=opendata-versione&version=1&format=csv").build();
-            BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
+    private boolean csvVersion() {
+        Request get = new Request.Builder().url("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=opendata-versione&version=1&format=csv").build();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new OkHttpClient().newCall(get).execute().body().byteStream(), StandardCharsets.UTF_8))) {
             String versionUpdate;
             do {
                 versionUpdate = br.readLine();
+                if (versionUpdate.contains("<!DOCTYPE html")) {
+                    return false;
+                }
             } while (!versionUpdate.startsWith("lineefermate"));
             version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
-            FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
-            FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
-            Properties prop = new Properties();
-            prop.load(context.openFileInput("favourites.properties"));
-            if (prop.stringPropertyNames().size() == 0) {
-                for (int i = 0; i < 10; i++) {
-                    prop.setProperty("busStopCode.Fav." + i, "");
-                    prop.store(context.openFileOutput("favourites.properties", Context.MODE_PRIVATE), "User favourites");
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    private boolean xmlVersion() {
+        Request get = new Request.Builder().url("https://solweb.tper.it/web/tools/open-data/open-data-viewer.aspx?&filename=opendata-versione&version=1").build();
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new OkHttpClient().newCall(get).execute().body().byteStream(), StandardCharsets.UTF_8))) {
+            String versionUpdate;
+            do {
+                versionUpdate = br.readLine();
+            } while (!versionUpdate.contains("<td>lineefermate</td><td>"));
+            version = versionUpdate.substring(versionUpdate.indexOf("</td><td>") + 9, versionUpdate.length() - 5);
+            ;
+        } catch (IOException e) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    protected Boolean doInBackground(Void... voids) {
+        try {
+            if (csvVersion() || xmlVersion()) {
+                FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
+                FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
+                Properties prop = new Properties();
+                prop.load(context.openFileInput("favourites.properties"));
+                if (prop.stringPropertyNames().size() == 0) {
+                    for (int i = 0; i < 10; i++) {
+                        prop.setProperty("busStopCode.Fav." + i, "");
+                        prop.store(context.openFileOutput("favourites.properties", Context.MODE_PRIVATE), "User favourites");
+                    }
                 }
+                return true;
+            } else {
+                return false;
             }
-            return true;
-        } catch (Exception e) {
+        } catch (IOException e) {
             Log.logError(context, e);
             new MaterialAlertDialogBuilder(context, R.style.DialogTheme)
                     .setTitle(R.string.dialog_no_service_title)
