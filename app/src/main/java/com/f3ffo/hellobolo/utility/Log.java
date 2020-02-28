@@ -22,7 +22,11 @@ public class Log {
 
     public static void logInfo(@NotNull Context context) {
         File file = new File(context.getFilesDir(), LOG_FILENAME);
-        System.out.println(FileUtils.sizeOf(file));
+        try {
+            FileUtils.touch(file);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         if (FileUtils.sizeOf(file) == 0) {
             try {
                 FileUtils.writeLines(file, setInfoLog());
@@ -46,6 +50,11 @@ public class Log {
         info.add("Sdk version: " + Build.VERSION.SDK_INT);
         info.add("--------- error");
         return info;
+    }
+
+    public static void logMsg(@NotNull Context context, String msg) throws IOException {
+        File file = new File(context.getFilesDir(), LOG_FILENAME);
+        FileUtils.write(file, ("message: " + msg + "\n"), StandardCharsets.UTF_8, true);
     }
 
     public static void logCoordinates(@NotNull Context context, double lat, double longi) throws IOException {
