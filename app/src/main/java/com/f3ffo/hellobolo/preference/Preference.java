@@ -47,7 +47,7 @@ public class Preference {
         editor.commit();
     }
 
-    float getPreferenceGps() {
+    public float getPreferenceGps() {
         return sharedPreference.getFloat(context.getString(R.string.preference_key_gps), 0);
     }
 
