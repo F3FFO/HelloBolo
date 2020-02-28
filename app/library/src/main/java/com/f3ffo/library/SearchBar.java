@@ -1,9 +1,10 @@
-package com.f3ffo.searchbar;
+package com.f3ffo.library;
 
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.util.TypedValue;
@@ -12,14 +13,15 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.core.content.ContextCompat;
 
+import com.f3ffo.library.searchInterface.OnSearchActionListener;
 import com.google.android.material.card.MaterialCardView;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textview.MaterialTextView;
@@ -30,41 +32,19 @@ import java.util.Objects;
 /**
  * Created by F3FFO on 17.01.20.
  */
-
 public class SearchBar extends RelativeLayout implements View.OnClickListener, Animation.AnimationListener, View.OnFocusChangeListener, MaterialTextView.OnEditorActionListener {
+
     private MaterialCardView cardViewContainer;
     private LinearLayoutCompat linearLayoutInputContainer;
-    private ImageView imageViewSearch;
-    private ImageView imageViewArrowBack;
-    private ImageView imageViewClear;
-    private ImageView imageViewExtra;
+    private AppCompatImageView imageViewSearch, imageViewArrowBack, imageViewClear, imageViewExtra;
     private TextInputEditText editTextInputSearch;
     private MaterialTextView textViewPlaceholder;
     private OnSearchActionListener onSearchActionListener;
     private OnClickListener onExtraButtonClickListener;
-    private boolean searchEnabled;
     private float destiny;
-    private int arrowIconRes;
-    private int clearIconRes;
-    private int extraIconRes;
-    private boolean navButtonEnabled;
-    private int searchBarColor;
-    private CharSequence hintText;
-    private CharSequence placeholderText;
-    private int textColor;
-    private int hintColor;
-    private int placeholderColor;
-    private int radiusCorner;
-    private int searchIconTint;
-    private int arrowIconTint;
-    private int clearIconTint;
-    private int extraIconTint;
-    private boolean searchIconTintEnabled;
-    private boolean arrowIconTintEnabled;
-    private boolean clearIconTintEnabled;
-    private boolean extraIconTintEnabled;
-    private int textCursorColor;
-    private int highlightedTextColor;
+    private CharSequence hintText, placeholderText;
+    private int arrowIconRes, clearIconRes, extraIconRes, searchBarColor, textColor, hintColor, placeholderColor, radiusCorner, searchIconTint, arrowIconTint, clearIconTint, extraIconTint, textCursorColor, highlightedTextColor;
+    private boolean searchEnabled, navButtonEnabled, searchIconTintEnabled, arrowIconTintEnabled, clearIconTintEnabled, extraIconTintEnabled;
 
     public SearchBar(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -85,48 +65,48 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
         inflate(getContext(), R.layout.searchbar, SearchBar.this);
         TypedArray array = getContext().obtainStyledAttributes(attrs, R.styleable.SearchBar);
         //Base Attributes
-        navButtonEnabled = array.getBoolean(R.styleable.SearchBar_mt_navIconEnabled, false);
-        radiusCorner = array.getInt(R.styleable.SearchBar_mt_radiusCorner, 0);
-        searchBarColor = array.getColor(R.styleable.SearchBar_mt_searchBarColor, ContextCompat.getColor(getContext(), R.color.searchBarPrimaryColor));
+        this.navButtonEnabled = array.getBoolean(R.styleable.SearchBar_mt_navIconEnabled, false);
+        this.radiusCorner = array.getInt(R.styleable.SearchBar_mt_radiusCorner, 0);
+        this.searchBarColor = array.getColor(R.styleable.SearchBar_mt_searchBarColor, ContextCompat.getColor(getContext(), R.color.searchBarPrimaryColor));
         //Icon Related Attributes
-        arrowIconRes = array.getResourceId(R.styleable.SearchBar_mt_backIconDrawable, R.drawable.arrow_back);
-        clearIconRes = array.getResourceId(R.styleable.SearchBar_mt_clearIconDrawable, R.drawable.close);
-        extraIconRes = array.getResourceId(R.styleable.SearchBar_mt_extraIconDrawable, 0);
-        searchIconTint = array.getColor(R.styleable.SearchBar_mt_searchIconTint, ContextCompat.getColor(getContext(), R.color.searchBarSearchIconTintColor));
-        arrowIconTint = array.getColor(R.styleable.SearchBar_mt_backIconTint, ContextCompat.getColor(getContext(), R.color.searchBarBackIconTintColor));
-        clearIconTint = array.getColor(R.styleable.SearchBar_mt_clearIconTint, ContextCompat.getColor(getContext(), R.color.searchBarClearIconTintColor));
-        extraIconTint = array.getColor(R.styleable.SearchBar_mt_extraIconTint, ContextCompat.getColor(getContext(), R.color.searchBarExtraIconTintColor));
-        searchIconTintEnabled = array.getBoolean(R.styleable.SearchBar_mt_searchIconUseTint, true);
-        arrowIconTintEnabled = array.getBoolean(R.styleable.SearchBar_mt_backIconUseTint, true);
-        clearIconTintEnabled = array.getBoolean(R.styleable.SearchBar_mt_clearIconUseTint, true);
-        extraIconTintEnabled = array.getBoolean(R.styleable.SearchBar_mt_extraIconUseTint, true);
+        this.arrowIconRes = array.getResourceId(R.styleable.SearchBar_mt_backIconDrawable, R.drawable.arrow_back);
+        this.clearIconRes = array.getResourceId(R.styleable.SearchBar_mt_clearIconDrawable, R.drawable.close);
+        this.extraIconRes = array.getResourceId(R.styleable.SearchBar_mt_extraIconDrawable, 0);
+        this.searchIconTint = array.getColor(R.styleable.SearchBar_mt_searchIconTint, ContextCompat.getColor(getContext(), R.color.searchBarSearchIconTintColor));
+        this.arrowIconTint = array.getColor(R.styleable.SearchBar_mt_backIconTint, ContextCompat.getColor(getContext(), R.color.searchBarBackIconTintColor));
+        this.clearIconTint = array.getColor(R.styleable.SearchBar_mt_clearIconTint, ContextCompat.getColor(getContext(), R.color.searchBarClearIconTintColor));
+        this.extraIconTint = array.getColor(R.styleable.SearchBar_mt_extraIconTint, ContextCompat.getColor(getContext(), R.color.searchBarExtraIconTintColor));
+        this.searchIconTintEnabled = array.getBoolean(R.styleable.SearchBar_mt_searchIconUseTint, true);
+        this.arrowIconTintEnabled = array.getBoolean(R.styleable.SearchBar_mt_backIconUseTint, true);
+        this.clearIconTintEnabled = array.getBoolean(R.styleable.SearchBar_mt_clearIconUseTint, true);
+        this.extraIconTintEnabled = array.getBoolean(R.styleable.SearchBar_mt_extraIconUseTint, true);
         //Text Related Attributes
-        hintText = array.getString(R.styleable.SearchBar_mt_hint);
-        placeholderText = array.getString(R.styleable.SearchBar_mt_placeholder);
-        textColor = array.getColor(R.styleable.SearchBar_mt_textColor, ContextCompat.getColor(getContext(), R.color.searchBarTextColor));
-        hintColor = array.getColor(R.styleable.SearchBar_mt_hintColor, ContextCompat.getColor(getContext(), R.color.searchBarHintColor));
-        placeholderColor = array.getColor(R.styleable.SearchBar_mt_placeholderColor, ContextCompat.getColor(getContext(), R.color.searchBarPlaceholderColor));
-        textCursorColor = array.getColor(R.styleable.SearchBar_mt_textCursorTint, ContextCompat.getColor(getContext(), R.color.searchBarCursorColor));
-        highlightedTextColor = array.getColor(R.styleable.SearchBar_mt_highlightedTextColor, ContextCompat.getColor(getContext(), R.color.searchBarTextHighlightColor));
-        destiny = getResources().getDisplayMetrics().density;
+        this.hintText = array.getString(R.styleable.SearchBar_mt_hint);
+        this.placeholderText = array.getString(R.styleable.SearchBar_mt_placeholder);
+        this.textColor = array.getColor(R.styleable.SearchBar_mt_textColor, ContextCompat.getColor(getContext(), R.color.searchBarTextColor));
+        this.hintColor = array.getColor(R.styleable.SearchBar_mt_hintColor, ContextCompat.getColor(getContext(), R.color.searchBarHintColor));
+        this.placeholderColor = array.getColor(R.styleable.SearchBar_mt_placeholderColor, ContextCompat.getColor(getContext(), R.color.searchBarPlaceholderColor));
+        this.textCursorColor = array.getColor(R.styleable.SearchBar_mt_textCursorTint, ContextCompat.getColor(getContext(), R.color.searchBarCursorColor));
+        this.highlightedTextColor = array.getColor(R.styleable.SearchBar_mt_highlightedTextColor, ContextCompat.getColor(getContext(), R.color.searchBarTextHighlightColor));
+        this.destiny = getResources().getDisplayMetrics().density;
         array.recycle();
         //View References
-        cardViewContainer = findViewById(R.id.cardViewContainer);
-        imageViewExtra = findViewById(R.id.imageViewExtra);
-        imageViewClear = findViewById(R.id.imageViewClear);
-        imageViewSearch = findViewById(R.id.imageViewSearch);
-        imageViewArrowBack = findViewById(R.id.imageViewArrowBack);
-        editTextInputSearch = findViewById(R.id.editTextInputSearch);
-        textViewPlaceholder = findViewById(R.id.textViewPlaceholder);
-        linearLayoutInputContainer = findViewById(R.id.linearLayoutInputContainer);
+        this.cardViewContainer = findViewById(R.id.cardViewContainer);
+        this.imageViewExtra = findViewById(R.id.imageViewExtra);
+        this.imageViewClear = findViewById(R.id.imageViewClear);
+        this.imageViewSearch = findViewById(R.id.imageViewSearch);
+        this.imageViewArrowBack = findViewById(R.id.imageViewArrowBack);
+        this.editTextInputSearch = findViewById(R.id.editTextInputSearch);
+        this.textViewPlaceholder = findViewById(R.id.textViewPlaceholder);
+        this.linearLayoutInputContainer = findViewById(R.id.linearLayoutInputContainer);
         findViewById(R.id.imageViewClear).setOnClickListener(SearchBar.this);
         findViewById(R.id.imageViewExtra).setOnClickListener(SearchBar.this);
         //Listeners
         setOnClickListener(SearchBar.this);
-        imageViewArrowBack.setOnClickListener(SearchBar.this);
-        imageViewSearch.setOnClickListener(SearchBar.this);
-        editTextInputSearch.setOnFocusChangeListener(SearchBar.this);
-        editTextInputSearch.setOnEditorActionListener(SearchBar.this);
+        this.imageViewArrowBack.setOnClickListener(SearchBar.this);
+        this.imageViewSearch.setOnClickListener(SearchBar.this);
+        this.editTextInputSearch.setOnFocusChangeListener(SearchBar.this);
+        this.editTextInputSearch.setOnEditorActionListener(SearchBar.this);
         postSetup();
     }
 
@@ -138,21 +118,18 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
         setupSearchEditText();
     }
 
-    /**
-     * Capsule shaped search bar enabled
-     */
     private void setupRadiusSearchBar() {
-        cardViewContainer.setRadius(radiusCorner);
+        this.cardViewContainer.setRadius(this.radiusCorner);
     }
 
     private void setupSearchBarColor() {
-        cardViewContainer.setCardBackgroundColor(searchBarColor);
+        this.cardViewContainer.setCardBackgroundColor(this.searchBarColor);
     }
 
     private void setupTextColors() {
-        editTextInputSearch.setHintTextColor(hintColor);
-        editTextInputSearch.setTextColor(textColor);
-        textViewPlaceholder.setTextColor(placeholderColor);
+        this.editTextInputSearch.setHintTextColor(this.hintColor);
+        this.editTextInputSearch.setTextColor(this.textColor);
+        this.textViewPlaceholder.setTextColor(this.placeholderColor);
     }
 
     /**
@@ -160,30 +137,39 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      */
     private void setupSearchEditText() {
         setupCursorColor();
-        editTextInputSearch.setHighlightColor(highlightedTextColor);
-        if (hintText != null) {
-            editTextInputSearch.setHint(hintText);
+        this.editTextInputSearch.setHighlightColor(this.highlightedTextColor);
+        if (this.hintText != null) {
+            this.editTextInputSearch.setHint(this.hintText);
         }
-        if (placeholderText != null) {
-            imageViewArrowBack.setBackground(null);
-            textViewPlaceholder.setText(placeholderText);
+        if (this.placeholderText != null) {
+            this.imageViewArrowBack.setBackground(null);
+            this.textViewPlaceholder.setText(this.placeholderText);
         }
     }
 
     private void setupCursorColor() {
         try {
-            Field field = MaterialTextView.class.getDeclaredField("editor");
+            Field field = MaterialTextView.class.getDeclaredField("mCursorDrawableRes");
             field.setAccessible(true);
-            Object editor = field.get(editTextInputSearch);
-            field = MaterialTextView.class.getDeclaredField("cursorDrawableRes");
+            int drawableResId = field.getInt(this.editTextInputSearch);
+            // Get the editor
+            field = MaterialTextView.class.getDeclaredField("mEditor");
             field.setAccessible(true);
-            int cursorDrawableRes = field.getInt(editTextInputSearch);
-            Drawable cursorDrawable = Objects.requireNonNull(ContextCompat.getDrawable(getContext(), cursorDrawableRes)).mutate();
-            cursorDrawable.setColorFilter(textCursorColor, PorterDuff.Mode.SRC_IN);
-            Drawable[] drawables = {cursorDrawable, cursorDrawable};
-            field = Objects.requireNonNull(editor).getClass().getDeclaredField("cursorDrawable");
-            field.setAccessible(true);
-            field.set(editor, drawables);
+            Object editor = field.get(this.editTextInputSearch);
+            // Get the drawable and set a color filter
+            Drawable drawable = ContextCompat.getDrawable(this.editTextInputSearch.getContext(), drawableResId);
+            Objects.requireNonNull(drawable).setColorFilter(this.textCursorColor, PorterDuff.Mode.SRC_IN);
+            // Set the drawables
+            if (Build.VERSION.SDK_INT >= 28) {
+                field = Objects.requireNonNull(editor).getClass().getDeclaredField("mDrawableForCursor");
+                field.setAccessible(true);
+                field.set(editor, drawable);
+            } else {
+                Drawable[] drawables = {drawable, drawable};
+                field = Objects.requireNonNull(editor).getClass().getDeclaredField("mCursorDrawable");
+                field.setAccessible(true);
+                field.set(editor, drawables);
+            }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
@@ -191,15 +177,10 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
 
     //Setup Icon Colors And Drawables
     private void setupIcons() {
-        //Drawables
-        setNavButtonEnabled(navButtonEnabled);
-        //Arrow
-        imageViewArrowBack.setImageResource(arrowIconRes);
-        //Clear
-        imageViewClear.setImageResource(clearIconRes);
-        //Extra
-        imageViewExtra.setImageResource(extraIconRes);
-        //Colors
+        setNavButtonEnabled(this.navButtonEnabled);
+        this.imageViewArrowBack.setImageResource(this.arrowIconRes);
+        this.imageViewClear.setImageResource(this.clearIconRes);
+        this.imageViewExtra.setImageResource(this.extraIconRes);
         setupSearchIconTint();
         setupArrowIconTint();
         setupClearIconTint();
@@ -208,44 +189,44 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
     }
 
     private void setupSearchIconTint() {
-        if (searchIconTintEnabled) {
-            imageViewSearch.setColorFilter(searchIconTint, PorterDuff.Mode.SRC_IN);
+        if (this.searchIconTintEnabled) {
+            this.imageViewSearch.setColorFilter(this.searchIconTint, PorterDuff.Mode.SRC_IN);
         } else {
-            imageViewSearch.clearColorFilter();
+            this.imageViewSearch.clearColorFilter();
         }
     }
 
     private void setupArrowIconTint() {
-        if (arrowIconTintEnabled) {
-            imageViewArrowBack.setColorFilter(arrowIconTint, PorterDuff.Mode.SRC_IN);
+        if (this.arrowIconTintEnabled) {
+            this.imageViewArrowBack.setColorFilter(this.arrowIconTint, PorterDuff.Mode.SRC_IN);
         } else {
-            imageViewArrowBack.clearColorFilter();
+            this.imageViewArrowBack.clearColorFilter();
         }
     }
 
     private void setupClearIconTint() {
-        if (clearIconTintEnabled) {
-            imageViewClear.setColorFilter(clearIconTint, PorterDuff.Mode.SRC_IN);
+        if (this.clearIconTintEnabled) {
+            this.imageViewClear.setColorFilter(clearIconTint, PorterDuff.Mode.SRC_IN);
         } else {
-            imageViewClear.clearColorFilter();
+            this.imageViewClear.clearColorFilter();
         }
     }
 
     private void setupExtraIconTint() {
-        if (extraIconTintEnabled) {
-            imageViewExtra.setColorFilter(extraIconTint, PorterDuff.Mode.SRC_IN);
+        if (this.extraIconTintEnabled) {
+            this.imageViewExtra.setColorFilter(this.extraIconTint, PorterDuff.Mode.SRC_IN);
         } else {
-            imageViewExtra.clearColorFilter();
+            this.imageViewExtra.clearColorFilter();
         }
     }
 
     private void setupIconRippleStyle() {
         TypedValue rippleStyle = new TypedValue();
         getContext().getTheme().resolveAttribute(android.R.attr.selectableItemBackgroundBorderless, rippleStyle, true);
-        imageViewSearch.setBackgroundResource(rippleStyle.resourceId);
-        imageViewArrowBack.setBackgroundResource(rippleStyle.resourceId);
-        imageViewClear.setBackgroundResource(rippleStyle.resourceId);
-        imageViewExtra.setBackgroundResource(rippleStyle.resourceId);
+        this.imageViewSearch.setBackgroundResource(rippleStyle.resourceId);
+        this.imageViewArrowBack.setBackgroundResource(rippleStyle.resourceId);
+        this.imageViewClear.setBackgroundResource(rippleStyle.resourceId);
+        this.imageViewExtra.setBackgroundResource(rippleStyle.resourceId);
     }
 
     /**
@@ -272,7 +253,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
         this.imageViewSearch.setVisibility(VISIBLE);
         this.linearLayoutInputContainer.startAnimation(out);
         this.imageViewSearch.startAnimation(in);
-        if (placeholderText != null) {
+        if (this.placeholderText != null) {
             this.textViewPlaceholder.setVisibility(VISIBLE);
             this.textViewPlaceholder.startAnimation(in);
         }
@@ -310,7 +291,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      */
     public void setArrowIcon(int arrowIconResId) {
         this.arrowIconRes = arrowIconResId;
-        this.imageViewArrowBack.setImageResource(arrowIconRes);
+        this.imageViewArrowBack.setImageResource(this.arrowIconRes);
     }
 
     /**
@@ -320,7 +301,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      */
     public void setClearIcon(int clearIconResId) {
         this.clearIconRes = clearIconResId;
-        this.imageViewClear.setImageResource(clearIconRes);
+        this.imageViewClear.setImageResource(this.clearIconRes);
     }
 
     /**
@@ -330,7 +311,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      */
     public void setExtraIcon(int extraIconResId) {
         this.extraIconRes = extraIconResId;
-        this.imageViewExtra.setImageResource(extraIconRes);
+        this.imageViewExtra.setImageResource(this.extraIconRes);
         this.imageViewExtra.setVisibility(VISIBLE);
     }
 
@@ -381,7 +362,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      */
     public void setHint(CharSequence hintText) {
         this.hintText = hintText;
-        editTextInputSearch.setHint(hintText);
+        this.editTextInputSearch.setHint(hintText);
     }
 
     /**
@@ -390,7 +371,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      * @return placeholder text
      */
     public CharSequence getPlaceHolderText() {
-        return textViewPlaceholder.getText();
+        return this.textViewPlaceholder.getText();
     }
 
     /**
@@ -399,7 +380,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      * @return true if search bar is in edit mode
      */
     public boolean isSearchEnabled() {
-        return searchEnabled;
+        return this.searchEnabled;
     }
 
     /**
@@ -449,7 +430,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      */
     public void setTextHighlightColor(int highlightedTextColor) {
         this.highlightedTextColor = highlightedTextColor;
-        editTextInputSearch.setHighlightColor(highlightedTextColor);
+        this.editTextInputSearch.setHighlightColor(highlightedTextColor);
     }
 
     /**
@@ -460,10 +441,10 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
     public void setNavButtonEnabled(boolean navButtonEnabled) {
         this.navButtonEnabled = navButtonEnabled;
         if (navButtonEnabled) {
-            ((LayoutParams) linearLayoutInputContainer.getLayoutParams()).leftMargin = (int) (50 * this.destiny);
+            ((LayoutParams) this.linearLayoutInputContainer.getLayoutParams()).leftMargin = (int) (50 * this.destiny);
             this.imageViewArrowBack.setVisibility(GONE);
         } else {
-            ((LayoutParams) linearLayoutInputContainer.getLayoutParams()).leftMargin = (int) (0 * this.destiny);
+            ((LayoutParams) this.linearLayoutInputContainer.getLayoutParams()).leftMargin = (int) (0 * this.destiny);
             this.imageViewArrowBack.setVisibility(VISIBLE);
         }
         this.textViewPlaceholder.requestLayout();
@@ -496,7 +477,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      * @return text
      */
     public String getText() {
-        return Objects.requireNonNull(editTextInputSearch.getText()).toString();
+        return Objects.requireNonNull(this.editTextInputSearch.getText()).toString();
     }
 
     /**
@@ -505,7 +486,7 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      * @param text text
      */
     public void setText(String text) {
-        editTextInputSearch.setText(text);
+        this.editTextInputSearch.setText(text);
     }
 
     /**
@@ -514,11 +495,11 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
      * @param textWatcher textWatcher to add
      */
     public void addTextChangeListener(TextWatcher textWatcher) {
-        editTextInputSearch.addTextChangedListener(textWatcher);
+        this.editTextInputSearch.addTextChangedListener(textWatcher);
     }
 
     public MaterialTextView getPlaceHolderView() {
-        return textViewPlaceholder;
+        return this.textViewPlaceholder;
     }
 
     /**
@@ -532,22 +513,22 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
     }
 
     private boolean listenerExists() {
-        return onSearchActionListener != null && onExtraButtonClickListener != null;
+        return this.onSearchActionListener != null;
     }
 
     @Override
     public void onClick(@NonNull View v) {
         int id = v.getId();
         if (id == getId() || id == R.id.imageViewSearch) {
-            if (!searchEnabled) {
+            if (!this.searchEnabled) {
                 enableSearch();
             }
         } else if (id == R.id.imageViewArrowBack) {
             disableSearch();
         } else if (id == R.id.imageViewClear) {
-            editTextInputSearch.setText("");
+            this.editTextInputSearch.setText("");
         } else if (id == R.id.imageViewExtra) {
-            onExtraButtonClickListener.onClick(v);
+            this.onExtraButtonClickListener.onClick(v);
         }
     }
 
@@ -557,12 +538,12 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
 
     @Override
     public void onAnimationEnd(Animation animation) {
-        if (!searchEnabled) {
-            linearLayoutInputContainer.setVisibility(GONE);
-            editTextInputSearch.setText("");
+        if (!this.searchEnabled) {
+            this.linearLayoutInputContainer.setVisibility(GONE);
+            this.editTextInputSearch.setText("");
         } else {
             imageViewSearch.setVisibility(GONE);
-            editTextInputSearch.requestFocus();
+            this.editTextInputSearch.requestFocus();
         }
     }
 
@@ -583,27 +564,8 @@ public class SearchBar extends RelativeLayout implements View.OnClickListener, A
     @Override
     public boolean onEditorAction(TextView textView, int i, KeyEvent keyEvent) {
         if (listenerExists()) {
-            onSearchActionListener.onSearchConfirmed(editTextInputSearch.getText());
+            this.onSearchActionListener.onSearchConfirmed(this.editTextInputSearch.getText());
         }
         return true;
-    }
-
-    /**
-     * Interface definition for SearchBar callbacks.
-     */
-    public interface OnSearchActionListener {
-        /**
-         * Invoked when SearchBar opened or closed
-         *
-         * @param enabled state
-         */
-        void onSearchStateChanged(boolean enabled);
-
-        /**
-         * Invoked when search confirmed and "search" button is clicked on the soft keyboard
-         *
-         * @param text search input
-         */
-        void onSearchConfirmed(CharSequence text);
     }
 }

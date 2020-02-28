@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="white">#FFFFFFFF</color>
     <color name="searchBarIconColor">#FF3A3A3A</color>
     //Base
     <color name="searchBarPrimaryColor">#FFFFFF</color>

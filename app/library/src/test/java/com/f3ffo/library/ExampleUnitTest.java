@@ -1,4 +1,4 @@
-package com.f3ffo.searchbar;
+package com.f3ffo.library;
 
 import org.junit.Test;
 
