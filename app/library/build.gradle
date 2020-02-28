@@ -2,20 +2,25 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
-
+    buildToolsVersion "29.0.3"
     defaultConfig {
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1
-        versionName "0.1"
+        versionName "1.0"
         vectorDrawables.useSupportLibrary = true
     }
+
     buildTypes {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
@@ -25,29 +30,5 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0-rc01'
-}
-
-// build a jar with source files
-task sourcesJar(type: Jar) {
-    from android.sourceSets.main.java.srcDirs
-    classifier = 'sources'
-}
-
-task javadoc(type: Javadoc) {
-    failOnError  false
-    source = android.sourceSets.main.java.sourceFiles
-    classpath += project.files(android.getBootClasspath().join(File.pathSeparator))
-    classpath += configurations.compile
-}
-
-// build a jar with javadoc
-task javadocJar(type: Jar, dependsOn: javadoc) {
-    classifier = 'javadoc'
-    from javadoc.destinationDir
-}
-
-artifacts {
-    archives sourcesJar
-    archives javadocJar
+    implementation 'com.google.android.material:material:1.1.0'
 }
