@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <com.f3ffo.searchbar.SearchBar
+        <com.f3ffo.library.SearchBar
             android:id="@+id/searchViewBusStopName"
             style="@style/MaterialSearchBar"
             android:layout_width="match_parent"
