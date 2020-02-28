@@ -85,9 +85,12 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                     content = content.replaceAll("</h[1-6]>", "");
                     System.out.println(content);
                 }
-                if (content.contains("<a href=/")) {
+                if (content.contains("<a href=\"/")) {
                     content = content.replace("<a href=\"", "<a href=\"https://www.tper.it");
                     description.setMovementMethod(LinkMovementMethod.getInstance());
+                }
+                if (content.contains("<a href=\"#")) {
+                    content = content.replace("<a href=\"#", "<a href=\"" + articles.get(viewHolder.getAdapterPosition()).getLink() + "#");
                 }
                 if (content.contains("strong")) {
                     content = content.replace("<strong>", "");
@@ -95,6 +98,7 @@ public class ArticleAdapter extends RecyclerView.Adapter<ArticleAdapter.ArticleV
                 }
                 description.setText(HtmlCompat.fromHtml(content, HtmlCompat.FROM_HTML_MODE_COMPACT));
             }
+            description.setMovementMethod(LinkMovementMethod.getInstance());
             description.setTextAppearance(R.style.TextAppearance_MaterialComponents_Body1_Custom);
             description.setPadding(64, 64, 64, 0);
             description.setTextIsSelectable(false);
