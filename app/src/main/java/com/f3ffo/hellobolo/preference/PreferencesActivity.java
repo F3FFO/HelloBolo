@@ -2,7 +2,9 @@ package com.f3ffo.hellobolo.preference;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,7 +15,6 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.AppCompatImageView;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.preference.PreferenceFragmentCompat;
 
@@ -143,7 +144,15 @@ public class PreferencesActivity extends AppCompatActivity {
                 attention.setTextIsSelectable(false);
                 attention.setText(getString(R.string.preference_slider_gps_text_high));
                 setTextTextView(tempDistance[0], attention);
-                slider.setOnChangeListener((slider1, value) -> {
+                int[][] states = new int[][]{new int[]{android.R.attr.state_enabled}};
+                int[] colors = new int[]{Color.BLUE};
+                ColorStateList colorStateList = new ColorStateList(states, colors);
+                slider.setTickColor(colorStateList);
+                slider.setTrackColor(colorStateList);
+                slider.setHaloColor(colorStateList);
+                slider.setThumbColor(colorStateList);
+                slider.setTrackHeight(5);
+                slider.addOnChangeListener((slider1, value, fromUser) -> {
                     tempDistance[0] = value;
                     setTextTextView(tempDistance[0], attention);
                 });
@@ -153,7 +162,10 @@ public class PreferencesActivity extends AppCompatActivity {
                         .setTitle(getString(R.string.preference_title_gps))
                         .setView(layout)
                         .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
-                        .setPositiveButton(R.string.dialog_preference_gps_yes, (DialogInterface dialog, int which) -> setDistance(tempDistance[0], slider))
+                        .setPositiveButton(R.string.dialog_preference_gps_yes, (DialogInterface dialog, int which) -> {
+                            new BusReader().setDistance(tempDistance[0]);
+                            new Preference(getContext()).setPreferenceGps(slider.getValue());
+                        })
                         .show();
                 return false;
             });
@@ -175,38 +187,6 @@ public class PreferencesActivity extends AppCompatActivity {
             } else {
                 materialTextView.setVisibility(View.GONE);
             }
-        }
-
-        private void setDistance(float value, Slider slider) {
-            double defaultDistance = BusReader.distance;
-            if (value == 250) {
-                if (BusReader.distance == defaultDistance) {
-                    BusReader.distance += 0.0025;
-                } else {
-                    BusReader.distance = defaultDistance + 0.0025;
-                }
-            } else if (value == 500) {
-                if (BusReader.distance == defaultDistance) {
-                    BusReader.distance += 0.0050;
-                } else {
-                    BusReader.distance = defaultDistance + 0.0050;
-                }
-            } else if (value == 750) {
-                if (BusReader.distance == defaultDistance) {
-                    BusReader.distance += 0.0075;
-                } else {
-                    BusReader.distance = defaultDistance + 0.0075;
-                }
-            } else if (value == 1000) {
-                if (BusReader.distance == defaultDistance) {
-                    BusReader.distance += 0.0100;
-                } else {
-                    BusReader.distance = defaultDistance + 0.0100;
-                }
-            } else {
-                BusReader.distance = 0.001;
-            }
-            new Preference(getContext()).setPreferenceGps(slider.getValue());
         }
     }
 }
