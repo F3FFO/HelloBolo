@@ -87,13 +87,13 @@ public class PreferencesActivity extends AppCompatActivity {
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.preference);
-            findPreference(getString(R.string.preference_key_theme)).setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> reload());
-            findPreference(getString(R.string.preference_key_language)).setOnPreferenceChangeListener((androidx.preference.Preference preference, Object newValue) -> reload());
-            findPreference(getString(R.string.preference_key_open_log)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
+            findPreference(getString(R.string.preference_key_theme)).setOnPreferenceChangeListener((preference, newValue) -> reload());
+            findPreference(getString(R.string.preference_key_language)).setOnPreferenceChangeListener((preference, newValue) -> reload());
+            findPreference(getString(R.string.preference_key_open_log)).setOnPreferenceClickListener(preference -> {
                 LogDialog.display(Objects.requireNonNull(getActivity()).getSupportFragmentManager());
                 return true;
             });
-            findPreference(getString(R.string.preference_key_delete_log)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
+            findPreference(getString(R.string.preference_key_delete_log)).setOnPreferenceClickListener(preference -> {
                 new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()), R.style.DialogTheme)
                         .setTitle(R.string.dialog_delete_log_title)
                         .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
@@ -105,7 +105,7 @@ public class PreferencesActivity extends AppCompatActivity {
                         .show();
                 return true;
             });
-            findPreference(getString(R.string.preference_key_clear_memory)).setOnPreferenceClickListener((androidx.preference.Preference preference) -> {
+            findPreference(getString(R.string.preference_key_clear_memory)).setOnPreferenceClickListener(preference -> {
                 new MaterialAlertDialogBuilder(Objects.requireNonNull(getContext()), R.style.DialogTheme)
                         .setTitle(R.string.dialog_clear_mem_title)
                         .setMessage(R.string.dialog_clear_mem_warning)
@@ -126,15 +126,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 LinearLayoutCompat layout = new LinearLayoutCompat(Objects.requireNonNull(getContext()));
                 layout.setOrientation(LinearLayoutCompat.VERTICAL);
                 layout.setLayoutParams(new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.MATCH_PARENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT));
-                Slider slider = new Slider(getContext());
-                LinearLayoutCompat.LayoutParams layoutParamsSlider = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
-                layoutParamsSlider.setMargins(128, 16, 128, 8);
-                slider.setLayoutParams(layoutParamsSlider);
-                slider.setValueFrom(0);
-                slider.setValueTo(1000);
-                slider.setStepSize(250);
-                float[] tempDistance = {new Preference(getContext()).getPreferenceGps()};
-                slider.setValue(tempDistance[0]);
+                float[] tempDistance = {new Preferences(getContext()).getPreferenceGps()};
                 MaterialTextView attention = new MaterialTextView(getContext());
                 LinearLayoutCompat.LayoutParams layoutParamsTextView = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
                 layoutParamsTextView.setMargins(64, 8, 64, 16);
@@ -144,6 +136,14 @@ public class PreferencesActivity extends AppCompatActivity {
                 attention.setTextIsSelectable(false);
                 attention.setText(getString(R.string.preference_slider_gps_text_high));
                 setTextTextView(tempDistance[0], attention);
+                Slider slider = new Slider(getContext());
+                LinearLayoutCompat.LayoutParams layoutParamsSlider = new LinearLayoutCompat.LayoutParams(LinearLayoutCompat.LayoutParams.WRAP_CONTENT, LinearLayoutCompat.LayoutParams.WRAP_CONTENT);
+                layoutParamsSlider.setMargins(128, 16, 128, 8);
+                slider.setLayoutParams(layoutParamsSlider);
+                slider.setValueFrom(0);
+                slider.setValueTo(1000);
+                slider.setStepSize(250);
+                slider.setValue(tempDistance[0]);
                 int[][] states = new int[][]{new int[]{android.R.attr.state_enabled}};
                 int[] colors = new int[]{Color.BLUE};
                 ColorStateList colorStateList = new ColorStateList(states, colors);
@@ -154,7 +154,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 slider.setTrackHeight(5);
                 slider.addOnChangeListener((slider1, value, fromUser) -> {
                     tempDistance[0] = value;
-                    setTextTextView(tempDistance[0], attention);
+                    setTextTextView(value, attention);
                 });
                 layout.addView(slider);
                 layout.addView(attention);
@@ -163,8 +163,8 @@ public class PreferencesActivity extends AppCompatActivity {
                         .setView(layout)
                         .setNegativeButton(R.string.dialog_generic_no, (DialogInterface dialog, int which) -> dialog.dismiss())
                         .setPositiveButton(R.string.dialog_preference_gps_yes, (DialogInterface dialog, int which) -> {
-                            new BusReader().setDistance(tempDistance[0]);
-                            new Preference(getContext()).setPreferenceGps(slider.getValue());
+                            BusReader.setDistance(tempDistance[0]);
+                            new Preferences(getContext()).setPreferenceGps(slider.getValue());
                         })
                         .show();
                 return false;

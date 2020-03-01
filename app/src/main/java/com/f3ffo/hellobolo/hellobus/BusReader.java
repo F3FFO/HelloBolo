@@ -24,9 +24,9 @@ import java.util.StringTokenizer;
 public class BusReader {
 
     private List<Double> arrayLatitude = new ArrayList<>();
-    private double distance = 0.001;
+    private static double distance = 0.001;
 
-    public void setDistance(float value) {
+    public static void setDistance(float value) {
         double defaultDistance = distance;
         if (value == 250) {
             if (distance == defaultDistance) {
@@ -197,7 +197,10 @@ public class BusReader {
         File file = takeFileCut(context);
         String[] propertiesFile = takeFavElement(context);
         if (FileUtils.sizeOf(file) == 0) {
-            writeFile(context, file, busClass);
+            writeFile(context,
+
+
+                    file, busClass);
             extractFromFileCut(context, file, propertiesFile, stops);
         } else {
             extractFromFileCut(context, file, propertiesFile, stops);
@@ -219,7 +222,8 @@ public class BusReader {
         return result;
     }
 
-    public List<String> takeTheCorrespondingBusStop(@NotNull ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
+    public List<String> takeTheCorrespondingBusStop(
+            @NotNull ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
         stopsCutLatitude(searchValueLatitude);
         List<String> result = new ArrayList<>();
         for (int i = 0; i < busClass.size(); i++) {
