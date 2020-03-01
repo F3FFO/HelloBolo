@@ -145,7 +145,7 @@ public class PreferencesActivity extends AppCompatActivity {
                 slider.setStepSize(250);
                 slider.setValue(tempDistance[0]);
                 int[][] states = new int[][]{new int[]{android.R.attr.state_enabled}};
-                int[] colors = new int[]{Color.BLUE};
+                int[] colors = new int[]{getContext().getColor(R.color.colorAccent)};
                 ColorStateList colorStateList = new ColorStateList(states, colors);
                 slider.setTickColor(colorStateList);
                 slider.setTrackColor(colorStateList);
