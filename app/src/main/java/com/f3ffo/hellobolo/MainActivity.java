@@ -1,7 +1,6 @@
 package com.f3ffo.hellobolo;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -12,7 +11,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
 import android.provider.Settings;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -22,7 +20,6 @@ import android.view.View;
 import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.ProgressBar;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
@@ -31,6 +28,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.appcompat.widget.LinearLayoutCompat;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.widget.ContentLoadingProgressBar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -46,7 +44,7 @@ import com.f3ffo.hellobolo.hellobus.UrlElaboration;
 import com.f3ffo.hellobolo.output.OutputAdapter;
 import com.f3ffo.hellobolo.output.OutputErrorAdapter;
 import com.f3ffo.hellobolo.output.OutputItem;
-import com.f3ffo.hellobolo.preference.Preference;
+import com.f3ffo.hellobolo.preference.Preferences;
 import com.f3ffo.hellobolo.preference.PreferencesActivity;
 import com.f3ffo.hellobolo.rss.ArticleStatePagerAdapter;
 import com.f3ffo.hellobolo.search.SearchAdapter;
@@ -55,11 +53,6 @@ import com.f3ffo.hellobolo.utility.CheckInternet;
 import com.f3ffo.hellobolo.utility.Log;
 import com.f3ffo.library.SearchBar;
 import com.f3ffo.library.searchInterface.OnSearchActionListener;
-import com.google.android.gms.location.FusedLocationProviderClient;
-import com.google.android.gms.location.LocationCallback;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationResult;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.bottomnavigation.LabelVisibilityMode;
 import com.google.android.material.dialog.MaterialAlertDialogBuilder;
@@ -89,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private MaterialTextView materialTextViewBusHour;
     private AppCompatSpinner spinnerBusCode;
     private FloatingActionButton fabBus;
-    private ProgressBar progressBarOutput;
+    private ContentLoadingProgressBar progressBarOutput;
     private SwipeRefreshLayout swipeRefreshLayoutOutput;
     private SearchBar searchViewBusStopName;
     private BottomNavigationView bottomNavView;
@@ -97,6 +90,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private SearchAdapter adapterBusStation, adapterBusGps;
     private FavouritesAdapter adapterFavourites;
     private OutputAdapter adapterOutput;
+    private OutputErrorAdapter adapterOutputError;
     private ArrayAdapter<String> spinnerArrayAdapter;
     private List<OutputItem> outputItemList;
     private List<FavouritesItem> fav = new ArrayList<>();
@@ -106,26 +100,14 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
     private double latitude, longitude;
     private BusReader busReader = new BusReader();
     private Favourites favourites = new Favourites();
-    private Preference preference;
+    private Preferences preference;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        preference = new Preference(MainActivity.this);
+        preference = new Preferences(MainActivity.this);
         preference.setPreferenceTheme();
         super.onCreate(savedInstanceState);
-        if (preference.setPreferenceLanguage()) {
-            Locale locale = new Locale("en");
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-        } else {
-            Locale locale = new Locale("it");
-            Locale.setDefault(locale);
-            Configuration config = new Configuration();
-            config.locale = locale;
-            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
-        }
+        initLanguage();
         switch (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK) {
             case Configuration.UI_MODE_NIGHT_NO:
                 if (Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M && Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.O) {
@@ -140,7 +122,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
         setContentView(R.layout.activity_main);
         init();
-        busReader.setDistance(preference.getPreferenceGps());
+        BusReader.setDistance(preference.getPreferenceGps());
         Log.logInfo(MainActivity.this);
         searchViewBusStopName.setRadiusSearchBar(20);
         searchViewBusStopName.setCardViewElevation(0);
@@ -162,86 +144,78 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         searchViewBusStopName.setPlaceholderTextAppearance(MainActivity.this, R.style.TextAppearance_MaterialComponents_Body1_Custom);
         searchViewBusStopName.setOnExtraButtonClickListener(view -> {
             try {
-                if (!getLocation()) {
-                    Log.logMsg(MainActivity.this, "Ho fallito");
-                    getLastLocation();
-                }
-                Log.logCoordinates(MainActivity.this, latitude, longitude);
-                latitude = ((long) (latitude * 1e6)) / 1e6;
-                longitude = ((long) (longitude * 1e6)) / 1e6;
-                List<String> busPosition = busReader.takeTheCorrespondingBusStop(busClass, latitude, longitude);
-                stopsGps.clear();
-                List<Integer> listPosition = new ArrayList<>();
-                if (busPosition.size() > 1) {
-                    for (int i = 0; i < stops.size(); i++) {
-                        for (int j = 0; j < busPosition.size(); j++) {
-                            if (stops.get(i).getBusStopCode().equals(busPosition.get(j))) {
-                                listPosition.add(i);
-                                stopsGps.add(new SearchItem(stops.get(i).getBusStopCode(), stops.get(i).getBusStopName(), stops.get(i).getBusStopAddress(), stops.get(i).getImageFavourite(), stops.get(i).getLatitude(), stops.get(i).getLongitude()));
+                if (getLocation()) {
+                    Log.logCoordinates(MainActivity.this, latitude, longitude);
+                    latitude = ((long) (latitude * 1e6)) / 1e6;
+                    longitude = ((long) (longitude * 1e6)) / 1e6;
+                    List<String> busPosition = busReader.takeTheCorrespondingBusStop(busClass, latitude, longitude);
+                    stopsGps.clear();
+                    List<Integer> listPosition = new ArrayList<>();
+                    if (busPosition.size() > 1) {
+                        for (int i = 0; i < stops.size(); i++) {
+                            for (int j = 0; j < busPosition.size(); j++) {
+                                if (stops.get(i).getBusStopCode().equals(busPosition.get(j))) {
+                                    listPosition.add(i);
+                                    stopsGps.add(new SearchItem(stops.get(i).getBusStopCode(), stops.get(i).getBusStopName(), stops.get(i).getBusStopAddress(), stops.get(i).getImageFavourite(), stops.get(i).getLatitude(), stops.get(i).getLongitude()));
+                                }
                             }
                         }
-                    }
-                    buildRecyclerViewSearch(stopsGps, true);
-                    adapterBusGps.setOnItemClickListener(position -> itemAdapterMethod(stopsGps, position));
-                    adapterBusGps.setOnFavouriteButtonClickListener(position -> {
-                        Favourites favourites = new Favourites();
-                        if (updateStarFavourite(stopsGps, position)) {
-                            FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress());
-                            if (item != null) {
-                                fav.add(item);
-                                for (int element : listPosition) {
-                                    if (stopsGps.get(position).getBusStopCode().equals(stops.get(element).getBusStopCode())) {
-                                        adapterBusStation.notifyItemChanged(element);
-                                        updateStarFavourite(stops, element);
+                        buildRecyclerViewSearch(stopsGps, true);
+                        adapterBusGps.setOnItemClickListener(position -> itemAdapterMethod(stopsGps, position));
+                        adapterBusGps.setOnFavouriteButtonClickListener(position -> {
+                            Favourites favourites = new Favourites();
+                            if (updateStarFavourite(stopsGps, position)) {
+                                FavouritesItem item = favourites.addFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode(), stopsGps.get(position).getBusStopName(), stopsGps.get(position).getBusStopAddress());
+                                if (item != null) {
+                                    fav.add(item);
+                                    for (int element : listPosition) {
+                                        if (stopsGps.get(position).getBusStopCode().equals(stops.get(element).getBusStopCode())) {
+                                            adapterBusStation.notifyItemChanged(element);
+                                            updateStarFavourite(stops, element);
+                                        }
                                     }
+                                    adapterBusGps.notifyItemChanged(position);
+                                    adapterFavourites.notifyItemInserted(fav.size());
+                                    Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_SHORT).show();
+                                } else {
+                                    Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_SHORT).show();
                                 }
-                                adapterBusGps.notifyItemChanged(position);
-                                adapterFavourites.notifyItemInserted(fav.size());
-                                Toast.makeText(MainActivity.this, R.string.toast_favourite_added, Toast.LENGTH_SHORT).show();
                             } else {
-                                Toast.makeText(MainActivity.this, R.string.toast_favourite_not_added, Toast.LENGTH_SHORT).show();
-                            }
-                        } else {
-                            if (favourites.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
-                                boolean isRemoved = false;
-                                for (int i = 0; i < fav.size() && !isRemoved; i++) {
-                                    if (fav.get(i).getBusStopCode().equals(stopsGps.get(position).getBusStopCode())) {
-                                        fav.remove(i);
-                                        adapterBusGps.notifyItemChanged(position);
-                                        adapterFavourites.notifyItemRemoved(i);
-                                        isRemoved = true;
+                                if (favourites.removeFavourite(MainActivity.this, stopsGps.get(position).getBusStopCode())) {
+                                    for (int i = 0; i < fav.size(); i++) {
+                                        if (fav.get(i).getBusStopCode().equals(stopsGps.get(position).getBusStopCode())) {
+                                            fav.remove(i);
+                                            adapterBusGps.notifyItemChanged(position);
+                                            adapterFavourites.notifyItemRemoved(i);
+                                            break;
+                                        }
                                     }
+                                    Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
                                 }
-                                Toast.makeText(MainActivity.this, R.string.toast_favourite_removed, Toast.LENGTH_LONG).show();
+                            }
+                        });
+                    } else if (busPosition.size() == 1) {
+                        clearOutput();
+                        busStopCode = busPosition.get(0);
+                        for (int i = 0; i < stops.size(); i++) {
+                            if (stops.get(i).getBusStopCode().equals(busPosition.get(0))) {
+                                currentBusStopCode = stops.get(i).getBusStopCode();
+                                spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
+                                spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
+                                spinnerBusCode.setAdapter(spinnerArrayAdapter);
+                                searchViewBusStopName.setPlaceHolder(stops.get(i).getBusStopName());
+                                searchViewBusStopName.disableSearch();
+                                setElementAppBar(true);
+                                setDisplayChild(1);
+                                fabBus.show();
+                                break;
                             }
                         }
-                    });
-                } else if (busPosition.size() == 1) {
-                    if (adapterOutput != null && !outputItemList.isEmpty()) {
-                        outputItemList.clear();
-                        adapterOutput.notifyDataSetChanged();
-                    }
-                    busStopCode = busPosition.get(0);
-                    boolean element = false;
-                    int i;
-                    for (i = 0; i < stops.size() && !element; i++) {
-                        if (stops.get(i).getBusStopCode().equals(busPosition.get(0))) {
-                            element = true;
-                        }
-                    }
-                    currentBusStopCode = stops.get(i).getBusStopCode();
-                    spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
-                    spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner_element);
-                    spinnerBusCode.setAdapter(spinnerArrayAdapter);
-                    searchViewBusStopName.setPlaceHolder(stops.get(i).getBusStopName());
-                    searchViewBusStopName.disableSearch();
-                    setElementAppBar(true);
-                    setDisplayChild(1);
-                    fabBus.show();
-                } else {
-                    Toast.makeText(MainActivity.this, R.string.toast_no_bus_stop_gps, Toast.LENGTH_SHORT).show();
-                }
 
+                    } else {
+                        Toast.makeText(MainActivity.this, R.string.toast_no_bus_stop_gps, Toast.LENGTH_SHORT).show();
+                    }
+                }
             } catch (Exception e) {
                 Log.logError(MainActivity.this, e);
             }
@@ -340,10 +314,8 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             MaterialTextView textViewResetHour = view.findViewById(R.id.textViewResetHour);
             textViewResetHour.setOnClickListener(secondView -> {
                 Calendar now = Calendar.getInstance(TimeZone.getTimeZone(getString(R.string.time_zone)), Locale.ITALY);
-                int hour = now.get(Calendar.HOUR_OF_DAY);
-                int minute = now.get(Calendar.MINUTE);
-                timePicker.setHour(hour);
-                timePicker.setMinute(minute);
+                timePicker.setHour(now.get(Calendar.HOUR_OF_DAY));
+                timePicker.setMinute(now.get(Calendar.MINUTE));
                 isNow[0] = true;
             });
         });
@@ -377,10 +349,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
             }
         });
         adapterFavourites.setOnItemClickListener(position -> {
-            if (adapterOutput != null && !outputItemList.isEmpty()) {
-                outputItemList.clear();
-                adapterOutput.notifyDataSetChanged();
-            }
+            clearOutput();
             busStopCode = fav.get(position).getBusStopCode();
             currentBusStopCode = fav.get(position).getBusStopCode();
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
@@ -465,6 +434,22 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                     startActivity(new Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).setData(Uri.fromParts("package", getPackageName(), null)));
                 }
             }
+        }
+    }
+
+    private void initLanguage() {
+        if (preference.setPreferenceLanguage()) {
+            Locale locale = new Locale("en");
+            Locale.setDefault(locale);
+            Configuration config = new Configuration();
+            config.locale = locale;
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
+        } else {
+            Locale locale = new Locale("it");
+            Locale.setDefault(locale);
+            Configuration config = new Configuration();
+            config.locale = locale;
+            getResources().updateConfiguration(config, getResources().getDisplayMetrics());
         }
     }
 
@@ -565,7 +550,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         }
     }
 
-    private void initPreference(@NotNull Preference preference) {
+    private void initPreference(@NotNull Preferences preference) {
         doubleBackToExitPressedOnce = preference.setPreferenceExit();
     }
 
@@ -628,58 +613,19 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
         adapterFavourites.notifyDataSetChanged();
     }
 
-    @SuppressLint("MissingPermission")
-    private void getLastLocation() {
-        FusedLocationProviderClient mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            if (locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER) ||
-                    locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)) {
-                mFusedLocationClient.getLastLocation().addOnCompleteListener(
-                        task -> {
-                            Location location = task.getResult();
-                            if (location == null) {
-                                requestNewLocationData(mFusedLocationClient);
-                            } else {
-                                latitude = location.getLatitude();
-                                longitude = location.getLongitude();
-                            }
-                        }
-                );
+    private void clearOutput() {
+        if (!outputItemList.isEmpty()) {
+            outputItemList.clear();
+            if (adapterOutput != null) {
+                adapterOutput.notifyDataSetChanged();
+            } else if (adapterOutputError != null) {
+                adapterOutputError.notifyDataSetChanged();
             } else {
-                new MaterialAlertDialogBuilder(MainActivity.this)
-                        .setMessage(R.string.dialog_gps_message)
-                        .setPositiveButton(R.string.dialog_gps_yes, (dialog, which) -> startActivity(new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS)))
-                        .setNegativeButton(R.string.dialog_generic_no, (dialog, which) -> dialog.cancel())
-                        .show();
+                adapterOutputError.notifyDataSetChanged();
+                adapterOutput.notifyDataSetChanged();
             }
-        } else {
-            checkPermissions();
         }
     }
-
-    @SuppressLint("MissingPermission")
-    private void requestNewLocationData(FusedLocationProviderClient mFusedLocationClient) {
-        LocationRequest mLocationRequest = new LocationRequest();
-        mLocationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        mLocationRequest.setInterval(0);
-        mLocationRequest.setFastestInterval(0);
-        mLocationRequest.setNumUpdates(1);
-        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
-        mFusedLocationClient.requestLocationUpdates(
-                mLocationRequest, mLocationCallback,
-                Looper.myLooper()
-        );
-    }
-
-    private LocationCallback mLocationCallback = new LocationCallback() {
-        @Override
-        public void onLocationResult(LocationResult locationResult) {
-            Location mLastLocation = locationResult.getLastLocation();
-            latitude = mLastLocation.getLatitude();
-            longitude = mLastLocation.getLongitude();
-        }
-    };
 
     private boolean getLocation() {
         LocationManager locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
@@ -733,10 +679,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
 
     private void itemAdapterMethod(@NotNull List<SearchItem> listStops, int position) {
         if (!currentBusStopCode.equals(listStops.get(position).getBusStopName())) {
-            if (adapterOutput != null && !outputItemList.isEmpty()) {
-                outputItemList.clear();
-                adapterOutput.notifyDataSetChanged();
-            }
+            clearOutput();
             busStopCode = listStops.get(position).getBusStopCode();
             currentBusStopCode = listStops.get(position).getBusStopCode();
             spinnerArrayAdapter = new ArrayAdapter<>(MainActivity.this, R.layout.spinner_layout, busViewer(busStopCode));
@@ -839,7 +782,7 @@ public class MainActivity extends AppCompatActivity implements AsyncResponseUrl,
                 adapterOutput.notifyDataSetChanged();
             } else {
                 outputItemList.add(new OutputItem(output.get(0).getError()));
-                OutputErrorAdapter adapterOutputError = new OutputErrorAdapter(MainActivity.this, outputItemList);
+                adapterOutputError = new OutputErrorAdapter(MainActivity.this, outputItemList);
                 recyclerViewBusOutput.setAdapter(adapterOutputError);
                 adapterOutputError.notifyDataSetChanged();
             }
