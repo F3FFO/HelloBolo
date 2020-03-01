@@ -9,12 +9,12 @@ import androidx.preference.PreferenceManager;
 
 import com.f3ffo.hellobolo.R;
 
-public class Preference {
+public class Preferences {
 
     private SharedPreferences sharedPreference;
     private Context context;
 
-    public Preference(Context context) {
+    public Preferences(Context context) {
         this.context = context;
         this.sharedPreference = PreferenceManager.getDefaultSharedPreferences(context);
     }
