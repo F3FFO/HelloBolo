@@ -52,11 +52,6 @@ public class Log {
         return info;
     }
 
-    public static void logMsg(@NotNull Context context, String msg) throws IOException {
-        File file = new File(context.getFilesDir(), LOG_FILENAME);
-        FileUtils.write(file, ("message: " + msg + "\n"), StandardCharsets.UTF_8, true);
-    }
-
     public static void logCoordinates(@NotNull Context context, double lat, double longi) throws IOException {
         File file = new File(context.getFilesDir(), LOG_FILENAME);
         FileUtils.write(file, ("latitude: " + lat + " longitude: " + longi + "\n"), StandardCharsets.UTF_8, true);
