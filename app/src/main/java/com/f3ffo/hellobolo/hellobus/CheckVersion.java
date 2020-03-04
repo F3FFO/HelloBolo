@@ -17,6 +17,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 import java.util.Properties;
 
 import okhttp3.OkHttpClient;
@@ -45,6 +46,19 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
             }
         }
         return fileExists;
+    }
+
+    private boolean takeCurrVersion() {
+        File[] listFiles = context.getFilesDir().listFiles();
+        if (listFiles != null) {
+            for (File file : listFiles) {
+                if (file.getName().contains("lineefermate_") && file.getName().contains(".csv")) {
+                    version = file.getName().substring(file.getName().lastIndexOf("_") + 1, file.getName().lastIndexOf("."));
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     private boolean csvVersion() {
@@ -82,21 +96,20 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... voids) {
         try {
-            if (csvVersion() || xmlVersion()) {
-                FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
-                FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
-                Properties prop = new Properties();
-                prop.load(context.openFileInput("favourites.properties"));
-                if (prop.stringPropertyNames().size() == 0) {
-                    for (int i = 0; i < 10; i++) {
-                        prop.setProperty("busStopCode.Fav." + i, "");
-                        prop.store(context.openFileOutput("favourites.properties", Context.MODE_PRIVATE), "User favourites");
-                    }
-                }
-                return true;
-            } else {
+            if (!csvVersion() && !xmlVersion() && !takeCurrVersion()) {
                 return false;
             }
+            FileUtils.touch(new File(context.getFilesDir(), "cut_" + version + ".csv"));
+            FileUtils.touch(new File(context.getFilesDir(), "favourites.properties"));
+            Properties prop = new Properties();
+            prop.load(context.openFileInput("favourites.properties"));
+            if (prop.stringPropertyNames().size() == 0) {
+                for (int i = 0; i < 10; i++) {
+                    prop.setProperty("busStopCode.Fav." + i, "");
+                    prop.store(context.openFileOutput("favourites.properties", Context.MODE_PRIVATE), "User favourites");
+                }
+            }
+            return true;
         } catch (IOException e) {
             Log.logError(context, e);
             new MaterialAlertDialogBuilder(context, R.style.DialogTheme)
