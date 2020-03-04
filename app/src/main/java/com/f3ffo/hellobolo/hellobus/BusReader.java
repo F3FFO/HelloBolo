@@ -145,9 +145,8 @@ public class BusReader {
 
     private void writeFile(Context context, File file, @NotNull ArrayList<BusClass> busClass) {
         ArrayList<String> stopsTemp = new ArrayList<>();
-        String busStopCode;
         for (int i = 0; i < busClass.size(); i++) {
-            busStopCode = busClass.get(i).getBusStopCode();
+            String busStopCode = busClass.get(i).getBusStopCode();
             if (!stopsTemp.contains(busStopCode)) {
                 stopsTemp.add(busStopCode);
                 try {
@@ -161,8 +160,7 @@ public class BusReader {
     }
 
     private void extractFromFileCut(@NotNull Context context, @NotNull File file, String[] propertiesFile, List<SearchItem> stops) {
-        try {
-            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName()), StandardCharsets.UTF_8));
+        try (BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(context.openFileInput(file.getName()), StandardCharsets.UTF_8))) {
             String line;
             while ((line = bufferedReader.readLine()) != null) {
                 StringTokenizer token = new StringTokenizer(line, ";");
@@ -178,6 +176,7 @@ public class BusReader {
                 for (String s : propertiesFile) {
                     if (s.equals(busStopCode)) {
                         isElementAdded = true;
+                        break;
                     }
                 }
                 if (!isElementAdded) {
@@ -186,7 +185,6 @@ public class BusReader {
                     stops.add(new SearchItem(busStopCode, busStopName, busStopAddress, R.drawable.star, latitude, longitude));
                 }
             }
-            bufferedReader.close();
         } catch (IOException e) {
             Log.logError(context, e);
         }
@@ -197,10 +195,7 @@ public class BusReader {
         File file = takeFileCut(context);
         String[] propertiesFile = takeFavElement(context);
         if (FileUtils.sizeOf(file) == 0) {
-            writeFile(context,
-
-
-                    file, busClass);
+            writeFile(context, file, busClass);
             extractFromFileCut(context, file, propertiesFile, stops);
         } else {
             extractFromFileCut(context, file, propertiesFile, stops);
@@ -222,8 +217,7 @@ public class BusReader {
         return result;
     }
 
-    public List<String> takeTheCorrespondingBusStop(
-            @NotNull ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
+    public List<String> takeTheCorrespondingBusStop(@NotNull ArrayList<BusClass> busClass, double searchValueLatitude, double searchValueLongitude) {
         stopsCutLatitude(searchValueLatitude);
         List<String> result = new ArrayList<>();
         for (int i = 0; i < busClass.size(); i++) {
