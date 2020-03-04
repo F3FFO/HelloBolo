@@ -35,17 +35,16 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
         this.delegate = delegate;
     }
 
-    private boolean takeFile() {
+    private boolean fileExist() {
         File[] listFiles = context.getFilesDir().listFiles();
-        boolean fileExists = false;
         if (listFiles != null) {
             for (File file : listFiles) {
                 if (file.getName().equals("lineefermate_" + version + ".csv") && FileUtils.sizeOf(file) != 0) {
-                    fileExists = true;
+                    return true;
                 }
             }
         }
-        return fileExists;
+        return false;
     }
 
     private boolean takeCurrVersion() {
@@ -62,8 +61,9 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
     }
 
     private boolean csvVersion() {
-        Request get = new Request.Builder().url("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=opendata-versione&version=1&format=csv").build();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new OkHttpClient().newCall(get).execute().body().byteStream(), StandardCharsets.UTF_8))) {
+        try {
+            Request get = new Request.Builder().url("https://solweb.tper.it/web/tools/open-data/open-data-download.aspx?source=solweb.tper.it&filename=opendata-versione&version=1&format=csv").build();
+            BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
             String versionUpdate;
             do {
                 versionUpdate = br.readLine();
@@ -72,22 +72,26 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
                 }
             } while (!versionUpdate.startsWith("lineefermate"));
             version = versionUpdate.substring(versionUpdate.lastIndexOf(";") + 1);
+            br.close();
         } catch (IOException e) {
+            Log.logError(context, e);
             return false;
         }
         return true;
     }
 
     private boolean xmlVersion() {
-        Request get = new Request.Builder().url("https://solweb.tper.it/web/tools/open-data/open-data-viewer.aspx?&filename=opendata-versione&version=1").build();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new OkHttpClient().newCall(get).execute().body().byteStream(), StandardCharsets.UTF_8))) {
+        try {
+            Request get = new Request.Builder().url("https://solweb.tper.it/web/tools/open-data/open-data-viewer.aspx?&filename=opendata-versione&version=1").build();
+            BufferedReader br = new BufferedReader(new InputStreamReader(Objects.requireNonNull(new OkHttpClient().newCall(get).execute().body()).byteStream(), StandardCharsets.UTF_8));
             String versionUpdate;
             do {
                 versionUpdate = br.readLine();
             } while (!versionUpdate.contains("<td>lineefermate</td><td>"));
             version = versionUpdate.substring(versionUpdate.indexOf("</td><td>") + 9, versionUpdate.length() - 5);
-            ;
+            br.close();
         } catch (IOException e) {
+            Log.logError(context, e);
             return false;
         }
         return true;
@@ -123,7 +127,7 @@ public class CheckVersion extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(Boolean aBoolean) {
         super.onPostExecute(aBoolean);
-        if (aBoolean && !takeFile()) {
+        if (aBoolean && !fileExist()) {
             delegate.processFinisVersion(version);
         }
     }
